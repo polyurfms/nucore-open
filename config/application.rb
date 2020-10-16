@@ -43,6 +43,8 @@ module Nucore
 
     config.time_zone = Settings.time_zone
 
+    config.active_record.default_timezone = :local
+    
     config.active_record.observers = :order_detail_observer
 
     # Override the default ("#{Rails.root}/**/spec/mailers/previews") to also load

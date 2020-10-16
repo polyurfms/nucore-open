@@ -14,11 +14,13 @@ services:
     volumes:
       - .:/app
       - gem_cache:/gems
+      - cache:/cache #Added to support Window 10 Docker
     environment:
       - MYSQL_HOST=db
       - MYSQL_USER=root
       - MYSQL_PASSWORD=root
       - SMTP_HOST=mailcatcher
+      - SPROCKETS_CACHE=/cache #Added to support Window 10 Docker
     tty: true
     stdin_open: true
   delayed_job:
@@ -59,6 +61,7 @@ services:
     tty: true
     stdin_open: true
 volumes:
+  cache: #Added to support Window 10 Docker
   db-data:
     driver: local
   gem_cache: {}
