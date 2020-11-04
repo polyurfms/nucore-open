@@ -1,8 +1,8 @@
 #
 # Messages for views
 en:
-  app_name: NUcore
-  institution_name: Northwestern
+  app_name: URFMS
+  institution_name: The Hong Kong Polytechinc
 
   boolean:
     # need to be enclosed in quotes because yes/no are yaml reserved words
@@ -118,8 +118,8 @@ en:
       move_up: Move Up
       move_down: Move Down
     footer:
-      copyright_html: "&copy; Copyright 2010&ndash;%{to_date} Northwestern University"
-      logo_alt: "Northwestern Logo"
+      copyright_html: "&copy; Copyright 2019&ndash;%{to_date} The Hong Kong Polytechnic University"
+      logo_alt: "PolyU Logo"
       logo_file: "logo.jpg"
     problem_order_details:
       assign_price_policies: Assign Price Policies
