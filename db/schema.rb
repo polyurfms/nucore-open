@@ -475,7 +475,7 @@ ActiveRecord::Schema.define(version: 2020_09_04_185502) do
     t.index ["product_id"], name: "index_product_access_groups_on_product_id"
   end
 
-  create_table "product_access_schedule_rules", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "product_access_schedule_rules", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "product_access_group_id", null: false
     t.integer "schedule_rule_id", null: false
     t.index ["product_access_group_id"], name: "index_product_access_schedule_rules_on_product_access_group_id"
