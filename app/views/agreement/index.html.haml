@@ -1,0 +1,54 @@
+<h1> #{t("views.agreement.title")} </h1>
+
+
+#{t("views.agreement.content")}
+
+
+
+%button{:onclick => "agree()", :type => "button"} Agree
+#myModal{:style => "display: none;position: fixed; z-index: 1; padding-top: 100px; left: 0;\n  top: 0;\n  width: 100%; \n  height: 100%;\n  overflow: auto; /\n  background-color: rgb(0,0,0); \n  background-color: rgba(0,0,0,0.4);"}
+  / Modal content
+  %div{:style => "  background-color: #fefefe;\n  margin: auto;\n  padding: 20px;\n  border: 1px solid #888;\n  width: 80%;"}
+    %span#closeBtn{:style => "  color: #aaaaaa;\n  float: right;\n  font-size: 28px;\n  font-weight: bold; displaty : none"} 
+    %p loading....
+
+:javascript
+  function agree(){
+    modal.style.display = "block";
+    $.ajax({
+      url: "agree_terms",
+      method: "POST",
+      success: function(data) {
+         modal.style.display = "none";
+          $(location).attr('href', '/facilities')
+      },dataType: 'json'
+    });
+  }
+  
+  var modal = document.getElementById("myModal");
+  
+  
+  // Get the <span> element that closes the modal
+  var span = document.getElementById("closeBtn");
+  
+  // When the user clicks on <span> (x), close the modal
+  span.onclick = function() {
+    agree()
+  }
+  /*
+  // When the user clicks anywhere outside of the modal, close it
+  $(document).ready(function(){ {
+     $.ajax({
+      url: "get_is_agree_terms",
+      method: "POST",
+      dataType: 'json',
+      success: function(data) {
+        alert(data);
+        if(data){}
+          $(location).attr('href', '/facilities')
+          modal.style.display = "none";
+        }
+      }
+    });
+  }
+  */
