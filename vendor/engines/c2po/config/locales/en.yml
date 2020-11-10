@@ -31,6 +31,7 @@ en:
   accounts:
     credit_card: Credit Card
     po: Purchase Order
+    other : other
 
   purchase_order_account:
     shared_facility_description: Shared (%{count} %{facilities})
@@ -43,10 +44,16 @@ en:
       purchase_order_account:
         one: Purchase Order
         other: Purchase Orders
+      cheque_or_other_account:
+        one: Cheque Or Other
+        other: Cheque Or Other
     attributes:
       purchase_order_account:
         account_number: Payment Source
       credit_card_account:
+        account_number: Payment Source
+        name_on_card: Name On Card
+      cheque_or_other_account:
         account_number: Payment Source
         name_on_card: Name On Card
 
@@ -56,3 +63,6 @@ en:
         reference: Reference (optional)
       credit_card_account:
         reference: Reference (optional)
+      cheque_or_other_account:
+        one: Other
+        other: Other

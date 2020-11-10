@@ -2,7 +2,7 @@
 
 module C2po
 
-  C2PO_ACCOUNT_TYPES = %w(CreditCardAccount PurchaseOrderAccount).freeze
+  C2PO_ACCOUNT_TYPES = %w(CreditCardAccount PurchaseOrderAccount ChequeOrOtherAccount).freeze
 
   C2PO_ACCOUNT_TYPES_APPENDER = proc do
     Account.config.account_types.concat C2po::C2PO_ACCOUNT_TYPES
