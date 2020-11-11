@@ -58,7 +58,9 @@ class ProductsCommonController < ApplicationController
   def create
     @product = current_facility_products.new(resource_params)
     @product.initial_order_status_id = OrderStatus.default_order_status.id
-
+    if @product.account.blank?
+      @product.account = ""
+    end
     if @product.save
       flash[:notice] = "#{@product.class.name} was successfully created."
       redirect_to([:manage, current_facility, @product])
