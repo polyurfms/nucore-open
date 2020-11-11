@@ -268,7 +268,7 @@ RSpec.describe FacilityAccountsController do
       before do
         @params[:account_type] = "ChequeOrOtherAccount"
         acct_attrs = FactoryBot.attributes_for(:credit_card_account)
-        acct_attrs[:affiliate_id] = acct_attrs.delete(:affiliate).id.to_s
+        #acct_attrs[:affiliate_id] = acct_attrs.delete(:affiliate).id.to_s
         acct_attrs[:expiration_month] = "5"
         acct_attrs[:expiration_year] = expiration_year.to_s
         @params[:credit_card_account] = acct_attrs

@@ -8,6 +8,7 @@ RSpec.describe ChequeOrOtherAccountBuilder, type: :service do
     {
       account_params_key: "cheque_or_other_account",
       account_type: "ChequeOrOtherAccountBuilder",
+      account_number: account_number ,
       current_user: user,
       facility: facility,
       owner_user: user,
@@ -20,10 +21,7 @@ RSpec.describe ChequeOrOtherAccountBuilder, type: :service do
         name_on_card: "First Last",
         expiration_month: 1.year.from_now.month,
         expiration_year: 1.year.from_now.year,
-        description: "A Credit Card",
-        affiliate_id: affiliate.try(:id),
-        affiliate_other: affiliate_other,
-        remittance_information: "Bill To goes here",
+        description: "Cheque/Other",
       },
     )
   end

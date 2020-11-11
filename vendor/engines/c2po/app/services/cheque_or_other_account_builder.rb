@@ -11,12 +11,9 @@ class ChequeOrOtherAccountBuilder < AccountBuilder
     [
       :account_number,
       :description,
-      :affiliate_id,
-      :affiliate_other,
-      :remittance_information,
       :expiration_month,
       :expiration_year,
-      :name_on_card,
+      :name_on_card
     ]
   end
 
@@ -24,9 +21,6 @@ class ChequeOrOtherAccountBuilder < AccountBuilder
   def account_params_for_update
     [
       :description,
-      :affiliate_id,
-      :affiliate_other,
-      :remittance_information,
     ]
   end
 
