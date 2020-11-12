@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_04_080045) do
+ActiveRecord::Schema.define(version: 2020_09_04_185502) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -798,13 +798,6 @@ ActiveRecord::Schema.define(version: 2020_11_04_080045) do
     t.datetime "updated_at", null: false
     t.index ["product_id"], name: "index_training_requests_on_product_id"
     t.index ["user_id"], name: "index_training_requests_on_user_id"
-  end
-
-  create_table "user_agreements", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "user_id"
-    t.boolean "accept", default: false, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "user_preferences", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

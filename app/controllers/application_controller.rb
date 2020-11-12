@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
   helper_method :current_facility, :session_user, :manageable_facilities, :operable_facilities, :acting_user, :acting_as?, :check_acting_as, :current_cart, :backend?
   helper_method :open_or_facility_path
 
-  before_action :set_paper_trail_whodunnit ,:check_agreement
+  before_action :set_paper_trail_whodunnit
 
   # Navigation tabs configuration
   attr_accessor :active_tab
@@ -24,44 +24,6 @@ class ApplicationController < ActionController::Base
   # return whatever facility is indicated by the :facility_id or :id url parameter
   # UNLESS that url parameter has the value of 'all'
   # in which case, return the all facility
-
-
-  def after_sign_in_path_for(resource)
-    '/orders/pending'
-  end
- 
-  def check_agreement
-    #only user login can visit agreement
-    if  request.env['PATH_INFO'].eql?('/agreement') && session_user.blank? 
-      redirect_to '/facilities'
-    end
-
-    # when user login and page is not agreement or agreement api
-      if !session_user.blank? && !request.env['PATH_INFO'].eql?('/agreement') && !request.env['PATH_INFO'].eql?('/agree_terms') && !request.env['PATH_INFO'].eql?('/users/sign_out')
-        if UserAgreement.where(user_id:session_user).count == 0
-          redirect_to '/agreement'
-        else
-          if !UserAgreement.where(user_id:session_user).first.accept
-            redirect_to '/agreement' 
-          end
-        end
-      end
-    end
-     
-    # after login redirect user to agreement page
-      def after_sign_in_path_for(resource)
-        if UserAgreement.where(user_id:session_user).count == 0
-          '/agreement'
-        else
-          if UserAgreement.where(user_id:session_user).first.accept
-            '/facilities'
-          else
-            '/agreement'
-          end
-        end
-      end
-
-
   def current_facility
     facility_id = params[:facility_id] || params[:id]
 
