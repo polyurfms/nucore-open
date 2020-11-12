@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'net/sftp'
 
 class FileUploadsController < ApplicationController
 
@@ -28,14 +29,35 @@ class FileUploadsController < ApplicationController
 
   # GET /facilities/:facility_id/:product/:product_id/files/:file_type/:id
   def download
-    redirect_to(
-      @product
-        .stored_files
-        .where(file_type: params[:file_type])
-        .find(params[:id])
-        .download_url,
-    )
+    
+    @file = @product.stored_files.where(file_type: params[:file_type]).find(params[:id])    
+    filename = @file.file_file_name
+    type = @file.file_content_type
+    path = Rails.configuration.sftp_config['sftp_folder'] + @file.id.to_s + "/" + filename
+    
+    download_ftp_file(filename, type, path)
+    # redirect_to(
+    #   @product
+    #     .stored_files
+    #     .where(file_type: params[:file_type])
+    #     .find(params[:id])
+    #     .download_url,
+    # )
   end
+
+  def download_ftp_file (filename, type, path)
+    host = Rails.configuration.sftp_config['sftp_host']
+    username = Rails.configuration.sftp_config['sftp_user']
+    password = Rails.configuration.sftp_config['sftp_password']
+
+    Net::SFTP.start(host, username,:password => password) do |sftp|
+      data = sftp.download!(path)
+      send_data(data, 
+        :type => type, :disposition => 'attachment', :filename => filename)
+    end
+  end
+   
+  
 
   # POST /facilities/1/services/3/files
   def create

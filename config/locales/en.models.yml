@@ -161,8 +161,8 @@ en:
         one: Facility
         other: Facilities
       facility_account:
-        one: Recharge Chart String
-        other: Recharge Chart Strings
+        one: Facility account
+        other: Facility accounts
       instrument:
         one: Instrument
         other: Instruments
@@ -263,7 +263,7 @@ en:
         short_description: Short Description
         url_name: URL Name
       facility_account:
-        account_number: Chart String Number
+        account_number: Facility account
         revenue_account: Revenue Account
         is_active: "Is Active?"
       product:
@@ -276,7 +276,7 @@ en:
         initial_order_status: Initial Order Status
         is_archived: Is Inactive?
         is_hidden: Is Hidden?
-        facility_account: Recharge Chart String
+        facility_account: Facility account
         user_notes_field_mode: Users may submit a note when purchasing?
         email_purchasers_on_order_status_changes: Email purchasers when the status of an order changes?
         user_notes_label: Label for Notes Field

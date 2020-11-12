@@ -27,10 +27,16 @@
 
   = f.input :user_role,
     collection: AccountUserPresenter.selectable_user_roles(current_user, current_facility),
-    selected: @account_user.user_role,
+    selected: "Purchaser",
     disabled: current_owner?
+
+  :javascript 
+            $('#account_user_user_role option:contains("Business Administrator")').remove();
+            $('#account_user_user_role option:contains("Purchaser")').text('Member');
+
 
   %ul.inline
     - unless current_owner?
       %li= f.submit t("shared.create"), class: "btn btn-primary"
     %li= link_to t("shared.cancel"), facility_account_path(current_facility, @account)
+

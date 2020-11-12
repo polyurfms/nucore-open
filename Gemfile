@@ -35,6 +35,9 @@ gem "rails-observers"
 gem "icalendar"
 gem "paranoia"
 
+## SFTP
+gem 'paperclip-sftp', '~> 1.0.0'
+
 ## views
 gem "sass-rails"
 gem "coffee-rails"

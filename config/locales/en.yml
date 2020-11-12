@@ -118,9 +118,11 @@ en:
       move_up: Move Up
       move_down: Move Down
     footer:
-      copyright_html: "&copy; Copyright 2019&ndash;%{to_date} The Hong Kong Polytechnic University"
-      logo_alt: "PolyU Logo"
-      logo_file: "logo.jpg"
+
+    copyright_html: "&copy; Copyright 2020&ndash;%{to_date} The Hong Kong Polytechnic University"
+    logo_alt: "PolyU Logo"
+    logo_file: "logo-header.png"
+
     problem_order_details:
       assign_price_policies: Assign Price Policies
       th:
