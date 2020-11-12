@@ -3,4 +3,3 @@
 class UserAgreement < ApplicationRecord
   
 end
-  
