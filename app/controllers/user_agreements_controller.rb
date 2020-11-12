@@ -33,4 +33,5 @@ class UserAgreementsController < ApplicationController
     end
   
   end
+
   
