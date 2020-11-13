@@ -29,9 +29,13 @@ class UserAgreementsController < ApplicationController
             userAgreement.save
         end
 
+
+        session[:user_agreement_record] = 1
+        session[:accept] = true
+                    
+
         render json: true
     end
   
   end
-
   
