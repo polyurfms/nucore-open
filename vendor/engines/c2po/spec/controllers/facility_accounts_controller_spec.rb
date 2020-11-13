@@ -243,6 +243,24 @@ RSpec.describe FacilityAccountsController do
         expect(assigns(:account).facilities).to eq([facility])
       end
     end
+<<<<<<< Updated upstream
+=======
+
+    context "ChequeOrOtherAccount" do
+      before do
+        @params[:account_type] = "ChequeOrOtherAccount"
+        acct_attrs = FactoryBot.attributes_for(:ChequeOrOtherAccount)
+        #acct_attrs[:affiliate_id] = acct_attrs.delete(:affiliate).id.to_s
+        acct_attrs[:expiration_month] = "5"
+        acct_attrs[:expiration_year] = expiration_year.to_s
+        @params[:ChequeOrOtherAccount] = acct_attrs
+      end
+
+      it_should_allow :director do
+
+      end
+    end
+>>>>>>> Stashed changes
   end
 
   context "GET #show" do

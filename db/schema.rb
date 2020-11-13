@@ -10,7 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< Updated upstream
 ActiveRecord::Schema.define(version: 2020_11_10_073049) do
+=======
+ActiveRecord::Schema.define(version: 2020_11_12_092734) do
+>>>>>>> Stashed changes
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -52,6 +56,7 @@ ActiveRecord::Schema.define(version: 2020_11_10_073049) do
     t.string "affiliate_other"
     t.string "outside_contact_info"
     t.string "ar_number"
+    t.boolean "allow_allocation", default: false, null: false
     t.index ["affiliate_id"], name: "index_accounts_on_affiliate_id"
   end
 
