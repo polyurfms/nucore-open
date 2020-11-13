@@ -38,10 +38,28 @@ class ApplicationController < ActionController::Base
 
     # when user login and page is not agreement or agreement api
       if !session_user.blank? && !request.env['PATH_INFO'].eql?('/agreement') && !request.env['PATH_INFO'].eql?('/agree_terms') && !request.env['PATH_INFO'].eql?('/users/sign_out')
-        if UserAgreement.where(user_id:session_user).count == 0
+        
+        # get rocord from db when frist time store data in session 
+        if session[:user_agreement_record] == nil
+          #puts "[check_agreement][get record][user_agreement_record]"
+          session[:user_agreement_record] = UserAgreement.where(user_id:session_user).count
+        end
+
+        # get rocord from db when frist time store data in session 
+        if session[:user_agreement_record] > 0 
+          if session[:accept] == nil
+            #puts "[check_agreement][get record][accept]"
+            session[:accept] = UserAgreement.where(user_id:session_user).first.accept
+          end 
+        end
+
+        #puts "[check_agreement]session[:accept]" + (session[:accept] ? "true" : "false")
+        #puts "[check_agreement]session[:user_agreement_record]" +session[:user_agreement_record].to_s
+
+        if session[:accept] == 0
           redirect_to '/agreement'
         else
-          if !UserAgreement.where(user_id:session_user).first.accept
+          if !session[:accept]
             redirect_to '/agreement' 
           end
         end
