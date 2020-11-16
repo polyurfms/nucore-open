@@ -1,0 +1,16 @@
+# sftp Setting
+production:
+    sftp_folder: ~
+    sftp_upload_path: ~
+    sftp_host: ~
+    sftp_user: ~
+    sftp_password: ~
+    sftp_port: ~
+
+development:
+    sftp_folder: ~
+    sftp_upload_path: ~
+    sftp_host: ~
+    sftp_user: ~
+    sftp_password: ~
+    sftp_port: ~

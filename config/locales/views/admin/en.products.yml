@@ -20,8 +20,11 @@ en:
             deposit_account: "Revenue account to which fees will be deposited"
             account: "Expense account from which fees will be withdrawn; must be open on purchaser's Chart String"
           deposit_account:
-            label: "Recharge Chart String and Account"
+            label: "Facility account and Account"
             add: "Add Chart String"
+          resource_nature:
+            label: "Resource nature"
+
         product_fields:
           hints:
             requires_approval: "Restrict access to approved users"
