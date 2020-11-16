@@ -19,9 +19,9 @@ RSpec.describe ChequeOrOtherAccountBuilder, type: :service do
     ActionController::Parameters.new(
       credit_card_account: {
         name_on_card: "First Last",
-        expiration_month: 1.year.from_now.month,
-        expiration_year: 1.year.from_now.year,
-        description: "Cheque/Other",
+        description: "A Cheque/Other order",
+        formatted_expires_at: I18n.l(1.year.from_now.to_date, format: :usa),
+        description: "Cheque/Other"
       },
     )
   end

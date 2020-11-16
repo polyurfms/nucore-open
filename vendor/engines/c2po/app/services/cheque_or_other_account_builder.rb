@@ -4,6 +4,8 @@
 # Dynamically called via the `AccountBuilder.for()` factory.
 class ChequeOrOtherAccountBuilder < AccountBuilder
 
+  # Needs to be overridable by engines
+  cattr_accessor(:permitted_account_params) { [] }
   protected
 
   # Override strong_params for `build` account.
@@ -11,8 +13,7 @@ class ChequeOrOtherAccountBuilder < AccountBuilder
     [
       :account_number,
       :description,
-      :expiration_month,
-      :expiration_year,
+      :formatted_expires_at,
       :name_on_card
     ]
   end
@@ -21,19 +22,24 @@ class ChequeOrOtherAccountBuilder < AccountBuilder
   def account_params_for_update
     [
       :description,
+      :formatted_expires_at
     ]
   end
-
   # Hooks into superclass's `build` method.
   def after_build
     set_expires_at
   end
 
-  # Sets `expires_at` based off of the credit card expiration year and month.
+  # Hooks into superclass's `update` method.
+  def after_update
+    set_expires_at
+  end
+
+  # Sets `expires_at` to end of the day. Assumes `expires_at` is already set
+  # from params.
   def set_expires_at
-    if account.expiration_year.present? && account.expiration_month.present?
-      account.expires_at = Date.civil(account.expiration_year.to_i, account.expiration_month.to_i).end_of_month.end_of_day
-    end
+    account.expires_at = account.expires_at.try(:end_of_day)
+    account
   end
 
 end

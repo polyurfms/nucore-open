@@ -1,8 +1,7 @@
-- if local_assigns[:is_new]
-  = f.input :account_number, label: t('facility_accounts.account_fields.label.co_number'), required: true
-  = f.input :name_on_card, label: t('facility_accounts.account_fields.label.co_name'), required: true
-  = f.input :expiration_month, required: true, collection: (1..12).to_a
-  = f.input :expiration_year, required: true, collection: (Time.zone.now.year..(Time.zone.now.year + 10)).to_a
+= f.input :account_number, label: t('facility_accounts.account_fields.label.co_number'), required: true
+= f.input :name_on_card, label: t('facility_accounts.account_fields.label.co_name'), required: true
+=f.input :formatted_expires_at, required: true,
+  input_html: { class: "datepicker" },
+  label: Account.human_attribute_name(:expires_at)
 
-  = f.input :description, required: true, hint: t('facility_accounts.account_fields.label.all_instruct'), hint_html: { class: 'help-inline' }
-
+= f.input :description, required: true, hint: t('facility_accounts.account_fields.label.all_instruct'), hint_html: { class: 'help-inline' }
