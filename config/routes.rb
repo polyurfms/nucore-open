@@ -15,6 +15,13 @@ Rails.application.routes.draw do
   # root route
   root to: "public#index"
 
+  post "agree_terms" , to: "user_agreements#agree"
+  post "get_is_agree_terms" , to: "user_agreements#get_is_agree_terms"
+
+  resources :agreement, controller: "agreement", only: [:index, :update, :show] do
+  end
+
+
   # authentication
   get "switch_back", to: "public#switch_back"
 

@@ -148,7 +148,18 @@ RSpec.describe FacilityAccountsController do
           expect(assigns(:account)).to be_a(CreditCardAccount)
         end
       end
+
+      context "ChequeOrOtherAccount" do
+        let(:account_type) { "ChequeOrOtherAccount" }
+
+        it "loads the account" do
+          expect(response).to be_successful
+          expect(assigns(:account)).to be_a(ChequeOrOtherAccount)
+        end
+      end
+
     end
+
 
     describe "as an account administrator" do
       let(:account_manager) { create(:user, :account_manager) }
@@ -174,6 +185,15 @@ RSpec.describe FacilityAccountsController do
 
       context "CreditCardAccount" do
         let(:account_type) { "CreditCardAccount" }
+
+        it "falls back to using a chartstring" do
+          expect(response).to be_successful
+          expect(assigns(:account).class.name).to eq(chartstring_class_name)
+        end
+      end
+
+      context "ChequeOrOtherAccount" do
+        let(:account_type) { "ChequeOrOtherAccount" }
 
         it "falls back to using a chartstring" do
           expect(response).to be_successful
@@ -231,6 +251,24 @@ RSpec.describe FacilityAccountsController do
         @params[:account_type] = "CreditCardAccount"
         acct_attrs = FactoryBot.attributes_for(:credit_card_account)
         acct_attrs[:affiliate_id] = acct_attrs.delete(:affiliate).id.to_s
+        acct_attrs[:expiration_month] = "5"
+        acct_attrs[:expiration_year] = expiration_year.to_s
+        @params[:credit_card_account] = acct_attrs
+      end
+
+      it_should_allow :director do
+        expect(assigns(:account)).to be_persisted
+        expect(assigns(:account).expires_at)
+          .to be_within(1.second).of(Time.zone.parse("#{expiration_year}-5-1").end_of_month.end_of_day)
+        expect(assigns(:account).facilities).to eq([facility])
+      end
+    end
+
+    context "ChequeOrOtherAccount" do
+      before do
+        @params[:account_type] = "ChequeOrOtherAccount"
+        acct_attrs = FactoryBot.attributes_for(:credit_card_account)
+        #acct_attrs[:affiliate_id] = acct_attrs.delete(:affiliate).id.to_s
         acct_attrs[:expiration_month] = "5"
         acct_attrs[:expiration_year] = expiration_year.to_s
         @params[:credit_card_account] = acct_attrs
