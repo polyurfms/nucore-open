@@ -86,10 +86,10 @@ gem "c2po", path: "vendor/engines/c2po"
 gem "dataprobe", path: "vendor/engines/dataprobe"
 gem "ldap_authentication", path: "vendor/engines/ldap_authentication"
 gem "saml_authentication", path: "vendor/engines/saml_authentication"
-gem "projects", path: "vendor/engines/projects"
+#gem "projects", path: "vendor/engines/projects"
 gem "sanger_sequencing", path: "vendor/engines/sanger_sequencing"
 gem "secure_rooms", path: "vendor/engines/secure_rooms"
-gem "split_accounts", path: "vendor/engines/split_accounts"
+#gem "split_accounts", path: "vendor/engines/split_accounts"
 gem "synaccess_connect"
 
 group :development do
