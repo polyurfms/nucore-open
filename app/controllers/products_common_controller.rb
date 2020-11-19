@@ -110,7 +110,7 @@ class ProductsCommonController < ApplicationController
                                                       :schedule_id, :control_mechanism, :reserve_interval,
                                                       :min_reserve_mins, :max_reserve_mins, :min_cancel_hours,
                                                       :auto_cancel_mins, :lock_window, :cutoff_hours,
-                                                      :problems_resolvable_by_user,
+                                                      :problems_resolvable_by_user, :room_no,
                                                       relay_attributes: [:ip, :ip_port, :outlet, :username, :password, :type,
                                                                          :auto_logout, :auto_logout_minutes, :id])
   end
