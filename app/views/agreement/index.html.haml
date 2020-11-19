@@ -1,0 +1,55 @@
+<h1> #{t("views.agreement.title")} </h1>
+
+1. This form is for trained users of UBSN requesting to use the above equipment located in the listed rooms. </br> 2. Users will need to finish the appropriate HSEO online safety trainings (https://www.polyu.edu.hk/hso/trainingnews/training) for the rooms they wish to gain access.</br> 3. Access to satellite labs of UBSN are based on the policy of the respective departments (for example, Dept of RS’s policy for ST810)</br> 4. Animal behavioral boxes are stored in ST108. Users should contact UBSN staff to check out the equipment. After checking out, users may bring the equipment to Centralised Animal Facilities (CAF) to conduct their experiment. Upon completion, users should return the equipment to ST108 and inform UBSN staff.</br>  5. Authorized users can use the reserved equipment only. Users are not allowed to use other UBSN and non-UBSN  equipment in the same room without prior permission offered by UBSN and/or respective departments</br></br></br>
+
+<a href="https://ubsn.polyu.edu.hk/Equipment/Index" target="_blank">USBN</a>
+</br>
+</br>
+</br>
+%button{:onclick => "agree()", :type => "button"} Agree
+#myModal{:style => "display: none;position: fixed; z-index: 1; padding-top: 100px; left: 0;\n  top: 0;\n  width: 100%; \n  height: 100%;\n  overflow: auto; /\n  background-color: rgb(0,0,0); \n  background-color: rgba(0,0,0,0.4);"}
+  / Modal content
+  %div{:style => "  background-color: #fefefe;\n  margin: auto;\n  padding: 20px;\n  border: 1px solid #888;\n  width: 80%;"}
+    %span#closeBtn{:style => "  color: #aaaaaa;\n  float: right;\n  font-size: 28px;\n  font-weight: bold; displaty : none"} 
+    %p loading....
+
+:javascript
+  function agree(){
+    //modal.style.display = "block";
+    $.ajax({
+      url: "agree_terms",
+      method: "POST",
+      success: function(data) {
+        // modal.style.display = "none";
+          $(location).attr('href', '/facilities')
+      },dataType: 'json'
+    });
+  }
+  
+  var modal = document.getElementById("myModal");
+  
+  
+  // Get the <span> element that closes the modal
+  var span = document.getElementById("closeBtn");
+  
+  // When the user clicks on <span> (x), close the modal
+  span.onclick = function() {
+    agree()
+  }
+  /*
+  // When the user clicks anywhere outside of the modal, close it
+  $(document).ready(function(){ {
+     $.ajax({
+      url: "get_is_agree_terms",
+      method: "POST",
+      dataType: 'json',
+      success: function(data) {
+        alert(data);
+        if(data){}
+          $(location).attr('href', '/facilities')
+          modal.style.display = "none";
+        }
+      }
+    });
+  }
+  */

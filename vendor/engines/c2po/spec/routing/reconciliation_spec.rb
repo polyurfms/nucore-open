@@ -19,6 +19,15 @@ RSpec.describe "FacilityAccountsReconciliationController" do
                    account_type: "PurchaseOrderAccount")
   end
 
+  it "routes other" do
+    expect(get("/#{facilities_route}/test-facility/accounts/other"))
+      .to route_to(controller: "facility_accounts_reconciliation",
+                   action: "index",
+                   facility_id: "test-facility",
+                   account_type: "other")
+  end
+
+
   it "does not allow overriding the account_type" do
     # TODO: Remove 'pending' and test again after upgrading to Rails 4.1
     pending "Override does not appear to happen in console-generated requests"

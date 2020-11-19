@@ -10,4 +10,4 @@
 %p= link_to text("deposit_account.add"), :facility_facility_accounts
 
 - if SettingsHelper.feature_on? :expense_accounts
-  = f.input :account, hint: text("hints.account"), required: true
+  = f.input :account, as: :hidden, label:text("resource_nature.label"), hint: text("hints.account"), required: true

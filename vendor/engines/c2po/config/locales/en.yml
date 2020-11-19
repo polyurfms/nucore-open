@@ -2,6 +2,8 @@ en:
   facility_accounts:
     account_fields:
       label:
+        co_number: "Acount Number"
+        co_name: "Name"
         cc_name: "Name on Card"
         cc_instruct: "No part of a credit card number may be entered. Enter a text description to help you and the user identify this card. For example: \"Dr. Smith's Visa Card\"."
         po_instruct: "Where the invoice should be sent to for this payment source; this text will appear on the customer's invoice."
@@ -31,6 +33,7 @@ en:
   accounts:
     credit_card: Credit Card
     po: Purchase Order
+    other : other
 
   purchase_order_account:
     shared_facility_description: Shared (%{count} %{facilities})
@@ -43,12 +46,18 @@ en:
       purchase_order_account:
         one: Purchase Order
         other: Purchase Orders
+      cheque_or_other_account:
+        one: Cheque/Other
+        other: Cheques/Others
     attributes:
       purchase_order_account:
         account_number: Payment Source
       credit_card_account:
         account_number: Payment Source
         name_on_card: Name On Card
+      cheque_or_other_account:
+        account_number: Payment Source
+        name_on_card: Name
 
   simple_form:
     labels:
@@ -56,3 +65,6 @@ en:
         reference: Reference (optional)
       credit_card_account:
         reference: Reference (optional)
+      cheque_or_other_account:
+        one: Other
+        other: Other
