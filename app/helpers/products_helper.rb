@@ -30,7 +30,7 @@ module ProductsHelper
   def public_calendar_link(product)
     return unless product.respond_to? :reservations
 
-    opts = if product.facility.show_instrument_availability?
+    opts = if product.facility.show_instrument_availability? || !session_user.nil?
       public_calendar_availability_options(product)
     else
       { class: ["fa fa-calendar fa-lg fa-fw"], title: t("instruments.public_schedule.icon") }

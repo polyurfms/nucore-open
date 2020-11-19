@@ -1049,7 +1049,7 @@ en:
     public_schedule:
       title: Schedule
       place_reservation: Place Reservation
-      icon: Public Schedule
+      icon: Login required
       available: Available
       unavailable: Unavailable
     schedule:
