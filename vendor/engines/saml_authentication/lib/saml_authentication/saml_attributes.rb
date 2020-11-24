@@ -5,7 +5,6 @@ module SamlAuthentication
   class SamlAttributes
 
     delegate :[], :except, to: :to_h
-    @@cn = ""
 
     def initialize(saml_response)
       @saml_response = saml_response
@@ -13,15 +12,7 @@ module SamlAuthentication
 
     def to_h
       @saml_response.attributes.resource_keys.each_with_object({}) do |key, memo|
-        Rails.logger.info "#{key}:#{memo}"
-        if key == "email"
-         memo[key] = @@cn + "@polyu.edu.hk"
-        elsif key == "username"
-         @@cn = @saml_response.attribute_value_by_resource_key(key)
-         Rails.logger.info "cn="+@@cn
-        else
-         memo[key] = @saml_response.attribute_value_by_resource_key(key)
-        end
+        memo[key] = @saml_response.attribute_value_by_resource_key(key)
       end.with_indifferent_access
     end
 
