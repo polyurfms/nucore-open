@@ -10,11 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< Updated upstream
-ActiveRecord::Schema.define(version: 2020_11_10_073049) do
-=======
-ActiveRecord::Schema.define(version: 2020_11_12_092734) do
->>>>>>> Stashed changes
+ActiveRecord::Schema.define(version: 2020_11_24_033717) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -34,6 +30,7 @@ ActiveRecord::Schema.define(version: 2020_11_12_092734) do
     t.integer "created_by", null: false
     t.datetime "deleted_at"
     t.integer "deleted_by"
+    t.decimal "allocation_amt", precision: 10, scale: 2
     t.index ["account_id"], name: "fk_accounts"
     t.index ["user_id"], name: "index_account_users_on_user_id"
   end
@@ -56,7 +53,7 @@ ActiveRecord::Schema.define(version: 2020_11_12_092734) do
     t.string "affiliate_other"
     t.string "outside_contact_info"
     t.string "ar_number"
-    t.boolean "allow_allocation", default: false, null: false
+    t.boolean "allows_allocation", default: false, null: false
     t.index ["affiliate_id"], name: "index_accounts_on_affiliate_id"
   end
 
@@ -565,7 +562,6 @@ ActiveRecord::Schema.define(version: 2020_11_12_092734) do
     t.text "issue_report_recipients"
     t.boolean "email_purchasers_on_order_status_changes", default: false, null: false
     t.boolean "problems_resolvable_by_user", default: false, null: false
-    t.string "room_no"
     t.index ["dashboard_token"], name: "index_products_on_dashboard_token"
     t.index ["facility_account_id"], name: "fk_facility_accounts"
     t.index ["facility_id"], name: "fk_rails_0c9fa1afbe"
@@ -813,17 +809,6 @@ ActiveRecord::Schema.define(version: 2020_11_12_092734) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "user_certificates", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "nu_safety_certificate_id"
-    t.datetime "deleted_at"
-    t.integer "deleted_by_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["nu_safety_certificate_id"], name: "index_user_certificates_on_nu_safety_certificate_id"
-    t.index ["user_id"], name: "index_user_certificates_on_user_id"
-  end
-
   create_table "user_preferences", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "user_id"
     t.string "name", null: false
@@ -985,8 +970,6 @@ ActiveRecord::Schema.define(version: 2020_11_12_092734) do
   add_foreign_key "statements", "facilities", name: "fk_statement_facilities"
   add_foreign_key "stored_files", "order_details", name: "fk_files_od"
   add_foreign_key "stored_files", "products", name: "fk_files_product"
-  add_foreign_key "user_certificates", "nu_safety_certificates"
-  add_foreign_key "user_certificates", "users"
   add_foreign_key "user_preferences", "users"
   add_foreign_key "user_roles", "facilities"
   add_foreign_key "user_roles", "users"

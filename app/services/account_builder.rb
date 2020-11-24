@@ -13,7 +13,10 @@
 class AccountBuilder
 
   attr_reader :action, :account, :account_params,
-              :account_type, :current_user, :facility, :owner_user, :params , :allow_allocation
+
+              :account_type, :current_user, :facility, :owner_user, :params , :allows_allocation
+
+
 
   # Initialize the instance variables.
   def initialize(options = {})
@@ -25,9 +28,9 @@ class AccountBuilder
     @facility = options[:facility] # optional
     @owner_user = options[:owner_user] # optional, required for build
     @params = options[:params] || ActionController::Parameters.new # optional
-    
-    @allow_allocation = options[:allow_allocation]
-    puts "[:allow_allocation]" + (@allow_allocation || "")
+    @allows_allocation = options[:allows_allocation]
+    puts "[:allows_allocation]" + (@allows_allocation || "")
+
   end
 
   # Factory method that returns a subclassed `AccountBuilder` if one exists for
@@ -61,7 +64,7 @@ class AccountBuilder
     set_affiliate
     set_created_by
     set_facility
-    set_allow_allocation
+    set_allows_allocation
     after_build
     account
   end
@@ -76,7 +79,7 @@ class AccountBuilder
     assign_params
     set_affiliate
     set_updated_by
-    set_allow_allocation
+    set_allows_allocation
     after_update
     account
   end
@@ -97,7 +100,7 @@ class AccountBuilder
   end
 
   # Needs to be overridable by engines
-  cattr_accessor(:common_permitted_account_params) { [:description, :reference] }
+  cattr_accessor(:common_permitted_account_params) { [:description, :referenc] }
 
   # Override in subclassed builder to define additional strong_param attributes
   # for build action. Returns an array of "permitted" params.
@@ -186,9 +189,9 @@ class AccountBuilder
     account
   end
 
-  def set_allow_allocation
-    puts "[set_allow_allocation]"+(allow_allocation || "")
-    @is_active = allow_allocation
+  def set_allows_allocation
+    puts "[set_allows_allocation]"+(allows_allocation || "")
+    @is_active = allows_allocation
   end
   # Set created_by. Only used for `build`.
   def set_created_by

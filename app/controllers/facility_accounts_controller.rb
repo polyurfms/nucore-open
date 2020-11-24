@@ -23,6 +23,8 @@ class FacilityAccountsController < ApplicationController
     accounts = Account.with_orders_for_facility(current_facility)
 
     @accounts = accounts.paginate(page: params[:page])
+
+    
   end
 
   # GET /facilties/:facility_id/accounts/:id
@@ -33,6 +35,67 @@ class FacilityAccountsController < ApplicationController
   def new
   end
 
+  def allocation_update
+    puts "[allocation_update][Start]"
+   
+    accountUsersJason = (params[:account_user])
+    indexValue = 1 
+
+    # get allocation_sum
+    allocation_sum = 100000.1
+    
+    inputSum = 0.0
+    
+    isValid = true
+    
+    message = ""
+
+    accountUsersJason.each do |au|
+      inputSum += au[indexValue][:allocation_amt].to_f
+    end
+
+    if !@account.allows_allocation
+      isValid = false
+      message = "The allocation is not active "
+    end 
+    
+    if  inputSum > allocation_sum && isValid
+      isValid = false
+      message = "The allocation must be less than budget amount. "
+    end
+
+    
+    if isValid
+      accountUsersJason.each do |au|
+        acountUserUpdate = AccountUser.find_by(id:au[indexValue][:id])
+        acountUserUpdate.allocation_amt = au[indexValue][:allocation_amt]
+        acountUserUpdate.save
+      end
+      message  = "Allocation update"
+    end 
+    
+
+    
+   
+
+    if isValid
+      flash[:notice] = message
+    else
+      flash[:error] = message
+    end 
+
+    redirect_to facility_account_allocation_path
+    puts "[allocation_update][end]"
+
+
+    return true
+  end
+
+  def edit
+    @profile = @user.profile.order("saved DESC").first
+  end
+
+  
   # POST /facilities/:facility_id/accounts
   def create
     # The builder might add some errors to base. If those exist,
@@ -45,6 +108,8 @@ class FacilityAccountsController < ApplicationController
       render action: "new"
     end
   end
+
+
 
   # GET /facilities/:facility_id/accounts/:id/edit
   def edit
@@ -122,6 +187,7 @@ class FacilityAccountsController < ApplicationController
   private
 
   def available_account_types
+    puts "[available_account_types]"
     @available_account_types ||= Account.config.account_types_for_facility(current_facility, :create).select do |account_type|
       current_ability.can?(:create, account_type.constantize)
     end

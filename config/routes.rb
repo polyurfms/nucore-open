@@ -255,12 +255,19 @@ Rails.application.routes.draw do
       end
 
       get "/members", to: "facility_accounts#members", as: "members"
+      get "/allocation", to: "facility_accounts#allocation", as: "allocation"
+
+
+      post "/allocation_update", to: "facility_accounts#allocation_update", as: "allocation_update"
 
       if Account.config.statements_enabled?
         get "/statements", to: "facility_accounts#statements", as: :statements
         get "/statements/:statement_id", to: "facility_accounts#show_statement", as: :statement
       end
 
+
+
+      
       # Dynamically add routes like credit_cards and purchase_orders
       Account.config.reconcilable_account_types.each do |type|
         plural_name = Account.config.account_type_to_route(type)

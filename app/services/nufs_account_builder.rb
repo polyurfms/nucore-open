@@ -8,7 +8,7 @@ class NufsAccountBuilder < AccountBuilder
 
   # Override strong_params for `build` account.
   def account_params_for_build
-    super + [{ account_number_parts: NufsAccount.account_number_field_names }]
+    super + [{ account_number_parts: NufsAccount.account_number_field_names}] + [:allows_allocation]
   end
 
   # Hooks into superclass's `build` method.
@@ -21,6 +21,15 @@ class NufsAccountBuilder < AccountBuilder
     # existing behavior
     account.errors.add(:base, :missing_expires_at) unless account.expires_at
   end
+
+ # Override strong_params for `update` account.
+ def account_params_for_update
+  [
+    :description,
+    :allows_allocation,
+  ]
+end
+
 
   private
 
