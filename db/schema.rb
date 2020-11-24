@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_10_073049) do
+ActiveRecord::Schema.define(version: 2020_11_19_082937) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -115,6 +115,16 @@ ActiveRecord::Schema.define(version: 2020_11_10_073049) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["user_id", "key"], name: "index_email_events_on_user_id_and_key", unique: true
+  end
+
+  create_table "external_accounts", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.text "description", null: false
+    t.datetime "expires_at"
+    t.string "account_number", limit: 50
+    t.string "username", null: false
+    t.string "user_role", limit: 50, null: false
+    t.boolean "is_left_project"
+    t.index ["account_number", "username"], name: "index_external_accounts_on_account_number_and_username"
   end
 
   create_table "external_service_passers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

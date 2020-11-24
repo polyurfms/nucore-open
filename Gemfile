@@ -90,6 +90,7 @@ gem "projects", path: "vendor/engines/projects"
 gem "sanger_sequencing", path: "vendor/engines/sanger_sequencing"
 gem "secure_rooms", path: "vendor/engines/secure_rooms"
 gem "split_accounts", path: "vendor/engines/split_accounts"
+gem "external_accounts", path: "vendor/engines/external_accounts"
 gem "synaccess_connect"
 
 group :development do
