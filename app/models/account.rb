@@ -14,6 +14,8 @@ class Account < ApplicationRecord
   include Accounts::AccountNumberSectionable
   include DateHelper
   include Nucore::Database::WhereIdsIn
+  include AffiliateAccount
+
 
   # belongs_to :facility, required: false
   has_many :account_facility_joins

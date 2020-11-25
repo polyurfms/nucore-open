@@ -1,0 +1,11 @@
+= f.association :affiliate,
+  collection: select_affiliate_options,
+  input_html: { class: "js--affiliate" },
+  include_blank: true,
+  required: true,
+  label: text("facility_accounts.account_fields.label.affiliate_display_name")
+
+.js--affiliate_other
+  = f.input :affiliate_other,
+    required: true,
+    label: text("facility_accounts.account_fields.label.affiliate")
