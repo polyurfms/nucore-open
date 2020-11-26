@@ -808,7 +808,7 @@ en:
     role:
         owner: Owner
         business_administrator: Business Administrator
-        purchaser: Purchaser
+        purchaser: Member
     member_table:
       add_access: Add Access
       remove_access: Remove Access
@@ -822,8 +822,8 @@ en:
       th:
         name: Name (username)
         email: Email
-        role: Role 
-        fee_balance: Fee balance
+        role: Role
+        allocation_amt: Allocation amount
       save : Save
       cancel : Cancel
     show:

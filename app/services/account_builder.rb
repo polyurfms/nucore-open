@@ -13,14 +13,12 @@
 class AccountBuilder
 
   attr_reader :action, :account, :account_params,
-
               :account_type, :current_user, :facility, :owner_user, :params , :allows_allocation
 
 
 
   # Initialize the instance variables.
   def initialize(options = {})
-    puts "[initialize]"
     @account = options[:account] # optional, required for update
     @account_type = options[:account_type] # optional, required for build
     @account_params_key = options[:account_params_key] # computed; optional, used for testing
@@ -29,8 +27,6 @@ class AccountBuilder
     @owner_user = options[:owner_user] # optional, required for build
     @params = options[:params] || ActionController::Parameters.new # optional
     @allows_allocation = options[:allows_allocation]
-    puts "[:allows_allocation]" + (@allows_allocation || "")
-
   end
 
   # Factory method that returns a subclassed `AccountBuilder` if one exists for
@@ -100,7 +96,7 @@ class AccountBuilder
   end
 
   # Needs to be overridable by engines
-  cattr_accessor(:common_permitted_account_params) { [:description, :referenc] }
+  cattr_accessor(:common_permitted_account_params) { [:description, :reference] }
 
   # Override in subclassed builder to define additional strong_param attributes
   # for build action. Returns an array of "permitted" params.
@@ -190,7 +186,6 @@ class AccountBuilder
   end
 
   def set_allows_allocation
-    puts "[set_allows_allocation]"+(allows_allocation || "")
     @is_active = allows_allocation
   end
   # Set created_by. Only used for `build`.

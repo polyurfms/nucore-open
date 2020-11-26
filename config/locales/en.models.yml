@@ -176,8 +176,8 @@ en:
         one: Journal Cutoff Date
         other: Journal Cutoff Dates
       nufs_account:
-        one: Chart String
-        other: Chart Strings
+        one: Charge Account
+        other: Charge Accounts
       offline_reservation:
         one: Offline Reservation
         other: Offline Reservations

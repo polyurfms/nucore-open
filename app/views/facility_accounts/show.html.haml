@@ -20,8 +20,7 @@
   - if @account.suspended?
     = f.input :suspended_at, date_only: true
 
-  - if @account.type_string.eql? "Chart String"
-    = f.input :allows_allocation
+  = f.input :allows_allocation
 
   -# TODO: use render_view_hook instead
   - if lookup_context.exists? "facility_accounts/#{@account.class.name.underscore}/show", [], true
