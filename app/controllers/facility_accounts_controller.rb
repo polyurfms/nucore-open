@@ -38,7 +38,7 @@ class FacilityAccountsController < ApplicationController
   def allocation_update
     puts "[allocation_update][Start]"
    
-    accountUsersJason = (params[:account_user])
+    accountUsersJson = (params[:account_user])
     indexValue = 1 
 
     # get allocation_sum
@@ -50,34 +50,51 @@ class FacilityAccountsController < ApplicationController
     
     message = ""
 
-    accountUsersJason.each do |au|
-      inputSum += au[indexValue][:allocation_amt].to_f
-    end
+    if !accountUsersJson.nil?
+      accountUsersJson.each do |au|
+        inputAllocationAmt = 0
+        if !inputAllocationAmt.nil? || !au[indexValue][:allocation_amt].empty?
+          inputAllocationAmt = au[indexValue][:allocation_amt].to_f 
+        end
 
-    if !@account.allows_allocation
-      isValid = false
-      message = "The allocation is not active "
-    end 
-    
-    if  inputSum > allocation_sum && isValid
-      isValid = false
-      message = "The allocation must be less than budget amount. "
-    end
-
-    
-    if isValid
-      accountUsersJason.each do |au|
-        acountUserUpdate = AccountUser.find_by(id:au[indexValue][:id])
-        acountUserUpdate.allocation_amt = au[indexValue][:allocation_amt]
-        acountUserUpdate.save
+        
+        if inputAllocationAmt < 0
+          isValid = false
+          message = "Error : Allocation must be a positive number!"
+        end
+        inputSum += inputAllocationAmt
       end
-      message  = "Allocation update"
-    end 
-    
 
-    
-   
+      if !@account.allows_allocation && isValid
+        isValid = false
+        message = "Error : The allocation is not active "
+      end 
+      
+      if  inputSum > allocation_sum && isValid
+        isValid = false
+        message = "Error : The allocation must be less than budget amount. "
+      end
 
+      
+      if isValid
+        accountUsersJson.each do |au|
+          acountUserUpdate = AccountUser.find_by(id:au[indexValue][:id])
+          if au[indexValue][:allocation_amt].nil? || au[indexValue][:allocation_amt].empty?
+            acountUserUpdate.allocation_amt = 0
+          else
+            acountUserUpdate.allocation_amt = au[indexValue][:allocation_amt]
+          end
+          acountUserUpdate.save
+        end
+        message  = "Allocation update"
+      end 
+      
+    else
+      isValid = false
+      message = "Error : No members in payment sources!"
+    end
+
+  
     if isValid
       flash[:notice] = message
     else
