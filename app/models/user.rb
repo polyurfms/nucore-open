@@ -25,6 +25,7 @@ class User < ApplicationRecord
   has_many :stored_files, through: :order_details, class_name: "StoredFile"
   has_many :log_events, as: :loggable
   has_many :user_preferences, dependent: :destroy
+  has_many :user_delegations, dependent: :destroy
 
   validates_presence_of :username, :first_name, :last_name
   validates :email, presence: true, email_format: true

@@ -4,7 +4,8 @@ class AccountUsersController < ApplicationController
 
   customer_tab  :all
   before_action :authenticate_user!
-  before_action :check_acting_as
+  # before_action :check_acting_as
+  before_action :delegations_of_check_acting_as
   before_action :init_account
 
   load_and_authorize_resource
@@ -61,7 +62,8 @@ class AccountUsersController < ApplicationController
   end
 
   def init_account
-    @account = session_user.accounts.find(params[:account_id])
+    # @account = session_user.accounts.find(params[:account_id])
+    @account = @acting_user.accounts.find(params[:account_id])
   end
 
   private

@@ -4,9 +4,9 @@ class AccountsController < ApplicationController
 
   customer_tab  :all
   before_action :authenticate_user!
-  before_action :check_acting_as
+  # before_action :check_acting_as
+  before_action :delegations_of_check_acting_as
   before_action :init_account, only: [:show, :user_search, :transactions, :suspend, :unsuspend]
-
   include AccountSuspendActions
   load_and_authorize_resource only: [:show, :user_search, :transactions, :suspend, :unsuspend]
 
@@ -17,8 +17,10 @@ class AccountsController < ApplicationController
 
   # GET /accounts
   def index
-    @account_users = session_user.account_users
-    @administered_order_details_in_review = current_user.administered_order_details.in_review
+    # @account_users = session_user.account_users
+    # @administered_order_details_in_review = current_user.administered_order_details.in_review
+    @account_users = @acting_user.account_users
+    @administered_order_details_in_review = @acting_user.administered_order_details.in_review
   end
 
   # GET /accounts/1
@@ -27,6 +29,7 @@ class AccountsController < ApplicationController
 
   # GET /accounts/1/user_search
   def user_search
+    check_delegation if !has_delegated
     render(template: "account_users/user_search")
   end
 
@@ -41,5 +44,4 @@ class AccountsController < ApplicationController
   def ability_resource
     @account
   end
-
 end
