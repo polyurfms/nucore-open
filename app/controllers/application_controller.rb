@@ -139,7 +139,7 @@ class ApplicationController < ActionController::Base
   end
 
   def check_acting_as
-    raise NUCore::NotPermittedWhileActingAs if acting_as? && !has_delegated
+    raise NUCore::NotPermittedWhileActingAs if acting_as?
   end
 
   def delegations_of_check_acting_as
