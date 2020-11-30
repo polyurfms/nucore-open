@@ -30,7 +30,7 @@
   = render "reservations/account_field", f: f unless @order_detail.bundled?
   = render "reservations/reservation_fields", f: f
 
-  - if acting_as?
+  - if acting_as? && @is_delegated == false
     .row
       .span4
         = f.input :reference_id
@@ -41,8 +41,9 @@
             = hidden_field_tag :send_notification, 0
             = check_box_tag :send_notification, 1, params[:send_notification] == "1"
             = t(".notify")
-
-
+  -  else
+    .row
+      = hidden_field_tag :send_notification, 1
 
   - if @instrument.offline?
     %p.alert.alert-danger= text("instruments.offline.notice")
