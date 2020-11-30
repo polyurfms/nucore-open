@@ -15,7 +15,7 @@ class UserDelegationsController < ApplicationController
   # end
 
   def switchUser 
-    if session[:is_selected_user].nil?
+    if session[:is_selected_user].nil? || session[:is_selected_user] == false
       @user  = User.find_by(username: session_user[:username])
       unless @user.nil?
         # @delegate_list = User.joins("LEFT JOIN user_delegations ON user_delegations.delegator = users.id WHERE user_delegations.delegatee LIKE '#{session_user[:username]}' or users.id = #{session_user[:id]}")
@@ -32,16 +32,15 @@ class UserDelegationsController < ApplicationController
   end
 
   def switch_to
-    unless session[:is_selected_user].nil?
-      redirect_to '/facilities'
+    if session[:is_selected_user].nil? || session[:is_selected_user] == false
+      unless session_user.id.to_i == params[:user_delegation_id].to_i
+        session[:acting_user_id] = params[:user_delegation_id]
+        session[:acting_ref_url] = "/facilities"
+      end    
+      
+      session[:is_selected_user] = true
     end
-
-    unless session_user.id.to_i == params[:user_delegation_id].to_i
-      session[:acting_user_id] = params[:user_delegation_id]
-      session[:acting_ref_url] = "/facilities"
-    end    
     
-    session[:is_selected_user] = true
     redirect_to '/'
   end
 
