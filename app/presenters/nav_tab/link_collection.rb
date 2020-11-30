@@ -32,7 +32,8 @@ class NavTab::LinkCollection
   end
 
   def customer
-    [orders, reservations, payment_sources, files]
+    #[orders, reservations, payment_sources, files]
+    [orders, reservations, payment_sources]
   end
 
   def home_button
