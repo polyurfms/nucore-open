@@ -9,6 +9,7 @@
         %th= t(".th.name")
         %th= t(".th.role")
         %th= t(".th.allocation_amt")
+        %th= t(".th.expense_amt")
     %tbody
       - @account.account_users.active.each_with_index  do |au, index|
         = f.simple_fields_for index.to_s, AccountUser.new do |p|
@@ -19,4 +20,5 @@
               %td
                 = p.input :allocation_amt , input_html: { min: '0' , step: 'any' ,value: AccountUserPresenter.new(au).allocation_amt}, label: false
                 = p.hidden_field :id ,  value: AccountUserPresenter.new(au).id.to_s
+              %td= au.account_user_expense.expense_amt
   = f.button :submit, t(".save"), class: "btn btn-primary"

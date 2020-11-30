@@ -824,6 +824,7 @@ en:
         email: Email
         role: Role
         allocation_amt: Allocation amount
+        expense_amt: Expense amount
       save : Save
       cancel : Cancel
     show:

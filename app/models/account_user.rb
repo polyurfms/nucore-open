@@ -9,6 +9,7 @@ class AccountUser < ApplicationRecord
   belongs_to :account, inverse_of: :account_users, required: true
   belongs_to :created_by_user, class_name: "User", foreign_key: :created_by
   has_many :log_events, as: :loggable
+  has_one :account_user_expense
 
   validates :created_by, presence: true
   validates :user_role, inclusion: { in: ->(record) { record.class.user_roles }, message: "is invalid" }
