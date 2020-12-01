@@ -4,8 +4,7 @@ class AccountsController < ApplicationController
 
   customer_tab  :all
   before_action :authenticate_user!
-  # before_action :check_acting_as
-  before_action :delegations_of_check_acting_as
+  before_action :check_acting_as
   before_action :init_account, only: [:show, :user_search, :transactions, :suspend, :unsuspend]
   include AccountSuspendActions
   load_and_authorize_resource only: [:show, :user_search, :transactions, :suspend, :unsuspend]
@@ -29,7 +28,7 @@ class AccountsController < ApplicationController
 
   # GET /accounts/1/user_search
   def user_search
-    check_delegation if !has_delegated
+    check_delegations if !has_delegated
     render(template: "account_users/user_search")
   end
 

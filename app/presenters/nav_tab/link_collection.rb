@@ -36,7 +36,7 @@ class NavTab::LinkCollection
   end
 
   def delegate_tab
-    [payment_sources]
+    [orders, reservations, payment_sources]
   end
 
   def home_button

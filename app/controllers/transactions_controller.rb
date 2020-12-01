@@ -4,8 +4,7 @@ class TransactionsController < ApplicationController
 
   customer_tab :all
   before_action :authenticate_user!
-  # before_action :check_acting_as
-  before_action :delegations_of_check_acting_as
+  before_action :check_acting_as
   include OrderDetailsCsvExport
 
   def initialize

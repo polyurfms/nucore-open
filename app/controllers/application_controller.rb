@@ -139,10 +139,6 @@ class ApplicationController < ActionController::Base
   end
 
   def check_acting_as
-    raise NUCore::NotPermittedWhileActingAs if acting_as?
-  end
-
-  def delegations_of_check_acting_as
     raise NUCore::NotPermittedWhileActingAs if acting_as? && !has_delegated
   end
 
@@ -201,7 +197,7 @@ class ApplicationController < ActionController::Base
   end
 
   def acting_as?
-    return false if session_user.nil?  
+    return false if session_user.nil?
     acting_user.object_id != session_user.object_id
   end
 
