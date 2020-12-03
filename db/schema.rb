@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_27_093634) do
+ActiveRecord::Schema.define(version: 2020_12_02_064444) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -54,6 +54,7 @@ ActiveRecord::Schema.define(version: 2020_11_27_093634) do
     t.string "outside_contact_info"
     t.string "ar_number"
     t.boolean "allows_allocation", default: false, null: false
+    t.decimal "committed_amt", precision: 10, scale: 2, default: "0.0"
     t.index ["affiliate_id"], name: "index_accounts_on_affiliate_id"
   end
 
@@ -1007,7 +1008,7 @@ ActiveRecord::Schema.define(version: 2020_11_27_093634) do
   add_foreign_key "user_roles", "facilities"
   add_foreign_key "user_roles", "users"
 
-  create_view "v_account_user_expenses", sql_definition: <<-SQL
+  create_view "account_user_expenses", sql_definition: <<-SQL
       select `au`.`id` AS `account_user_id`,`od`.`account_id` AS `account_id`,`o`.`user_id` AS `user_id`,sum((case when isnull(`od`.`actual_cost`) then `od`.`estimated_cost` else `od`.`actual_cost` end)) AS `expense_amt` from ((`order_details` `od` join `orders` `o` on((`o`.`id` = `od`.`order_id`))) join `account_users` `au` on(((`au`.`account_id` = `od`.`account_id`) and (`au`.`user_id` = `o`.`user_id`)))) where isnull(`od`.`canceled_at`) group by `au`.`id`,`od`.`account_id`,`o`.`user_id`
   SQL
 end
