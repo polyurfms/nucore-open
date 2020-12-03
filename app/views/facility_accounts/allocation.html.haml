@@ -5,7 +5,7 @@
   = current_facility
 
 = render "sidebar"
-
 %h2= @account
+%h3= t(".committed_amt", committed_amt: @account.committed_amt)
 
-= render "accounts/member_allocation_table"
+= render "member_allocation_table"
