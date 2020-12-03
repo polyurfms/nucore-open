@@ -1,6 +1,6 @@
 - can_edit_accounts = SettingsHelper.feature_on? :edit_accounts
 
-= simple_form_for(AccountUser.new, url: facility_account_allocation_update_path(current_facility, @account)) do |f|
+= simple_form_for(AccountUser.new, url: update_allocation_account_account_users_path(@account)) do |f|
   = f.error_messages
   = f.error_notification
   %table.table.table-striped.table-hover
@@ -20,5 +20,5 @@
               %td
                 = p.input :allocation_amt , input_html: { min: '0' , step: 'any' ,value: AccountUserPresenter.new(au).allocation_amt}, label: false
                 = p.hidden_field :id ,  value: AccountUserPresenter.new(au).id.to_s
-              %td= au.account_user_expense.expense_amt
+              %td= au.expense
   = f.button :submit, t(".save"), class: "btn btn-primary"

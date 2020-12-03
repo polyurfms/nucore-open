@@ -29,7 +29,7 @@ Rails.application.routes.draw do
   end
 
   # front-end accounts
-  resources :accounts, only: [:index, :show] do
+  resources :accounts, only: [:index, :show, :edit, :update] do
     resources :statements, only: [:show, :index]
     member do
       get "user_search"
@@ -40,9 +40,13 @@ Rails.application.routes.draw do
       get "unsuspend", to: "accounts#unsuspend", as: "unsuspend"
     end
 
+#    resources :account_allocations, only: []
+
     resources :account_users, only: [:new, :destroy, :create, :index] do
       collection do
         get "user_search"
+        get "allocation"
+        post "update_allocation"
       end
     end
 

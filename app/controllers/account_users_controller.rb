@@ -40,6 +40,37 @@ class AccountUsersController < ApplicationController
     end
   end
 
+  def allocation
+    if @account.can_allocate?
+      render(template: "accounts/allocation")
+    else
+      redirect_to account_path(@account)
+    end
+  end
+
+  def update_allocation
+
+    au = params[:account_user]
+    auv = au.values
+
+    if auv.count {|h| h[:allocation_amt].to_f.negative?} > 0
+      flash[:error]= "Allocation amount must be positive."
+    elsif @account.committed_amt < auv.sum {|h| h[:allocation_amt].to_f }
+      flash[:error]= "Allocation amount cannot larger than committed amount."
+    else
+      @account.assign_attributes(account_users_attributes: auv)
+      if @account.save
+        flash[:notice] = "Save success" #text("update.success")
+      else
+        flash[:error]= @account.errors.full_messages[0]
+
+      end
+    end
+
+    redirect_to allocation_account_account_users_path
+    #render(template: "accounts/allocation")
+  end
+
   # DELETE /accounts/:account_id/account_users/:id
   def destroy
     ## TODO add security

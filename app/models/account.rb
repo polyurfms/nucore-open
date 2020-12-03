@@ -271,4 +271,7 @@ class Account < ApplicationRecord
     account_users.none? { |au| au.active? && au.owner? }
   end
 
+  def can_allocate?
+    allows_allocation? && account_users.active.length() > 1
+  end
 end

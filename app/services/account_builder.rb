@@ -13,7 +13,7 @@
 class AccountBuilder
 
   attr_reader :action, :account, :account_params,
-              :account_type, :current_user, :facility, :owner_user, :params , :allows_allocation
+              :account_type, :current_user, :facility, :owner_user, :params , :allows_allocation, :affiliate_id
 
 
 
@@ -27,6 +27,7 @@ class AccountBuilder
     @owner_user = options[:owner_user] # optional, required for build
     @params = options[:params] || ActionController::Parameters.new # optional
     @allows_allocation = options[:allows_allocation]
+    @affiliate_id = options[:affiliate_id]
   end
 
   # Factory method that returns a subclassed `AccountBuilder` if one exists for
