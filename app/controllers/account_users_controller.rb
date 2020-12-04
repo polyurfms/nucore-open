@@ -61,7 +61,8 @@ class AccountUsersController < ApplicationController
   end
 
   def init_account
-    @account = session_user.accounts.find(params[:account_id])
+    # @account = session_user.accounts.find(params[:account_id])
+    @account = @acting_user.accounts.find(params[:account_id])
   end
 
   private

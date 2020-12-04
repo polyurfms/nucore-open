@@ -1,0 +1,17 @@
+en:
+  views:
+    user_delegation:
+      header: My Delegation 
+      table:
+        name: "Assigned"
+        button_name: "Remove"
+      message: "Confrim to remove?"
+    account_selection:
+      header: "Account"
+      table:
+        username: "Username"
+        email: "Email"
+        type: "Account Type"
+        select: "Select"
+        button_name: "Access"
+      message: "Confirm?"

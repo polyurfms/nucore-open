@@ -106,6 +106,9 @@ group :development do
   gem "rubocop", "0.58", require: false
   gem "rubocop-rspec"
   gem "web-console"
+  gem 'meta_request'
+  gem "better_errors"
+  gem "binding_of_caller"
 end
 
 group :development, :test do

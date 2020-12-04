@@ -1,0 +1,22 @@
+- search_type = @search_type.presence || "manage_user"
+- can_switch_any = users.any? { |user| current_ability.can?(:switch_to, user) }
+
+%table.table.table-striped.table-hover
+  %thead
+    %tr
+      %th= ""
+      %th= t("views.account_selection.table.type")
+      %th= t("views.account_selection.table.username")
+      %th= t("views.account_selection.table.email")
+  %tbody
+    - users.each do |user|
+      %tr
+        %td= link_to t("views.account_selection.table.select"),
+          user_delegation_switch_to_path(user)
+          
+        - if user.username == @user.username
+          %td= "Self"
+        - else 
+          %td= "Delegate"
+        %td= user.username
+        %td= user.email
