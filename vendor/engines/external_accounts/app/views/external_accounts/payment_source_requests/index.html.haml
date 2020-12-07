@@ -1,0 +1,27 @@
+<h1> #{t("views.account_member_table.header")} </h1>
+
+- unless @result.nil?
+  %table.table.table-striped.table-hover
+    %thead
+      %th= t("views.account_member_table.table.name")
+      %th= t("views.account_member_table.table.desc")
+      %th= t("views.account_member_table.table.expires")
+      %th= t("views.account_member_table.table.send_time")
+      %th= ""
+    %tbody
+      - @result.to_hash.each do |r|
+        %tr
+          %td= r["account_number"]
+          %td= r["description"]
+          - unless r["expires_at"].nil?
+            %td= r["expires_at"].strftime("%Y-%m-%d %H:%M:%S")
+          -else 
+            %td= ""
+          - unless r["created_at"].nil?
+            %td= r["created_at"].strftime("%Y-%m-%d %H:%M:%S")
+          - else 
+            %td= ""
+          - if r["is_overtime"].to_i == 1
+            %td= link_to t("views.account_member_table.table.button_name"), sendMail_payment_source_request_path(r["id"]), data: { confirm: t("views.account_member_table.message") }, method: :get
+          - else 
+            %td= ""

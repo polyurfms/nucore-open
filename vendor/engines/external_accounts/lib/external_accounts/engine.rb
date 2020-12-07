@@ -3,8 +3,9 @@ module ExternalAccounts
   class Engine < Rails::Engine
 
     config.to_prepare do
-      #Rails.logger.info "prepare engine xxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      #Rails.logger.info "prepare engine xxxxxxxxxxxxxxxxxxxxxxxxxxx"dddd
       ApplicationController.send :include, ExternalAccounts::ApplicationControllerExtension
+      NavTab::LinkCollection.send :include, ExternalAccounts::LinkCollectionExtension
 
     end
 

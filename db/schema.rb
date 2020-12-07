@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_19_082937) do
+ActiveRecord::Schema.define(version: 2020_12_07_116659) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -402,6 +402,17 @@ ActiveRecord::Schema.define(version: 2020_11_19_082937) do
     t.index ["order_import_id"], name: "index_orders_on_order_import_id"
     t.index ["state"], name: "index_orders_on_state"
     t.index ["user_id"], name: "index_orders_on_user_id"
+  end
+
+  create_table "payment_source_requests", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "account_id", null: false
+    t.string "created_by", null: false
+    t.string "updated_by", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "fk_rails_dc478d7167"
+    t.index ["user_id"], name: "fk_rails_f4b221a150"
   end
 
   create_table "payments", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -949,6 +960,8 @@ ActiveRecord::Schema.define(version: 2020_11_19_082937) do
   add_foreign_key "orders", "order_imports"
   add_foreign_key "orders", "orders", column: "merge_with_order_id"
   add_foreign_key "orders", "users"
+  add_foreign_key "payment_source_requests", "accounts"
+  add_foreign_key "payment_source_requests", "users"
   add_foreign_key "payments", "accounts"
   add_foreign_key "payments", "statements"
   add_foreign_key "payments", "users", column: "paid_by_id"

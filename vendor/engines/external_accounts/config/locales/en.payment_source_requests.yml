@@ -1,0 +1,12 @@
+en:
+  views:
+    account_member_table:
+      header: Request Payment Source 
+      table:
+        name: "Account number"
+        desc: "Description"
+        owner: "Owner"
+        expires: "Expires"
+        send_time: "Send Datetime"
+        button_name: "Send E-mail"
+      message: "Confrim to send email?"

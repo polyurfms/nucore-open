@@ -72,6 +72,7 @@ en:
     manage: Manage %{model}
     my_tab: My %{model}
     transactions: My Transactions
+    payment_source_requests: Request Payment Source
     transactions_in_review: My Transactions In Review (%{count})
     notices: Notices
     support: Support
