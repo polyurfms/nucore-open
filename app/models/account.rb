@@ -58,6 +58,10 @@ class Account < ApplicationRecord
 
   validate { errors.add(:base, :missing_owner) if missing_owner? }
 
+  with_options if: :can_allocate? do
+    validates_with AccountValidator
+  end
+
   delegate :administrators, to: :account_users
   delegate :global?, :per_facility?, to: :class
 

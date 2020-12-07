@@ -40,7 +40,11 @@ Rails.application.routes.draw do
       get "unsuspend", to: "accounts#unsuspend", as: "unsuspend"
     end
 
-#    resources :account_allocations, only: []
+    resources :account_allocations, only: [:index, :create, :new, :edit, :show, :update] do
+      collection do
+        post "update_allocation"
+      end
+    end
 
     resources :account_users, only: [:new, :destroy, :create, :index] do
       collection do
@@ -269,9 +273,6 @@ Rails.application.routes.draw do
         get "/statements/:statement_id", to: "facility_accounts#show_statement", as: :statement
       end
 
-
-
-      
       # Dynamically add routes like credit_cards and purchase_orders
       Account.config.reconcilable_account_types.each do |type|
         plural_name = Account.config.account_type_to_route(type)

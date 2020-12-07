@@ -1,0 +1,23 @@
+- can_edit_accounts = SettingsHelper.feature_on? :edit_accounts
+
+= simple_form_for AccountUser.new, url: { action: :update_allocation}, method: "POST" do |f|
+  = f.error_messages
+  = f.error_notification
+  %table.table.table-striped.table-hover
+    %thead
+      %tr
+        %th= t(".th.name")
+        %th= t(".th.role")
+        %th= t(".th.allocation_amt")
+        %th= t(".th.expense_amt")
+    %tbody
+      - @account_users.each do |od|
+        = f.simple_fields_for od.id.to_s, od do |p|
+          - if od.user != @account.owner_user
+            %tr
+              %td= Users::NamePresenter.new(od.user, username_label: true).full_name
+              %td= AccountUserPresenter.new(od).localized_role
+              %td= p.input :allocation_amt, label: false
+              %td= od.expense
+              = p.hidden_field :id ,  value: AccountUserPresenter.new(od).id.to_s
+  = f.button :submit, t(".save"), class: "btn btn-primary"

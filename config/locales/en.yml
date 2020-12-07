@@ -1224,3 +1224,36 @@ en:
         allocation_amt: Amount
         expense_amt: Expense
       save: Save
+
+  account_allocations:
+    index:
+      committed_amt: "Commited Amount: %{committed_amt}"
+      th:
+        name: Name (username)
+        role: Role
+        allocation_amt: Amount
+        expense_amt: Expense
+      save: Save
+    new:
+      committed_amt: "Commited Amount: %{committed_amt}"
+      th:
+        name: Name (username)
+        role: Role
+        allocation_amt: Amount
+        expense_amt: Expense
+      save: Save
+    edit:
+      committed_amt: "Commited Amount: %{committed_amt}"
+      th:
+        name: Name (username)
+        role: Role
+        allocation_amt: Amount
+        expense_amt: Expense
+      save: Save
+    member_allocation_table:
+      th:
+        name: Name (username)
+        role: Role
+        allocation_amt: Amount
+        expense_amt: Expense
+      save: Save
