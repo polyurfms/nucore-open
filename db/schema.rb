@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_20_035716) do
+ActiveRecord::Schema.define(version: 2020_12_02_064444) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(version: 2020_11_20_035716) do
     t.integer "created_by", null: false
     t.datetime "deleted_at"
     t.integer "deleted_by"
+    t.decimal "allocation_amt", precision: 10, scale: 2
     t.index ["account_id"], name: "fk_accounts"
     t.index ["user_id"], name: "index_account_users_on_user_id"
   end
@@ -52,6 +53,8 @@ ActiveRecord::Schema.define(version: 2020_11_20_035716) do
     t.string "affiliate_other"
     t.string "outside_contact_info"
     t.string "ar_number"
+    t.boolean "allows_allocation", default: false, null: false
+    t.decimal "committed_amt", precision: 10, scale: 2, default: "0.0"
     t.index ["affiliate_id"], name: "index_accounts_on_affiliate_id"
   end
 
@@ -115,6 +118,16 @@ ActiveRecord::Schema.define(version: 2020_11_20_035716) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["user_id", "key"], name: "index_email_events_on_user_id_and_key", unique: true
+  end
+
+  create_table "external_accounts", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.text "description", null: false
+    t.datetime "expires_at"
+    t.string "account_number", limit: 50
+    t.string "username", null: false
+    t.string "user_role", limit: 50, null: false
+    t.boolean "is_left_project"
+    t.index ["account_number", "username"], name: "index_external_accounts_on_account_number_and_username"
   end
 
   create_table "external_service_passers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -816,6 +829,14 @@ ActiveRecord::Schema.define(version: 2020_11_20_035716) do
     t.index ["delegator", "delegatee"], name: "index_user_delegations_on_delegator_and_delegatee", unique: true
   end
 
+  create_table "user_delegations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "delegator", null: false
+    t.string "delegatee", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["delegator", "delegatee"], name: "index_user_delegations_on_delegator_and_delegatee", unique: true
+  end
+
   create_table "user_preferences", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "user_id"
     t.string "name", null: false
@@ -973,8 +994,13 @@ ActiveRecord::Schema.define(version: 2020_11_20_035716) do
   add_foreign_key "statements", "facilities", name: "fk_statement_facilities"
   add_foreign_key "stored_files", "order_details", name: "fk_files_od"
   add_foreign_key "stored_files", "products", name: "fk_files_product"
+  add_foreign_key "user_certificates", "nu_safety_certificates"
   add_foreign_key "user_delegations", "users", column: "delegator"
   add_foreign_key "user_preferences", "users"
   add_foreign_key "user_roles", "facilities"
   add_foreign_key "user_roles", "users"
+
+  create_view "account_user_expenses", sql_definition: <<-SQL
+      select `au`.`id` AS `account_user_id`,`od`.`account_id` AS `account_id`,`o`.`user_id` AS `user_id`,sum((case when isnull(`od`.`actual_cost`) then `od`.`estimated_cost` else `od`.`actual_cost` end)) AS `expense_amt` from ((`order_details` `od` join `orders` `o` on((`o`.`id` = `od`.`order_id`))) join `account_users` `au` on(((`au`.`account_id` = `od`.`account_id`) and (`au`.`user_id` = `o`.`user_id`)))) where isnull(`od`.`canceled_at`) group by `au`.`id`,`od`.`account_id`,`o`.`user_id`
+  SQL
 end

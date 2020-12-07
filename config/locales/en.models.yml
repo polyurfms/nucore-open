@@ -176,8 +176,8 @@ en:
         one: Journal Cutoff Date
         other: Journal Cutoff Dates
       nufs_account:
-        one: Chart String
-        other: Chart Strings
+        one: Charge Account
+        other: Charge Accounts
       offline_reservation:
         one: Offline Reservation
         other: Offline Reservations
@@ -407,6 +407,7 @@ en:
         formatted_expires_at: Expiration
         description: Description
         type_string: Payment Source Type
+        allows_allocation: Allows Allocation
         owner_user: Owner
         remittance_information: Bill To
         suspended_at: Suspended

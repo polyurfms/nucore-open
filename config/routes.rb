@@ -36,7 +36,7 @@ Rails.application.routes.draw do
   end
 
   # front-end accounts
-  resources :accounts, only: [:index, :show] do
+  resources :accounts, only: [:index, :show, :edit, :update] do
     resources :statements, only: [:show, :index]
     member do
       get "user_search"
@@ -47,9 +47,17 @@ Rails.application.routes.draw do
       get "unsuspend", to: "accounts#unsuspend", as: "unsuspend"
     end
 
+    resources :account_allocations, only: [:index, :create, :new, :edit, :show, :update] do
+      collection do
+        post "update_allocation"
+      end
+    end
+
     resources :account_users, only: [:new, :destroy, :create, :index] do
       collection do
         get "user_search"
+        get "allocation"
+        post "update_allocation"
       end
     end
 
@@ -262,6 +270,10 @@ Rails.application.routes.draw do
       end
 
       get "/members", to: "facility_accounts#members", as: "members"
+      get "/allocation", to: "facility_accounts#allocation", as: "allocation"
+
+
+      post "/allocation_update", to: "facility_accounts#allocation_update", as: "allocation_update"
 
       if Account.config.statements_enabled?
         get "/statements", to: "facility_accounts#statements", as: :statements
