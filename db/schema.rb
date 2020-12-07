@@ -475,6 +475,7 @@ ActiveRecord::Schema.define(version: 2020_12_02_064444) do
     t.boolean "full_price_cancellation", default: false, null: false
     t.string "note", limit: 256
     t.integer "created_by_id"
+    t.decimal "maximum_cost", precision: 10, scale: 2
     t.index ["created_by_id"], name: "index_price_policies_on_created_by_id"
     t.index ["price_group_id"], name: "fk_rails_74aa223960"
     t.index ["product_id"], name: "index_price_policies_on_product_id"
@@ -573,7 +574,6 @@ ActiveRecord::Schema.define(version: 2020_12_02_064444) do
     t.text "issue_report_recipients"
     t.boolean "email_purchasers_on_order_status_changes", default: false, null: false
     t.boolean "problems_resolvable_by_user", default: false, null: false
-    t.string "room_no"
     t.index ["dashboard_token"], name: "index_products_on_dashboard_token"
     t.index ["facility_account_id"], name: "fk_facility_accounts"
     t.index ["facility_id"], name: "fk_rails_0c9fa1afbe"
@@ -821,15 +821,12 @@ ActiveRecord::Schema.define(version: 2020_12_02_064444) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "user_certificates", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "nu_safety_certificate_id"
-    t.datetime "deleted_at"
-    t.integer "deleted_by_id"
+  create_table "user_delegations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "delegator", null: false
+    t.string "delegatee", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["nu_safety_certificate_id"], name: "index_user_certificates_on_nu_safety_certificate_id"
-    t.index ["user_id"], name: "index_user_certificates_on_user_id"
+    t.index ["delegator", "delegatee"], name: "index_user_delegations_on_delegator_and_delegatee", unique: true
   end
 
   create_table "user_delegations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -922,10 +919,6 @@ ActiveRecord::Schema.define(version: 2020_12_02_064444) do
     t.index ["versioned_id", "versioned_type"], name: "index_vestal_versions_on_versioned_id_and_versioned_type"
   end
 
-  add_foreign_key "account_facility_joins", "accounts"
-  add_foreign_key "account_facility_joins", "facilities"
-  add_foreign_key "account_users", "accounts", name: "fk_accounts"
-  add_foreign_key "account_users", "users"
   add_foreign_key "bulk_email_jobs", "facilities"
   add_foreign_key "bulk_email_jobs", "users"
   add_foreign_key "bundle_products", "products", column: "bundle_product_id", name: "fk_bundle_prod_prod"
@@ -1002,7 +995,6 @@ ActiveRecord::Schema.define(version: 2020_12_02_064444) do
   add_foreign_key "stored_files", "order_details", name: "fk_files_od"
   add_foreign_key "stored_files", "products", name: "fk_files_product"
   add_foreign_key "user_certificates", "nu_safety_certificates"
-  add_foreign_key "user_certificates", "users"
   add_foreign_key "user_delegations", "users", column: "delegator"
   add_foreign_key "user_preferences", "users"
   add_foreign_key "user_roles", "facilities"

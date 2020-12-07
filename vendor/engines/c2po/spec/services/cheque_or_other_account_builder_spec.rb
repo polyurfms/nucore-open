@@ -10,7 +10,7 @@ RSpec.describe ChequeOrOtherAccountBuilder, type: :service do
       account_type: "ChequeOrOtherAccount",
       account_number: account_number ,
       current_user: user,
-       q: facility,
+      q: facility,
       owner_user: user,
       params: params,
     }
@@ -22,6 +22,7 @@ RSpec.describe ChequeOrOtherAccountBuilder, type: :service do
         expiration_month: 1.year.from_now.month,
         expiration_year: 1.year.from_now.year,
         description: "Cheque/Other",
+
       },
     )
   end

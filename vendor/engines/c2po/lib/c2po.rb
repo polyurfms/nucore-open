@@ -2,7 +2,8 @@
 
 module C2po
 
-  C2PO_ACCOUNT_TYPES = %w(CreditCardAccount PurchaseOrderAccount).freeze
+  #C2PO_ACCOUNT_TYPES = %w(CreditCardAccount PurchaseOrderAccount ChequeOrOtherAccount).freeze
+  C2PO_ACCOUNT_TYPES = %w(ChequeOrOtherAccount).freeze
 
   C2PO_ACCOUNT_TYPES_APPENDER = proc do
     Account.config.account_types.concat C2po::C2PO_ACCOUNT_TYPES
@@ -20,13 +21,13 @@ module C2po
       Facility.facility_account_validators << C2po::C2poAccountValidator
 
       # Permit engine-specific params
-      FacilitiesController.permitted_facility_params.concat [:accepts_po, :accepts_cc]
+#      FacilitiesController.permitted_facility_params.concat [:accepts_po, :accepts_cc]
 
       EngineManager.allow_view_overrides!("c2po")
 
       # Register view hooks
-      ViewHook.add_hook "facilities.manage", "before_is_active", "c2po/facilities/manage"
-      ViewHook.add_hook "facilities.facility_fields", "before_is_active", "c2po/facilities/facility_fields"
+#      ViewHook.add_hook "facilities.manage", "before_is_active", "c2po/facilities/manage"
+#      ViewHook.add_hook "facilities.facility_fields", "before_is_active", "c2po/facilities/facility_fields"
       ViewHook.add_hook "facility_accounts.show", "after_end_of_form", "c2po/facility_accounts/show/remittance_information"
     end
 

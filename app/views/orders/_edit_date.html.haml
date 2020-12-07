@@ -1,4 +1,8 @@
-- classes = ['collapsable']
+- unless @is_delegated
+  - classes = ['collapsable']
+- else 
+  - classes = ['collapsable', 'hidden']
+
 - classes << 'collapsed' if params['backdate_order'].blank?
 %fieldset#backdate-orders{ class: classes }
   %label.legend= t("orders.show.more_options")

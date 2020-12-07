@@ -1,0 +1,15 @@
+<h1> #{t("views.user_delegation.header")} </h1>
+
+- unless @is_assigned == true
+  = simple_form_for(@user_delegation) do |f|
+    = f.error_notification
+    = f.input :delegatee
+    = f.input :delegator, as: :hidden, input_html: { value: @user_id}
+    = f.button :submit, class: ["btn", "btn-primary"]
+- else 
+  %table.table.table-striped.table-hover
+    %thead
+      %th= t("views.user_delegation.table.name")
+    %tbody
+      %td= @assigned_list.delegatee
+      %td= link_to t("views.user_delegation.table.button_name"), @assigned_list, data: { confirm: t("views.user_delegation.message") }, method: :delete

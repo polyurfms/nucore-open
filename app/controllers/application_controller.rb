@@ -15,8 +15,9 @@ class ApplicationController < ActionController::Base
   helper_method :current_facility, :session_user, :manageable_facilities, :operable_facilities, :acting_user, :acting_as?, :check_acting_as, :current_cart, :backend?
   helper_method :open_or_facility_path
 
-  before_action :set_paper_trail_whodunnit
-
+  before_action :set_paper_trail_whodunnit ,:check_agreement
+  before_action :check_delegations
+  
   # Navigation tabs configuration
   attr_accessor :active_tab
   include NavTab
@@ -24,6 +25,88 @@ class ApplicationController < ActionController::Base
   # return whatever facility is indicated by the :facility_id or :id url parameter
   # UNLESS that url parameter has the value of 'all'
   # in which case, return the all facility
+
+  def has_delegated 
+    if(!session[:acting_user_id].nil? && !session[:acting_user_id].blank?)
+      # @user  = User.find_by(username: session_user[:username])
+      @user  = User.find(session_user[:id])
+      unless @user.nil? && @user.username.blank?
+        @delegate_list = User.joins("LEFT JOIN user_delegations ON user_delegations.delegator = users.id WHERE user_delegations.delegatee LIKE '#{@user.username}' and user_delegations.delegator = #{session[:acting_user_id]}")
+        if @delegate_list.size() > 0    
+          return true
+        end      
+      end
+    end
+    return false
+  end
+
+  def check_delegations
+    # Avoid fake delegations
+    if(!session[:is_selected_user] == true && !session[:acting_user_id].nil? && !session[:acting_user_id].eql?(""))
+      redirect_to "/" if !has_delegated
+    end
+
+    # Detect is first login action and redirect to account selection
+    if(!request.env['PATH_INFO'].eql?('/agreement') && !request.env['PATH_INFO'].include?('/user_delegations/') && !request.env['PATH_INFO'].eql?('/users/sign_in') && !request.env['PATH_INFO'].eql?('/users/sign_out') && session[:is_selected_user].nil?)
+      redirect_to '/user_delegations/switch'
+    end
+  end
+
+  def after_sign_in_path_for(resource)
+    '/orders/pending'
+  end
+    
+  def check_agreement
+    #only user login can visit agreement
+    if  request.env['PATH_INFO'].eql?('/agreement') && session_user.blank? 
+      redirect_to '/facilities'
+    end
+
+    # when user login and page is not agreement or agreement api
+      if !session_user.blank? && !request.env['PATH_INFO'].eql?('/agreement') && !request.env['PATH_INFO'].eql?('/agree_terms') && !request.env['PATH_INFO'].eql?('/users/sign_out')
+        
+        # get rocord from db when frist time store data in session 
+        if session[:user_agreement_record] == nil
+          #puts "[check_agreement][get record][user_agreement_record]"
+          session[:user_agreement_record] = UserAgreement.where(user_id:session_user).count
+        end
+
+        # get rocord from db when frist time store data in session 
+        if session[:user_agreement_record] > 0 
+          if session[:accept] == nil
+            #puts "[check_agreement][get record][accept]"
+            session[:accept] = UserAgreement.where(user_id:session_user).first.accept
+          end 
+        end
+
+        #puts "[check_agreement]session[:accept]" + (session[:accept] ? "true" : "false")
+        #puts "[check_agreement]session[:user_agreement_record]" +session[:user_agreement_record].to_s
+
+        if session[:accept] == 0
+          redirect_to '/agreement'
+        else
+          if !session[:accept]
+            redirect_to '/agreement' 
+          end
+        end
+      end
+  end
+     
+    # after login redirect user to agreement page
+      def after_sign_in_path_for(resource)
+        if UserAgreement.where(user_id:session_user).count == 0
+          '/agreement'
+        else
+          if UserAgreement.where(user_id:session_user).first.accept
+            # '/facilities'
+            '/user_delegations/switch'
+          else
+            '/agreement'
+          end
+        end
+      end
+
+
   def current_facility
     facility_id = params[:facility_id] || params[:id]
 
@@ -56,7 +139,7 @@ class ApplicationController < ActionController::Base
   end
 
   def check_acting_as
-    raise NUCore::NotPermittedWhileActingAs if acting_as?
+    raise NUCore::NotPermittedWhileActingAs if acting_as? && !has_delegated
   end
 
   def backend?
@@ -179,8 +262,13 @@ class ApplicationController < ActionController::Base
     store_location_for(:user, request.fullpath) unless current_user
   end
 
-  def current_ability
-    @current_ability ||= Ability.new(current_user, ability_resource, self)
+  def current_ability   
+    if has_delegated
+      @current_ability ||= Ability.new(acting_user, ability_resource, self)
+    else
+      @current_ability ||= Ability.new(current_user, ability_resource, self)
+    end
+    
   end
 
   private
