@@ -3,8 +3,14 @@
   -# TODO: use a feature flag here instead
   - if @account.statements.any? && current_ability.can?(:statements, @account)
     = tab t(".statements"), facility_account_statements_path(current_facility, @account), (secondary_tab == "statements")
+
   = tab t(".members"), facility_account_members_path(current_facility, @account), (secondary_tab == "members")
   - if current_ability.can?(:orders, @account)
+
     = tab t(".orders"), facility_account_orders_path(current_facility, @account), (secondary_tab == "orders")
+
+  - if @account.allows_allocation && @account.account_users.active.length() > 1
+    = tab t(".allocation"), facility_account_allocation_path(current_facility, @account), (secondary_tab == "allocation")
+
   - if show_account_facilities_tab?(current_ability, @account)
     = tab Facility.model_name.human(count: :other), edit_facility_account_account_facility_joins_path(current_facility, @account), (secondary_tab == "facilities")

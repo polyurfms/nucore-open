@@ -44,6 +44,8 @@ class OrdersController < ApplicationController
     facility_ability = Ability.new(session_user, @order.facility, self)
     @order.being_purchased_by_admin = facility_ability.can?(:act_as, @order.facility)
     @order.validate_order! if @order.new?
+    @is_delegated = has_delegated
+
   end
 
   # PUT /orders/:id/clear
@@ -65,12 +67,20 @@ class OrdersController < ApplicationController
     return redirect_back(fallback_location: cart_path, notice: "Please add at least one quantity to order something") unless items.size > 0
 
     first_product = Product.find(items.first[:product_id])
-    facility_ability = Ability.new(session_user, first_product.facility, self)
+    # facility_ability = Ability.new(session_user, first_product.facility, self)
+    facility_ability = Ability.new(acting_user, first_product.facility, self)
 
     # if acting_as, make sure the session user can place orders for the facility
-    if acting_as? && facility_ability.cannot?(:act_as, first_product.facility)
-      flash[:error] = "You are not authorized to place an order on behalf of another user for the facility #{current_facility.try(:name)}."
-      redirect_to(order_path(@order)) && return
+    unless has_delegated
+      if acting_as? && facility_ability.cannot?(:act_as, first_product.facility)
+        flash[:error] = "You are not authorized to place an order on behalf of another user for the facility #{current_facility.try(:name)}."
+        redirect_to(order_path(@order)) && return
+      end
+    else 
+      unless facility_ability.cannot?(:act_as, first_product.facility)
+        flash[:error] = "You are not authorized to place an order on behalf of another user for the facility #{current_facility.try(:name)}."
+        redirect_to(order_path(@order)) && return
+      end
     end
 
     ## handle a single instrument reservation
@@ -221,20 +231,25 @@ class OrdersController < ApplicationController
   def update_or_purchase
     # When returning from an external service, we may be called with a get; in that
     # case, we should just redirect to the show path
-    redirect_to(action: :show) && return if request.get?
+    # redirect_to(action: :show) && return if request.get?
 
     # if update button was clicked
+
+    # define send notifcation - delegate order
+    params[:send_notification] = 1 if has_delegated
+    @is_delegated = has_delegated
+
     if params[:commit] == "Update"
       update
     else
       purchase
     end
+
   end
 
   # PUT /orders/:id/update
   def update
     params[:order_datetime] = build_order_date if acting_as?
-
     @order.transaction do
       @order.assign_attributes(order_params)
 
@@ -252,6 +267,7 @@ class OrdersController < ApplicationController
 
   # PUT /orders/:id/purchase
   def purchase
+    puts params[:send_notification]
     @order.being_purchased_by_admin = facility_ability.can?(:act_as, @order.facility)
 
     order_purchaser.backdate_to = build_order_date if ordering_on_behalf_with_date_params?
@@ -300,7 +316,9 @@ class OrdersController < ApplicationController
   # all my orders
   def index
     # new or in process
-    @order_details = session_user.order_details.item_and_service_orders
+    # @order_details = session_user.order_details.item_and_service_orders
+    @order_details = acting_user.order_details.item_and_service_orders
+    
     @available_statuses = %w(pending all)
     case params[:status]
     when "pending"

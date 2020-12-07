@@ -36,7 +36,7 @@ class AccountConfig
   # Returns an array of subclassed Account object names that support affiliates.
   # Engines can append to this list.
   def affiliate_account_types
-    @affiliate_account_types ||= []
+    @affiliate_account_types ||= ["NufsAccount"]
   end
 
   # Returns an array of subclassed Account object names that support journal.
