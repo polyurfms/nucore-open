@@ -35,6 +35,10 @@ Rails.application.routes.draw do
     resources :user_preferences, only: [:index, :edit, :update], shallow: true
   end
 
+
+  post "/create_account_transactions", to: "account_transactions#create_account_transactions", as: "create_account_transactions"
+
+
   # front-end accounts
   resources :accounts, only: [:index, :show] do
     resources :statements, only: [:show, :index]
@@ -46,7 +50,16 @@ Rails.application.routes.draw do
       get "suspend", to: "accounts#suspend", as: "suspend"
       get "unsuspend", to: "accounts#unsuspend", as: "unsuspend"
     end
+    
+    get "/lock_fund", to: "accounts#lock_fund", as: "lock_fund"
 
+    resources :account_transactions, only: [:new, :destroy, :create, :index] do
+      collection do
+        get "account_transactions"
+      end
+    end
+
+    
     resources :account_users, only: [:new, :destroy, :create, :index] do
       collection do
         get "user_search"
@@ -413,6 +426,8 @@ Rails.application.routes.draw do
   put   "/#{I18n.t('facilities_downcase')}/:facility_id/services/:service_id/surveys/:external_service_passer_id/deactivate", to: "surveys#deactivate",               as: "deactivate_survey"
   get "/#{I18n.t('facilities_downcase')}/:facility_id/services/:service_id/surveys/:external_service_id/complete", to: "surveys#complete", as: "complete_survey"
 
+  #post  "create_account_transactions" , to: "account_transaction#create_account_transactions"
+ 
   namespace :admin do
     namespace :services do
       post "process_one_minute_tasks"
@@ -428,6 +443,9 @@ Rails.application.routes.draw do
   namespace :formio do
     resource :submission, only: [:new, :show, :edit]
   end
+
+
+  
 
   # See config/initializers/health_check.rb for more information
   health_check_routes

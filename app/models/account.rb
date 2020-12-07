@@ -22,6 +22,7 @@ class Account < ApplicationRecord
   has_many :account_users, -> { where(deleted_at: nil) }, inverse_of: :account
   has_many :deleted_account_users, -> { where.not(deleted_at: nil) }, class_name: "AccountUser"
 
+  has_many :account_transactions
   has_one :owner, -> { where(user_role: AccountUser::ACCOUNT_OWNER, deleted_at: nil) }, class_name: "AccountUser"
   has_one :owner_user, through: :owner, source: :user
   has_many :business_admins, -> { where(user_role: AccountUser::ACCOUNT_ADMINISTRATOR, deleted_at: nil) }, class_name: "AccountUser"

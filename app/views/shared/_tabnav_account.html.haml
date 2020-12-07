@@ -3,3 +3,4 @@
   - if @account.class.using_statements?
     = tab t('shared.tabnav_account.statement'), account_statements_path(@account), (secondary_tab == 'statements')
   = tab t('shared.tabnav_account.members'), account_account_users_path(@account), (secondary_tab == 'members')
+  = tab t('shared.tabnav_account.lock_fund'), account_account_transactions_path(@account), (secondary_tab == 'lock_fund')
