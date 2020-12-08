@@ -20,6 +20,8 @@
   - if @account.suspended?
     = f.input :suspended_at, date_only: true
 
+  = f.input :allows_allocation
+
   -# TODO: use render_view_hook instead
   - if lookup_context.exists? "facility_accounts/#{@account.class.name.underscore}/show", [], true
     = render "facility_accounts/#{@account.class.name.underscore}/show", f: f

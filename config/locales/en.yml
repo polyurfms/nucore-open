@@ -45,6 +45,7 @@ en:
       tabnav_payment_method:
         details: Details
         members: Members
+        allocation : Allocation
         orders: Orders
         statements: Statements
 
@@ -138,6 +139,7 @@ en:
       transact: "Transactions"
       statement: "Statements"
       members: "Members"
+      allocation: "Allocations"
     tabnav_price_group:
       accounts: "Payment Sources"
       users: "Users"
@@ -212,6 +214,16 @@ en:
         sent_at: "Sent At"
         sent_by: "Sent By"
         orders: "# of Orders"
+    member_allocation_table:
+      th:
+        name: Name (username)
+        role: Role
+        allocation_amt: Amount
+        expense_amt: Expense
+      save: Save
+    allocation:
+      save: Save
+      committed_amt: "Commited Amount: %{committed_amt}"
   facility_accounts_reconciliation:
     index:
       head: Reconcile %{model}
@@ -808,7 +820,7 @@ en:
     role:
         owner: Owner
         business_administrator: Business Administrator
-        purchaser: Purchaser
+        purchaser: Member
     member_table:
       add_access: Add Access
       remove_access: Remove Access
@@ -816,6 +828,17 @@ en:
         name: Name (username)
         email: Email
         role: Role
+    member_allocation_table:
+      add_access: Add Access
+      remove_access: Remove Access
+      th:
+        name: Name (username)
+        email: Email
+        role: Role
+        allocation_amt: Allocation amount
+        expense_amt: Expense amount
+      save : Save
+      cancel : Cancel
     show:
       head: "Payment Source Details"
 
@@ -1173,3 +1196,65 @@ en:
     calendar_tooltip: Calendar file download
     summary: "%{facility}: %{product}"
     description: "%{facility} reservation for %{product}. Order number %{order_number}."
+
+  accounts:
+    edit:
+      head: Payment Source Details
+      save: Save
+    show:
+      head: Pyament Source Details
+      save: Save
+    member_table:
+      add_access: Add Access
+      remove_access: Remove Access
+      th:
+        name: Name (username)
+        email: Email
+        role: Role
+    role:
+      owner: Owner
+      purchaser: Member
+      business_administrator: Business Administrator
+    allocation:
+      save: Save
+      committed_amt: "Commited Amount: %{committed_amt}"
+    member_allocation_table:
+      th:
+        name: Name (username)
+        role: Role
+        allocation_amt: Amount
+        expense_amt: Expense
+      save: Save
+
+  account_allocations:
+    index:
+      committed_amt: "Commited Amount: %{committed_amt}"
+      th:
+        name: Name (username)
+        role: Role
+        allocation_amt: Amount
+        expense_amt: Expense
+      save: Save
+    new:
+      committed_amt: "Commited Amount: %{committed_amt}"
+      th:
+        name: Name (username)
+        role: Role
+        allocation_amt: Amount
+        expense_amt: Expense
+      save: Save
+    edit:
+      committed_amt: "Commited Amount: %{committed_amt}"
+      th:
+        name: Name (username)
+        role: Role
+        allocation_amt: Amount
+        expense_amt: Expense
+      save: Save
+    member_allocation_table:
+      th:
+        name: Name (username)
+        role: Role
+        allocation_amt: Amount
+        expense_amt: Expense
+      save: Save
