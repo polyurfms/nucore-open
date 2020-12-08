@@ -53,9 +53,9 @@ class AccountAllocationsController < ApplicationController
     #load form field to model
     @account.assign_attributes(account_users_attributes: auv)
     if @account.save
-      flash[:notice] = "Save success" #text("update.success")
+      flash.now[:notice] = "Save success" #text("update.success")
     else
-      flash[:error]= @account.errors.full_messages[0]
+      flash.now[:error]= @account.errors.full_messages[0]
 
     end
 
