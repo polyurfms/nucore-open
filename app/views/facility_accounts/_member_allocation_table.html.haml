@@ -11,14 +11,13 @@
         %th= t(".th.allocation_amt")
         %th= t(".th.expense_amt")
     %tbody
-      - @account.account_users.active.each_with_index  do |au, index|
-        = f.simple_fields_for index.to_s, AccountUser.new do |p|
-          - if au.user != @account.owner_user
-            %tr
-              %td= Users::NamePresenter.new(au.user, username_label: true).full_name
-              %td= AccountUserPresenter.new(au).localized_role
-              %td
-                = p.input :allocation_amt , input_html: { min: '0' , step: 'any' ,value: AccountUserPresenter.new(au).allocation_amt}, label: false
-                = p.hidden_field :id ,  value: AccountUserPresenter.new(au).id.to_s
-              %td= au.expense
+    - @account_users.each do |od|
+      = f.simple_fields_for od.id.to_s, od do |p|
+        - if od.user != @account.owner_user
+          %tr
+            %td= Users::NamePresenter.new(od.user, username_label: true).full_name
+            %td= AccountUserPresenter.new(od).localized_role
+            %td= p.input :allocation_amt, label: false
+            %td= od.expense
+            = p.hidden_field :id ,  value: AccountUserPresenter.new(od).id.to_s
   = f.button :submit, t(".save"), class: "btn btn-primary"

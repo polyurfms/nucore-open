@@ -9,7 +9,7 @@
 
     = tab t(".orders"), facility_account_orders_path(current_facility, @account), (secondary_tab == "orders")
 
-  - if @account.allows_allocation && @account.account_users.active.length() > 1
+  - if @account.can_allocate?
     = tab t(".allocation"), facility_account_allocation_path(current_facility, @account), (secondary_tab == "allocation")
 
   - if show_account_facilities_tab?(current_ability, @account)
