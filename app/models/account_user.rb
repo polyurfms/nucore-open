@@ -9,12 +9,14 @@ class AccountUser < ApplicationRecord
   belongs_to :account, inverse_of: :account_users, required: true
   belongs_to :created_by_user, class_name: "User", foreign_key: :created_by
   has_many :log_events, as: :loggable
+  has_one :account_user_expense
 
   validates :created_by, presence: true
   validates :user_role, inclusion: { in: ->(record) { record.class.user_roles }, message: "is invalid" }
   validates :user_id, uniqueness: { scope: [:account_id, :deleted_at] }, unless: :deleted_at?
   validates :user_role, uniqueness: { scope: [:account_id, :deleted_at] }, if: -> { owner? && !deleted_at? }
   validate :validate_account_has_owner
+  validates :allocation_amt, numericality: {greater_than_or_equal_to: 0, message: "must have 0 or postive value"}, allow_nil:true
 
   ACCOUNT_PURCHASER = "Purchaser"
   ACCOUNT_OWNER = "Owner"
@@ -102,4 +104,11 @@ class AccountUser < ApplicationRecord
     "#{account} / #{user}"
   end
 
+  def expense
+    if account_user_expense.nil?
+      0.0
+    else
+      account_user_expense.expense_amt
+    end
+  end
 end

@@ -4,8 +4,8 @@ class CreateAccountTransactions < ActiveRecord::Migration[5.2]
             t.integer "account_id" , null: false
 			t.string "operation_type", limit: 50, null: false
 			t.string "status" , limit: 50, null: false
-            t.decimal "debit_amt",  precision: 10, scale: 2 , null: false
-            t.decimal "credit_amt",  precision: 10, scale: 2 , null: false
+            t.decimal "debit_amt",  precision: 10, scale: 2 , null: true
+            t.decimal "credit_amt",  precision: 10, scale: 2 , null: true
 			t.datetime :"created_at", null: false
         end
     end

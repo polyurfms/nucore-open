@@ -5,16 +5,11 @@
 = content_for :h1 do
   = t('.head')
 
-
-
 = readonly_form_for :account do |f|
-  = f.input :account_number
-  = f.input :type_string
-  = f.input :description
-  = f.input :expires_at, date_only: true
-  - if @account.suspended?
-    = f.input :suspended_at, date_only: true
 
+  = f.input :account_number , input_html: { lable: '12312' } ,lable: '12312'
+  = f.label :account_number , t(".total_locked_amount")
+  = get_total_amount 
 
 :javascript
   function PopUpMessage(){
@@ -38,18 +33,26 @@
     %button{:onclick => "ConfirmNo()", :type => "button", :class => "btn btn-primary"} No
 
 
+<br>
+<br>
 
-
-= simple_form_for(AccountTransaction.new, url: create_account_transactions_path(@account)) do |f|
-  = f.error_messages
-  = f.input :operation_type, collection: [ t(".operation_type.lock_fund"), t(".operation_type.unlock_fund")] , selected: t(".operation_type.lock_fund")
-  = f.input :amt , input_html: { type: 'number' }
-  = f.hidden_field :user_id ,  value: @account.id
-  %button{:onclick => "PopUpMessage()", :type => "button", :class => "btn btn-primary"} New request
-  = f.submit t(".new_request"), class: "btn btn-primary",id:"submitBtn",style:"display:none"
-
-
-
+-if is_allow_request
+  = simple_form_for(AccountTransaction.new, url: account_create_account_transactions_path(@account)) do |f|
+    = f.error_messages
+    = f.error_notification
+    = f.label :operation_type , t(".type")
+    = f.input :operation_type, collection: [ t(".operation_type.lock_fund"), t(".operation_type.unlock_fund")] , selected: t(".operation_type.lock_fund") , label: false
+    = f.label :amt , t(".amount")
+    = f.input :amt , input_html: { type: 'number' ,min: '0' , value: @input_amt } , label: false
+    = f.hidden_field :user_id ,  value: @account.id
+    %button{:onclick => "PopUpMessage()", :type => "button", :class => "btn btn-primary"} New request
+    = f.submit t(".new_request"), class: "btn btn-primary",id:"submitBtn",style:"display:none"
+-if !is_allow_request
+  <div class="notice">
+  %h4= t(".message.in_progrcess")
+  </div>
+  <br>
+<br>
 
 %table.table.table-striped.table-hover
   %thead
