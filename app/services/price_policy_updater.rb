@@ -64,6 +64,7 @@ class PricePolicyUpdater
       :usage_rate,
       :usage_subsidy,
       :minimum_cost,
+      :maximum_cost,
       :cancellation_cost,
       :unit_cost,
       :unit_subsidy,

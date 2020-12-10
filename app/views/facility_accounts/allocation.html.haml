@@ -1,0 +1,11 @@
+= content_for :tabnav do
+  = render "admin/shared/tabnav_payment_method", secondary_tab: "allocation"
+
+= content_for :h1 do
+  = current_facility
+
+= render "sidebar"
+%h2= @account
+%h3= t(".committed_amt", committed_amt: @account.committed_amt)
+
+= render "member_allocation_table"

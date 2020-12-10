@@ -45,6 +45,8 @@ module NavTab
       link_collection.customer.compact
     when manage_mode?
       link_collection.admin
+    when  session[:is_selected_user] = true && !session[:acting_user_id].nil?
+      link_collection.delegate_tab
     else []
     end
   end

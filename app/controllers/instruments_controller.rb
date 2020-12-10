@@ -39,7 +39,13 @@ class InstrumentsController < ProductsCommonController
   def show
     instrument_for_cart = InstrumentForCart.new(@product)
     # TODO: Remove this instance variable-not used anywhere but tests
-    @add_to_cart = instrument_for_cart.purchasable_by?(acting_user, session_user)
+    @add_to_cart = false
+    if(has_delegated && session[:is_selected_user] == true) 
+      @add_to_cart = true
+    else 
+      @add_to_cart = instrument_for_cart.purchasable_by?(acting_user, session_user)
+    end
+    
     if @add_to_cart
       redirect_to new_facility_instrument_single_reservation_path(current_facility, @product)
     elsif instrument_for_cart.error_path

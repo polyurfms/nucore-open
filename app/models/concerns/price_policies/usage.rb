@@ -9,6 +9,7 @@ module PricePolicies
     included do
       validates :usage_rate, presence: true, unless: :restrict_purchase?
       validates :usage_rate, :usage_subsidy, :minimum_cost, numericality: { allow_blank: true, greater_than_or_equal_to: 0 }
+      # validates :maximum_cost, numericality: { greater_than_or_equal_to: :minimum_cost, allow_blank: true, greater_than_or_equal_to: 0 }
     end
 
     def has_rate?
@@ -17,6 +18,10 @@ module PricePolicies
 
     def has_minimum_cost?
       minimum_cost && minimum_cost > -1
+    end
+
+    def has_maximum_cost?
+      maximum_cost && maximum_cost > -1
     end
 
     def usage_rate=(hourly_rate)
@@ -60,6 +65,10 @@ module PricePolicies
 
     def rate_field
       :usage_rate
+    end
+
+    def get_maximum_cost
+      :maximum_cost
     end
 
     def subsidy_field

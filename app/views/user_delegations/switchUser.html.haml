@@ -1,0 +1,5 @@
+<h1> #{t("views.account_selection.header")} </h1>
+
+- unless @user.nil? 
+  = render "search/switch_user_table",
+      users: @delegate_list

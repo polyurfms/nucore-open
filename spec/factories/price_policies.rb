@@ -8,6 +8,7 @@ FactoryBot.define do
     usage_rate { 10 / 60.0 }
     usage_subsidy { 0 }
     minimum_cost { 1 }
+    maximum_cost { 1 }
     can_purchase { true }
     start_date { Time.zone.now.beginning_of_day }
     expire_date { PricePolicy.generate_expire_date(start_date) }
@@ -44,6 +45,7 @@ FactoryBot.define do
     usage_rate { 60.0 } # $1/minute
     usage_subsidy { 0 }
     minimum_cost { 1 }
+    maximum_cost { 1 }
     can_purchase { true }
     start_date { Time.zone.now.beginning_of_day }
     expire_date { PricePolicy.generate_expire_date(start_date) }

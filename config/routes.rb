@@ -37,7 +37,7 @@ Rails.application.routes.draw do
   end
 
   # front-end accounts
-  resources :accounts, only: [:index, :show] do
+  resources :accounts, only: [:index, :show, :edit, :update] do
     resources :statements, only: [:show, :index]
     member do
       get "user_search"
@@ -46,6 +46,12 @@ Rails.application.routes.draw do
     if SettingsHelper.feature_on? :suspend_accounts
       get "suspend", to: "accounts#suspend", as: "suspend"
       get "unsuspend", to: "accounts#unsuspend", as: "unsuspend"
+    end
+
+    resources :account_allocations, only: [:index, :create, :new, :edit, :show, :update] do
+      collection do
+        post "update_allocation"
+      end
     end
 
     resources :account_users, only: [:new, :destroy, :create, :index] do
@@ -263,6 +269,10 @@ Rails.application.routes.draw do
       end
 
       get "/members", to: "facility_accounts#members", as: "members"
+      get "/allocation", to: "facility_accounts#allocation", as: "allocation"
+
+
+      post "/allocation_update", to: "facility_accounts#allocation_update", as: "allocation_update"
 
       if Account.config.statements_enabled?
         get "/statements", to: "facility_accounts#statements", as: :statements
@@ -390,6 +400,20 @@ Rails.application.routes.draw do
   get "reservations(/:status)", to: "reservations#list", as: "reservations_status"
 
   resources :my_files, only: [:index] if SettingsHelper.feature_on?(:my_files)
+
+  # user_delegation
+  get "user_delegations/switch", to:"user_delegations#switchUser", as: "switch"
+  
+  
+  users_options = if SettingsHelper.feature_on?(:create_users)
+    {}
+  else
+    { except: [:edit, :update, :new, :create], constraints: { id: /\d+/ } }
+  end
+  
+  resources :user_delegations, users_options do
+    get "switch_to",    to: "user_delegations#switch_to"
+  end
 
   # file upload routes
   post  "/#{I18n.t('facilities_downcase')}/:facility_id/:product/:product_id/sample_results", to: "file_uploads#upload_sample_results", as: "add_uploader_file"

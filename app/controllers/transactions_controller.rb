@@ -5,7 +5,6 @@ class TransactionsController < ApplicationController
   customer_tab :all
   before_action :authenticate_user!
   before_action :check_acting_as
-
   include OrderDetailsCsvExport
 
   def initialize
@@ -14,7 +13,9 @@ class TransactionsController < ApplicationController
   end
 
   def index
-    order_details = current_user.administered_order_details.joins(:order)
+  
+    # order_details = current_user.administered_order_details.joins(:order)
+     order_details = @acting_user.administered_order_details.joins(:order)
     @export_enabled = true
 
     @search_form = TransactionSearch::SearchForm.new(
@@ -41,8 +42,13 @@ class TransactionsController < ApplicationController
   end
 
   def in_review
-    @recently_reviewed = current_user.administered_order_details.recently_reviewed.paginate(page: params[:page])
-    order_details = current_user.administered_order_details.in_review
+
+    
+    @recently_reviewed = @acting_user.administered_order_details.recently_reviewed.paginate(page: params[:page])
+    order_details = @acting_user.administered_order_details.in_review
+
+    # @recently_reviewed = current_user.administered_order_details.recently_reviewed.paginate(page: params[:page])
+    # order_details = current_user.administered_order_details.in_review
 
     @search_form = TransactionSearch::SearchForm.new(params[:search])
     @search = TransactionSearch::Searcher.new(TransactionSearch::FacilitySearcher,

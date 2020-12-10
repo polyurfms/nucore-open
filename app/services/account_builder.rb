@@ -13,7 +13,9 @@
 class AccountBuilder
 
   attr_reader :action, :account, :account_params,
-              :account_type, :current_user, :facility, :owner_user, :params
+              :account_type, :current_user, :facility, :owner_user, :params , :allows_allocation, :affiliate_id
+
+
 
   # Initialize the instance variables.
   def initialize(options = {})
@@ -24,6 +26,8 @@ class AccountBuilder
     @facility = options[:facility] # optional
     @owner_user = options[:owner_user] # optional, required for build
     @params = options[:params] || ActionController::Parameters.new # optional
+    @allows_allocation = options[:allows_allocation]
+    @affiliate_id = options[:affiliate_id]
   end
 
   # Factory method that returns a subclassed `AccountBuilder` if one exists for
@@ -48,6 +52,7 @@ class AccountBuilder
   # Returns a new account subclassed `Account` object.
   # Can thrown an error if the account_type is invalid.
   def build
+    puts "[Account_builder][build]"
     set_action(:build)
     validate_account_type!
     new_account
@@ -56,7 +61,7 @@ class AccountBuilder
     set_affiliate
     set_created_by
     set_facility
-
+    set_allows_allocation
     after_build
     account
   end
@@ -64,13 +69,14 @@ class AccountBuilder
   # Returns an updated account subclassed `Account` object.
   # Can thrown an error if the account_type is invalid.
   def update
+    puts "[Account_builder][update]"
     set_action(:update)
     set_account_type
     validate_account_type!
     assign_params
     set_affiliate
     set_updated_by
-
+    set_allows_allocation
     after_update
     account
   end
@@ -180,6 +186,9 @@ class AccountBuilder
     account
   end
 
+  def set_allows_allocation
+    @is_active = allows_allocation
+  end
   # Set created_by. Only used for `build`.
   def set_created_by
     account.created_by = current_user.id

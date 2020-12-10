@@ -19,4 +19,15 @@ FactoryBot.define do
     expires_at { 1.month.from_now }
     sequence(:affiliate) { |n| Affiliate.find_or_create_by(name: "po_affiliate#{n}") }
   end
+
+  factory :cheque_or_other_account, parent: :account, class: ChequeOrOtherAccount do
+    type { "ChequeOrOtherAccount" }
+    sequence(:account_number) { |_n| "5276-4400-6542-1319" }
+    sequence(:description) { |n| "credit card account description #{n}" }
+    name_on_card { "Person" }
+    expiration_month { Time.zone.now.month }
+    expiration_year { 1.year.from_now.year }
+    expires_at { 1.month.from_now }
+    sequence(:affiliate) { |n| Affiliate.find_or_create_by(name: "cc_affiliate#{n}") }
+  end
 end

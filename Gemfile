@@ -86,9 +86,9 @@ gem "c2po", path: "vendor/engines/c2po"
 gem "dataprobe", path: "vendor/engines/dataprobe"
 gem "ldap_authentication", path: "vendor/engines/ldap_authentication"
 gem "saml_authentication", path: "vendor/engines/saml_authentication"
-gem "projects", path: "vendor/engines/projects"
+#gem "projects", path: "vendor/engines/projects"
 gem "sanger_sequencing", path: "vendor/engines/sanger_sequencing"
-gem "secure_rooms", path: "vendor/engines/secure_rooms"
+#gem "secure_rooms", path: "vendor/engines/secure_rooms"
 gem "split_accounts", path: "vendor/engines/split_accounts"
 gem "external_accounts", path: "vendor/engines/external_accounts"
 gem "synaccess_connect"
@@ -107,6 +107,11 @@ group :development do
   gem "rubocop", "0.58", require: false
   gem "rubocop-rspec"
   gem "web-console"
+  gem "scenic" #Required for DB views creation
+  gem "scenic-mysql_adapter"
+  gem 'meta_request'
+  gem "better_errors"
+  gem "binding_of_caller"
 end
 
 group :development, :test do

@@ -32,10 +32,15 @@ class NavTab::LinkCollection
   end
 
   def customer
-    [orders, reservations, payment_sources, files]
+    [orders, reservations, payment_sources, user_delegations]
+  end
+
+  def delegate_tab
+    [orders, reservations, payment_sources]
   end
 
   def home_button
+    SettingsHelper.feature_on?(:use_manage)
     if SettingsHelper.feature_on?(:use_manage)
       use
     else
@@ -69,6 +74,10 @@ class NavTab::LinkCollection
   def files
     NavTab::Link.new(tab: :my_files, text: I18n.t("views.my_files.index.header"), url: my_files_path) if SettingsHelper.feature_on?(:my_files)
   end
+
+  def user_delegations
+    NavTab::Link.new(tab: :user_delegations, text: I18n.t("pages.user_delegations"), url: user_delegations_path)
+  end  
 
   def admin_billing
     if single_facility? && ability.can?(:manage_billing, facility)

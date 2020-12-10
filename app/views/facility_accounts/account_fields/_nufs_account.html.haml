@@ -2,3 +2,10 @@
   = render partial: "shared/account_fields", locals: { f: f, account_class: NufsAccount }
 
 = f.input :description
+
+= render partial: 'facility_accounts/account_fields/affiliate', locals: { f: f }
+
+= f.label :facility_accounts, t("facility_accounts.account_fields.label.allows_allocation")
+= f.check_box :allows_allocation
+<br>
+<br>
