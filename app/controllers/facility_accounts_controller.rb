@@ -23,6 +23,8 @@ class FacilityAccountsController < ApplicationController
     accounts = Account.with_orders_for_facility(current_facility)
 
     @accounts = accounts.paginate(page: params[:page])
+
+
   end
 
   # GET /facilties/:facility_id/accounts/:id
@@ -32,6 +34,107 @@ class FacilityAccountsController < ApplicationController
   # GET /facilities/:facility_id/accounts/new
   def new
   end
+
+  def allocation
+    puts "allocation"
+    @account_users = @account.account_users
+  end
+
+  def allocation_update
+    puts "[allocation_update][Start]"
+
+    au = params[:account_user]
+    auv = au.values
+    @id = params[:account_id]
+
+    #load form field to model
+    @account.assign_attributes(account_users_attributes: auv)
+    if @account.save
+      flash.now[:notice] = "Save success" #text("update.success")
+    else
+      flash.now[:error]= @account.errors.full_messages[0]
+
+    end
+
+    #load model for form display
+    @account_users = @account.account_users
+    render :allocation
+=begin
+    accountUsersJson = (params[:account_user])
+    indexValue = 1
+
+    # get allocation_sum
+    allocation_sum = 100000.1
+
+    inputSum = 0.0
+
+    isValid = true
+
+    message = ""
+
+    if !accountUsersJson.nil?
+      accountUsersJson.each do |au|
+        inputAllocationAmt = 0
+        if !inputAllocationAmt.nil? || !au[indexValue][:allocation_amt].empty?
+          inputAllocationAmt = au[indexValue][:allocation_amt].to_f
+        end
+
+
+        if inputAllocationAmt < 0
+          isValid = false
+          message = "Error : Allocation must be a positive number!"
+        end
+        inputSum += inputAllocationAmt
+      end
+
+      if !@account.allows_allocation && isValid
+        isValid = false
+        message = "Error : The allocation is not active "
+      end
+
+      if  inputSum > allocation_sum && isValid
+        isValid = false
+        message = "Error : The allocation must be less than budget amount. "
+      end
+
+
+      if isValid
+        accountUsersJson.each do |au|
+          acountUserUpdate = AccountUser.find_by(id:au[indexValue][:id])
+          if au[indexValue][:allocation_amt].nil? || au[indexValue][:allocation_amt].empty?
+            acountUserUpdate.allocation_amt = 0
+          else
+            acountUserUpdate.allocation_amt = au[indexValue][:allocation_amt]
+          end
+          acountUserUpdate.save
+        end
+        message  = "Allocation update"
+      end
+
+    else
+      isValid = false
+      message = "Error : No members in payment sources!"
+    end
+
+
+    if isValid
+      flash[:notice] = message
+    else
+      flash[:error] = message
+    end
+
+    redirect_to facility_account_allocation_path
+    puts "[allocation_update][end]"
+
+
+    return true
+=end
+  end
+
+  def edit
+    @profile = @user.profile.order("saved DESC").first
+  end
+
 
   # POST /facilities/:facility_id/accounts
   def create

@@ -9,7 +9,15 @@
   = f.input :description
   = f.input :expires_at, date_only: true
   - if @account.suspended?
-    = f.input :suspended_at, date_only: true
+    = f.input :suspended_at, as: :readonly, date_only: true
+  = f.label :facility_accounts, t("facility_accounts.account_fields.label.allows_allocation")
+  = f.check_box :allows_allocation
+  = f.input :type, as: :hidden, input_html: { value: @account.type, name: "type" }
+  = f.input :affiliate_id, as: :hidden
+  = f.input :affiliate_other, as: :hidden
+
+  <br>
+  <br>
 
   = render_view_hook("after_end_of_form", f: f, account: @account)
 
