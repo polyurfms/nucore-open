@@ -594,21 +594,22 @@ en:
     account_field:
       prompt: "Please select a payment source"
       note_hint: Visible to facility staff only
-  
-
-
 
   account_transactions:
+    status:
+      PROCESSING: "In Progress"
+      COMPLETED: "Completed"
+      FAILED: "Failed"
+    operation_type:
+      LOCK_FUND_REQUEST: "Lock fund"
+      UNLOCK_FUND_REQUEST: "Unlock fund"
     index:
       head: "Lock funds"
-      type: "Type"
-      Total_locked_amount: "Total locked amount"
+      total_locked_amount: "Total locked amount"
       amount : "Amount"
       save: "save"
       new_request : "New Request"
-      total_locked_amount : "Total locked amount"
       type: "Type"
-      amount: "Amount"
       operation_type:
         lock_fund : "Lock fund"
         lock_fund_code : "LOCK_FUND_REQUEST"
@@ -618,17 +619,17 @@ en:
         processing_code : "PROCESSING"
         processing_string : "In Progress"
         success_code : "SUCCESS"
-        success_string : "success"
+        success_string : "Success"
         failded_code : "FAILED"
-        failded_string : "failed"
+        failded_string : "Failed"
       table:
         date : "Date"
-        type : "Type"
+        type : "Operation Type"
         status : "Status"
-        Amount : "amount"
+        Amount : "Amount"
       message:
         in_progrcess : "You can make request during not lock funds in progress "
-      
+
 
   statements:
     index:

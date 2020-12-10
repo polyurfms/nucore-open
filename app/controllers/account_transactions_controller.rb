@@ -17,7 +17,7 @@ class AccountTransactionsController < ApplicationController
     @lock_fund_code = I18n.t(i18n_patch+operation_type+"lock_fund_code")
     @unlock_fund_string = I18n.t(i18n_patch+operation_type+"unlock_fund")
     @unlock_fund_code = I18n.t(i18n_patch+operation_type+"unlock_fund_code")
-    
+
     @prcoeesing_code = I18n.t(i18n_patch+status+"processing_code")
     @processing_string = I18n.t(i18n_patch+status+"processing_string")
     @success_code = I18n.t(i18n_patch+status+"success_code")
@@ -27,9 +27,9 @@ class AccountTransactionsController < ApplicationController
     super
   end
 
-
+  #/accounts/1/account_transactions
   def index
-      @input_amt = 0
+
   end
 
   def edit
@@ -37,14 +37,12 @@ class AccountTransactionsController < ApplicationController
 
   def show
       action = "show"
-      @active_tab = "accounts"    
+      @active_tab = "accounts"
   end
 
   def ability_resource
     @account
   end
-
-
 
   def init_account
     if params.key? :id
@@ -66,8 +64,8 @@ class AccountTransactionsController < ApplicationController
 
       if at.status.eql? @prcoeesing_code
         allow_request = false
-      end 
-      
+      end
+
     end
 
     return allow_request
@@ -86,64 +84,95 @@ class AccountTransactionsController < ApplicationController
         elsif at.operation_type.eql? @unlock_fund_code
           sum -= at.debit_amt
         end
-      end    
-      
+      end
+
     end
     return sum
+  end
+
+  def account_transaction_params
+      params.require(:account_transaction).permit(:operation_type, :credit_amt, :debit_amt, :account_id, :operation_amount)
   end
 
   def create_account_transactions
     puts "[create_account_transactions()][START]"
 
     #message = "Error : Allocation must be a positive number!"
-    account_transaction = params[:account_transaction]
-    user_id = account_transaction[:user_id].to_i
+    #account_transaction = params[:account_transaction]
+    account_id = account_transaction[:account_id].to_i
 
-    @account = session_user.accounts.find(user_id)
+    @account = session_user.accounts.find(account_id)
 
    # puts "[create_account_transactions()][@account.id]" + @account.to_s
-    operation_type = account_transaction[:operation_type].to_s
+   #  operation_type = account_transaction[:operation_type].to_s
    # puts "[create_account_transactions()][operation_type]" + operation_type
-    amt = account_transaction[:amt].to_f
+   #  amt = account_transaction[:amt].to_f
    # puts "[create_account_transactions()][amt]" + amt.to_s
-  
-   
+
+
     if is_allow_request
+
+      puts params[:operation_amt]
+      puts "uyyyyy"
+
+      @at = AccountTransaction.new(
+              account_transaction_params.merge(
+                created_by: session_user.id,
+                status: "PROCESSING"
+              ),
+            )
+
+
+      if @at.save
+        flash[:notice] = "Save success" #text("update.success")
+        redirect_to account_account_transactions_path(account_id)
+      else
+        #@input_amt = amt
+        flash[:error]= @at.errors.messages
+        render :index
+      end
+
+=begin
       insert_account_transactions = AccountTransaction.new;
+
       insert_account_transactions.account_id = user_id;
+
+
       if operation_type.eql? @lock_fund_string
         insert_account_transactions.operation_type = @lock_fund_code
         #insert_account_transactions.debit_amt = 0
-        insert_account_transactions.credit_amt = amt
+        insert_account_transactions.credit_amt = @form_input_amount
       elsif operation_type.eql? @unlock_fund_string
         insert_account_transactions.operation_type = @unlock_fund_code
         #insert_account_transactions.credit_amt = 0
-        insert_account_transactions.debit_amt = amt
+        insert_account_transactions.debit_amt = @form_input_amount
       end
+
       insert_account_transactions.status = @prcoeesing_code
       insert_account_transactions.created_at = Time.now
+      insert_account_transactions.created_by = session_user.id
       if insert_account_transactions.save
-        
+
         flash[:notice] = "Save success" #text("update.success")
         redirect_to account_account_transactions_path(user_id)
       else
-        @input_amt = amt
-        flash[:error]= insert_account_transactions.errors.full_messages[0]
+        #@input_amt = amt
+        flash[:error]= insert_account_transactions.errors.messages
         render :index
       end
+=end
     else
       flash[:error] = I18n.t(".account_transactions.index.message.in_progrcess")
-      redirect_to account_account_transactions_path(user_id)
+      redirect_to account_account_transactions_path(account_id)
     end
 
-   
-    
   end
 
+=begin
   def get_amt(account_transaction)
     if account_transaction.operation_type.eql? @lock_fund_code
         return account_transaction.credit_amt
-        
+
     elsif account_transaction.operation_type.eql? @unlock_fund_code
         return account_transaction.debit_amt
     end
@@ -152,7 +181,7 @@ class AccountTransactionsController < ApplicationController
   def get_type(account_transaction)
     if account_transaction.operation_type.eql? @lock_fund_code
       return @lock_fund_string
-      
+
     elsif account_transaction.operation_type.eql? @unlock_fund_code
       return @unlock_fund_string
     end
@@ -168,4 +197,5 @@ class AccountTransactionsController < ApplicationController
     end
 
   end
+=end
 end

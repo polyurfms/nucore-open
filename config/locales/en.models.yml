@@ -416,3 +416,6 @@ en:
         user: Name
         product: Instrument
         created_at: Requested on
+      account_transaction:
+        operation_type: Operation type
+        amt: Amount
