@@ -3,6 +3,7 @@ en:
     devise:
       sessions:
         new:
-          title: "!pages.login!"
+          #title: "!pages.login!"
+          title: University Research Facilities Management System
           submit: "!pages.login!"
           forgot_password: Forgot password?

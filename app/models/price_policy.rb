@@ -13,6 +13,8 @@ class PricePolicy < ApplicationRecord
   validates :price_group_id, :type, presence: true
   validate :start_date_is_unique, if: :start_date?
 
+  validate :maximum_cost_validation
+
   validate :subsidy_less_than_rate, unless: :restrict_purchase?
 
   with_options if: -> { SettingsHelper.feature_on?(:price_policy_requires_note) } do
@@ -201,6 +203,18 @@ class PricePolicy < ApplicationRecord
   def subsidy_less_than_rate
     return unless defined?(rate_field)
     errors.add subsidy_field, :subsidy_greater_than_cost if self[rate_field] && self[subsidy_field] && self[subsidy_field] > self[rate_field]
+  end
+
+  def maximum_cost_validation
+    unless (minimum_cost.nil?)
+      if (!maximum_cost.nil? && maximum_cost > 0)
+          errors.add get_maximum_cost, ' must be greater than or equal to minimum cost' unless ((minimum_cost < maximum_cost)) 
+      end
+    end
+    # return unless defined?(get_maximum_cost)
+    # errors.add get_maximum_cost, ' must be greater than or equal to minimum cost' 
+    # unless (maximum_cost.nil? ||  maximum_cost < 0) && (minimum_cost < 0 || maximum_cost.nil?)
+    # if (minimum_cost > maximum_cost) && (minimum_cost > 0)
   end
 
   def truncate_existing_policies
