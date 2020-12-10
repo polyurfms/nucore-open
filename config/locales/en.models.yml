@@ -300,7 +300,6 @@ en:
         type: Type
         can_purchase: Can Purchase?
         minimum_cost: Minimum Cost
-        maximum_cost: Maximum Cost/Day
         hourly_usage_rate: Rate Per Hour
         cancellation_cost: Reservation Cost
         full_price_cancellation: Full reservation cost
@@ -318,7 +317,6 @@ en:
         account: Payment Source
         actual_cost: Price
         actual_subsidy: Adjustment
-        actual_max_cost: Maximum Cost/Day
         actual_total: Total
         assigned_user: Assigned Staff
         created_by_user: Ordered By

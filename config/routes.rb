@@ -69,6 +69,8 @@ Rails.application.routes.draw do
     resources :account_users, only: [:new, :destroy, :create, :index] do
       collection do
         get "user_search"
+        get "allocation"
+        post "update_allocation"
       end
     end
 

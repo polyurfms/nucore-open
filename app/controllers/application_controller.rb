@@ -47,11 +47,8 @@ class ApplicationController < ActionController::Base
     end
 
     # Detect is first login action and redirect to account selection
-    # if(!request.env['PATH_INFO'].eql?('/agreement') && !request.env['PATH_INFO'].include?('/user_delegations/') && !request.env['PATH_INFO'].eql?('/users/sign_in') && !request.env['PATH_INFO'].eql?('/users/sign_out') && session[:is_selected_user].nil?)
-    if (!session_user.nil? && !request.env['PATH_INFO'].eql?('/agree_terms') && !request.env['PATH_INFO'].eql?('/agreement') && !request.env['PATH_INFO'].include?('/user_delegations/') && !request.env['PATH_INFO'].eql?('/users/sign_in') && !request.env['PATH_INFO'].eql?('/users/sign_out') )
-      unless session[:is_selected_user] == true
-        redirect_to '/user_delegations/switch'
-      end
+    if(!request.env['PATH_INFO'].eql?('/agreement') && !request.env['PATH_INFO'].include?('/user_delegations/') && !request.env['PATH_INFO'].eql?('/users/sign_in') && !request.env['PATH_INFO'].eql?('/users/sign_out') && session[:is_selected_user].nil?)
+      redirect_to '/user_delegations/switch'
     end
   end
 

@@ -18,8 +18,6 @@
       %th= price_policy.class.human_attribute_name(:hourly_usage_rate)
       - if local_assigns[:minimum_cost]
         %th= price_policy.class.human_attribute_name(:minimum_cost)
-      - if local_assigns[:maximum_cost]
-        %th= price_policy.class.human_attribute_name(:maximum_cost)
       - if local_assigns[:cancellation]
         %th= price_policy.class.human_attribute_name(:cancellation_cost)
   %tbody
@@ -34,6 +32,6 @@
           %td= price_group.type_string
           %td= pp.check_box :can_purchase, class: "js--canPurchase"
           - if price_group.external? || price_group.master_internal?
-            = render "time_based_price_policies/amount_row", price_group: price_group, price_policy: price_policy, pp: pp, cancellation: cancellation, minimum_cost: minimum_cost, maximum_cost: maximum_cost
+            = render "time_based_price_policies/amount_row", price_group: price_group, price_policy: price_policy, pp: pp, cancellation: cancellation, minimum_cost: minimum_cost
           - else
-            = render "time_based_price_policies/adjustment_row", price_group: price_group, price_policy: price_policy, pp: pp, cancellation: cancellation, minimum_cost: minimum_cost, maximum_cost: maximum_cost
+            = render "time_based_price_policies/adjustment_row", price_group: price_group, price_policy: price_policy, pp: pp, cancellation: cancellation, minimum_cost: minimum_cost

@@ -6,8 +6,6 @@
       %th.currency{ colspan: 2 }= PricePolicy.human_attribute_name(:hourly_usage_rate)
       - if local_assigns[:minimum_cost]
         %th.currency{ rowspan: 2 }= PricePolicy.human_attribute_name(:minimum_cost)
-      - if local_assigns[:maximum_cost]
-        %th.currency{ rowspan: 2 }= PricePolicy.human_attribute_name(:maximum_cost)
       - if local_assigns[:cancellation]
         %th.currency{ rowspan: 2 }= PricePolicy.human_attribute_name(:cancellation_cost)
   %tbody
@@ -50,10 +48,6 @@
               - if price_policy.has_minimum_cost? && price_policy.has_subsidy?
                 .subsidy= "- #{number_to_currency price_policy.minimum_cost_subsidy}"
                 %strong= "= #{number_to_currency price_policy.subsidized_minimum_cost}"
-
-          - if local_assigns[:maximum_cost]
-            %td.currency
-              .rate= number_to_currency price_policy.maximum_cost
 
           - if local_assigns[:cancellation]
             %td.currency
