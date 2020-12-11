@@ -282,6 +282,8 @@ Rails.application.routes.draw do
 
       get "/members", to: "facility_accounts#members", as: "members"
       get "/allocation", to: "facility_accounts#allocation", as: "allocation"
+      get "/account_transaction", to: "facility_accounts#account_transaction", as: "account_transaction"
+
 
 
       post "/allocation_update", to: "facility_accounts#allocation_update", as: "allocation_update"

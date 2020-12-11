@@ -10,20 +10,20 @@ class AccountTransactionsController < ApplicationController
 
   def initialize
     @active_tab = "accounts"
-    i18n_patch = ".account_transactions.index."
-    operation_type = "operation_type."
-    status = "status."
-    @lock_fund_string = I18n.t(i18n_patch+operation_type+"lock_fund")
-    @lock_fund_code = I18n.t(i18n_patch+operation_type+"lock_fund_code")
-    @unlock_fund_string = I18n.t(i18n_patch+operation_type+"unlock_fund")
-    @unlock_fund_code = I18n.t(i18n_patch+operation_type+"unlock_fund_code")
+    #i18n_patch = ".account_transactions.index."
+    #operation_type = "operation_type."
+    #status = "status."
+    #@lock_fund_string = I18n.t(i18n_patch+operation_type+"lock_fund")
+    #@lock_fund_code = I18n.t(i18n_patch+operation_type+"lock_fund_code")
+    #@unlock_fund_string = I18n.t(i18n_patch+operation_type+"unlock_fund")
+    #@unlock_fund_code = I18n.t(i18n_patch+operation_type+"unlock_fund_code")
 
-    @prcoeesing_code = I18n.t(i18n_patch+status+"processing_code")
-    @processing_string = I18n.t(i18n_patch+status+"processing_string")
-    @success_code = I18n.t(i18n_patch+status+"success_code")
-    @success_string = I18n.t(i18n_patch+status+"success_string")
-    @failded_code = I18n.t(i18n_patch+status+"failded_code")
-    @failded_string = I18n.t(i18n_patch+status+"failded_string")
+    #@prcoeesing_code = I18n.t(i18n_patch+status+"processing_code")
+    #@processing_string = I18n.t(i18n_patch+status+"processing_string")
+    #@success_code = I18n.t(i18n_patch+status+"success_code")
+    #@success_string = I18n.t(i18n_patch+status+"success_string")
+    #@failded_code = I18n.t(i18n_patch+status+"failded_code")
+    #@failded_string = I18n.t(i18n_patch+status+"failded_string")
     super
   end
 
@@ -71,24 +71,6 @@ class AccountTransactionsController < ApplicationController
     return allow_request
   end
 
-  def get_total_amount
-    #account_transactions = AccountTransaction.find_by(account_id:@account)
-
-    sum = 0
-
-    @account.account_transactions.each  do |at|
-
-      if at.status.eql? @success_code
-        if at.operation_type.eql? @lock_fund_code
-          sum += at.credit_amt
-        elsif at.operation_type.eql? @unlock_fund_code
-          sum -= at.debit_amt
-        end
-      end
-
-    end
-    return sum
-  end
 
   def account_transaction_params
       params.require(:account_transaction).permit(:operation_type, :credit_amt, :debit_amt, :account_id, :operation_amount)
@@ -98,7 +80,7 @@ class AccountTransactionsController < ApplicationController
     puts "[create_account_transactions()][START]"
 
     #message = "Error : Allocation must be a positive number!"
-    #account_transaction = params[:account_transaction]
+    account_transaction = params[:account_transaction]
     account_id = account_transaction[:account_id].to_i
 
     @account = session_user.accounts.find(account_id)

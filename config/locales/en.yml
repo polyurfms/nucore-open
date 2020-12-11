@@ -48,6 +48,7 @@ en:
         allocation : Allocation
         orders: Orders
         statements: Statements
+        lock_fund: Lock funds
 
   pages:
     home: Home
@@ -225,6 +226,15 @@ en:
     allocation:
       save: Save
       committed_amt: "Commited Amount: %{committed_amt}"
+    account_transaction:
+      save: Save
+      committed_amt: "Commited Amount: %{committed_amt}"
+      table:
+        date: Date
+        type: Type
+        status: Status
+        amount: Amount
+      total_locked_amount: Total locked amount
   facility_accounts_reconciliation:
     index:
       head: Reconcile %{model}
@@ -618,8 +628,8 @@ en:
       status:
         processing_code : "PROCESSING"
         processing_string : "In Progress"
-        success_code : "SUCCESS"
-        success_string : "Success"
+        success_code : "COMPLETED"
+        success_string : "Completed"
         failded_code : "FAILED"
         failded_string : "Failed"
       table:

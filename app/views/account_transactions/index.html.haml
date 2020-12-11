@@ -9,7 +9,7 @@
 
   = f.input :account_number , input_html: { lable: '12312' } ,lable: '12312'
   = f.label :account_number , t(".total_locked_amount")
-  = get_total_amount
+  = @account.account_transactions_get_total_amount
 
 :javascript
   function PopUpMessage(){
