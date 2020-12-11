@@ -40,6 +40,14 @@ class FacilityAccountsController < ApplicationController
     @account_users = @account.account_users
   end
 
+
+
+  def account_transaction
+    puts "account_transaction"
+    @account_users = @account.account_users
+  end  
+
+
   def allocation_update
     puts "[allocation_update][Start]"
 
