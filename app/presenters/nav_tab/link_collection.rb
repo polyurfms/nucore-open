@@ -32,7 +32,8 @@ class NavTab::LinkCollection
   end
 
   def customer
-    [orders, reservations, payment_sources, user_delegations]
+    # [orders, reservations, payment_sources, user_delegations]
+    [payment_sources, reservations, orders, user_delegations]
   end
 
   def delegate_tab
