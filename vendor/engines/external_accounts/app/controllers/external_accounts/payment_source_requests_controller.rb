@@ -11,22 +11,27 @@ module ExternalAccounts
     before_action { @active_tab = "payment_source_requests" }
 
     def index
-      cutoff = Time.zone.now - Settings.send_payment_source_requests
 
-      @user  = User.find(session_user[:id])
-      str = " SELECT accounts.id, accounts.account_number, accounts.description, accounts.expires_at, payment_source_requests.created_at, "
-      str += " CASE WHEN payment_source_requests.created_at >= '#{cutoff.strftime("%Y-%m-%d %H:%M:%S")}' THEN 0 ELSE 1 END AS is_overtime "
-      str += " FROM accounts "
-      str += " INNER JOIN external_accounts ON accounts.account_number = external_accounts.account_number "
-      str += " LEFT JOIN payment_source_requests ON payment_source_requests.account_id = accounts.id AND payment_source_requests.user_id = #{session_user.id} "
-      str += " WHERE external_accounts.username = '#{session_user.username}' AND external_accounts.user_role = 'N' AND external_accounts.account_number NOT IN ( "
-      str += " SELECT a.account_number FROM account_users au "
-      str += " INNER JOIN accounts a ON au.account_id = a.id "
-      str += " INNER JOIN users u ON u.id = au.user_id "
-      str += " WHERE au.user_role = 'Purchaser' AND u.id = #{session_user.id} AND au.deleted_at IS NULL) "
+      @result = PaymentSourceRequestSearch.where(user_id: session_user.id) 
+      
+      puts JSON.parse(@result.to_json)
 
-      @exec_uery = ActiveRecord::Base.connection.exec_query(str)
-      @result = @exec_uery
+      @cutoff = Time.zone.now - Settings.send_payment_source_requests
+
+      # @user  = User.find(session_user[:id])
+      # str = " SELECT accounts.id, accounts.account_number, accounts.description, accounts.expires_at, payment_source_requests.created_at, "
+      # str += " CASE WHEN payment_source_requests.created_at >= '#{cutoff.strftime("%Y-%m-%d %H:%M:%S")}' THEN 0 ELSE 1 END AS is_overtime "
+      # str += " FROM accounts "
+      # str += " INNER JOIN external_accounts ON accounts.account_number = external_accounts.account_number "
+      # str += " LEFT JOIN payment_source_requests ON payment_source_requests.account_id = accounts.id AND payment_source_requests.user_id = #{session_user.id} "
+      # str += " WHERE external_accounts.username = '#{session_user.username}' AND external_accounts.user_role = 'N' AND external_accounts.account_number NOT IN ( "
+      # str += " SELECT a.account_number FROM account_users au "
+      # str += " INNER JOIN accounts a ON au.account_id = a.id "
+      # str += " INNER JOIN users u ON u.id = au.user_id "
+      # str += " WHERE au.user_role = 'Purchaser' AND u.id = #{session_user.id} AND au.deleted_at IS NULL) "
+
+      # @exec_uery = ActiveRecord::Base.connection.exec_query(str)
+      # @result = @exec_uery
     end
 
     def show

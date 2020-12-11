@@ -9,7 +9,7 @@
       %th= t("views.account_member_table.table.send_time")
       %th= ""
     %tbody
-      - @result.to_hash.each do |r|
+      - @result.each do |r|
         %tr
           %td= r["account_number"]
           %td= r["description"]
@@ -21,7 +21,7 @@
             %td= r["created_at"].strftime("%Y-%m-%d %H:%M:%S")
           - else 
             %td= ""
-          - if r["is_overtime"].to_i == 1
-            %td= link_to t("views.account_member_table.table.button_name"), sendMail_payment_source_request_path(r["id"]), data: { confirm: t("views.account_member_table.message") }, method: :get
+          - unless !r["created_at"].nil? && r["created_at"] >= @cutoff 
+            %td= link_to t("views.account_member_table.table.button_name"), sendMail_payment_source_request_path(r["account_id"]), data: { confirm: t("views.account_member_table.message") }, method: :get
           - else 
             %td= ""

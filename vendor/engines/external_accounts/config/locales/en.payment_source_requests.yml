@@ -6,7 +6,7 @@ en:
         name: "Account number"
         desc: "Description"
         owner: "Owner"
-        expires: "Expires"
+        expires: "Project Completion Date"
         send_time: "Send Datetime"
         button_name: "Send E-mail"
       message: "Confrim to send email?"
