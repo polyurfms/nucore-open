@@ -77,7 +77,7 @@ class NavTab::LinkCollection
 
   def user_delegations
     NavTab::Link.new(tab: :user_delegations, text: I18n.t("pages.user_delegations"), url: user_delegations_path)
-  end  
+  end
 
   def admin_billing
     if single_facility? && ability.can?(:manage_billing, facility)

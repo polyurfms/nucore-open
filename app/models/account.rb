@@ -24,6 +24,7 @@ class Account < ApplicationRecord
   has_many :account_users, -> { where(deleted_at: nil) }, inverse_of: :account
   has_many :deleted_account_users, -> { where.not(deleted_at: nil) }, class_name: "AccountUser"
 
+  has_many :funding_requests
   has_one :owner, -> { where(user_role: AccountUser::ACCOUNT_OWNER, deleted_at: nil) }, class_name: "AccountUser"
   has_one :owner_user, through: :owner, source: :user
   has_many :business_admins, -> { where(user_role: AccountUser::ACCOUNT_ADMINISTRATOR, deleted_at: nil) }, class_name: "AccountUser"
@@ -116,6 +117,11 @@ class Account < ApplicationRecord
   def self.for_order_detail(order_detail)
     for_user(order_detail.user).for_facility(order_detail.facility)
   end
+
+  def total_expense
+    AccountUserExpense.where(account_id: id).sum("expense_amt")
+  end
+
 
   def type_string
     I18n.t("activerecord.models.#{self.class.to_s.underscore}.one", default: self.class.model_name.human)

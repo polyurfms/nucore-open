@@ -48,6 +48,7 @@ en:
         allocation : Allocation
         orders: Orders
         statements: Statements
+        lock_fund: Funding Requests
 
   pages:
     home: Home
@@ -139,6 +140,7 @@ en:
       transact: "Transactions"
       statement: "Statements"
       members: "Members"
+      lock_fund: "Funding Requests"
       allocation: "Allocations"
     tabnav_price_group:
       accounts: "Payment Sources"
@@ -218,12 +220,21 @@ en:
       th:
         name: Name (username)
         role: Role
-        allocation_amt: Amount
+        allocation_amt: Quota
         expense_amt: Expense
       save: Save
     allocation:
       save: Save
-      committed_amt: "Commited Amount: %{committed_amt}"
+      committed_amt: "Committed Amount: %{committed_amt}"
+    funding_requests:
+      save: Save
+      committed_amt: "Committed Amount: %{committed_amt}"
+      table:
+        date: Date
+        type: Type
+        status: Status
+        amount: Amount
+      total_locked_amount: Total committed amount
   facility_accounts_reconciliation:
     index:
       head: Reconcile %{model}
@@ -593,6 +604,43 @@ en:
     account_field:
       prompt: "Please select a payment source"
       note_hint: Visible to facility staff only
+
+  funding_requests:
+    status:
+      PROCESSING: "In Progress"
+      COMPLETED: "Completed"
+      FAILED: "Failed"
+    request_type:
+      LOCK_FUND_REQUEST: "Top up"
+      UNLOCK_FUND_REQUEST: "Release"
+    index:
+      head: "Lock funds"
+      committed_amt: "Committed Amount: %{committed_amt}"
+      total_expense: "Total Expense Amount: %{total_expense}"
+      amount : "Amount"
+      save: "save"
+      new_request : "New Request"
+      type: "Type"
+      request_tpe:
+        lock_fund : "Top up"
+        lock_fund_code : "LOCK_FUND_REQUEST"
+        unlock_fund : "Release"
+        unlock_fund_code : "UNLOCK_FUND_REQUEST"
+      status:
+        processing_code : "PROCESSING"
+        processing_string : "In Progress"
+        success_code : "COMPLETED"
+        success_string : "Completed"
+        failded_code : "FAILED"
+        failded_string : "Failed"
+      table:
+        date : "Date"
+        type : "Top Up / Release"
+        status : "Status"
+        Amount : "Amount"
+      message:
+        in_progrcess : "Cannot make request until existing request executed."
+
 
   statements:
     index:
@@ -1217,7 +1265,7 @@ en:
       business_administrator: Business Administrator
     allocation:
       save: Save
-      committed_amt: "Commited Amount: %{committed_amt}"
+      committed_amt: "Committed Amount: %{committed_amt}"
     member_allocation_table:
       th:
         name: Name (username)
@@ -1228,27 +1276,28 @@ en:
 
   account_allocations:
     index:
-      committed_amt: "Commited Amount: %{committed_amt}"
+      committed_amt: "Committed Amount: %{committed_amt}"
       th:
         name: Name (username)
         role: Role
-        allocation_amt: Amount
+        allocation_amt: Quota
         expense_amt: Expense
       save: Save
     new:
-      committed_amt: "Commited Amount: %{committed_amt}"
+      committed_amt: "Committed Amount: %{committed_amt}"
+      total_expense: "Total Expense Amount: %{total_expense}"
       th:
         name: Name (username)
         role: Role
-        allocation_amt: Amount
+        allocation_amt: Quota
         expense_amt: Expense
       save: Save
     edit:
-      committed_amt: "Commited Amount: %{committed_amt}"
+      committed_amt: "Committed Amount: %{committed_amt}"
       th:
         name: Name (username)
         role: Role
-        allocation_amt: Amount
+        allocation_amt: Quota
         expense_amt: Expense
       save: Save
     member_allocation_table:

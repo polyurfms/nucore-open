@@ -40,6 +40,14 @@ class FacilityAccountsController < ApplicationController
     @account_users = @account.account_users
   end
 
+
+
+  def funding_requests
+    puts "account_transaction"
+    @account_users = @account.account_users
+  end
+
+
   def allocation_update
     puts "[allocation_update][Start]"
 
@@ -227,7 +235,6 @@ class FacilityAccountsController < ApplicationController
   private
 
   def available_account_types
-    puts "[available_account_types]"
     @available_account_types ||= Account.config.account_types_for_facility(current_facility, :create).select do |account_type|
       current_ability.can?(:create, account_type.constantize)
     end
