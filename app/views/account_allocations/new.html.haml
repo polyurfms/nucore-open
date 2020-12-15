@@ -1,9 +1,13 @@
 - can_edit_accounts = SettingsHelper.feature_on? :edit_accounts
 
-%h2= @account
-%h3= t(".committed_amt", committed_amt: @account.committed_amt)
-
 = content_for :tabnav do
   = render partial: 'shared/tabnav_account', locals: { secondary_tab: "allocations" }
+
+%header.account
+  %h3= @account.account_number
+  %p= @account.description_to_s
+  <br>
+  %p= t(".committed_amt", committed_amt: @account.committed_amt)
+  %p= t(".total_expense", total_expense: @account.total_expense)
 
 = render "member_allocation_table"
