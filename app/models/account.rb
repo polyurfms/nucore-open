@@ -14,6 +14,7 @@ class Account < ApplicationRecord
   include Accounts::AccountNumberSectionable
   include DateHelper
   include Nucore::Database::WhereIdsIn
+  include AffiliateAccount
 
   # belongs_to :facility, required: false
   has_many :account_facility_joins
@@ -56,6 +57,10 @@ class Account < ApplicationRecord
   validates_length_of :description, maximum: 50
 
   validate { errors.add(:base, :missing_owner) if missing_owner? }
+
+  with_options if: :can_allocate? do
+      validates_with AccountValidator
+  end
 
   delegate :administrators, to: :account_users
   delegate :global?, :per_facility?, to: :class

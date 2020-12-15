@@ -5,7 +5,7 @@ class AccountsController < ApplicationController
   customer_tab  :all
   before_action :authenticate_user!
   before_action :check_acting_as
-  before_action :init_account, only: [:show, :user_search, :transactions, :suspend, :unsuspend]
+  before_action :init_account, only: [:show, :user_search, :transactions, :suspend, :unsuspend, :edit, :update]
   include AccountSuspendActions
   load_and_authorize_resource only: [:show, :user_search, :transactions, :suspend, :unsuspend]
 
@@ -32,6 +32,36 @@ class AccountsController < ApplicationController
     render(template: "account_users/user_search")
   end
 
+  # GET /accounts/1/allocation
+  def allocation
+    render(template: "accounts/allocation")
+  end
+
+  # GET /accounts/1/edit
+  def edit
+    #@account = Account.find(params[:id] || params[:account_id])
+  end
+
+  # PUT /accounts/:account_id/
+  def update
+    id = params[:id]
+    @account = AccountBuilder.for(@account.class).new(
+      account: @account,
+      current_user: current_user,
+      owner_user: current_user,
+      params: params,
+    ).update
+
+    @account.valid?
+    @account.errors.full_messages
+
+    if @account.save!
+      flash[:notice] = I18n.t("controllers.facility_accounts.update")
+    end
+
+    redirect_to account_path
+  end
+
   protected
 
   def init_account
@@ -42,5 +72,9 @@ class AccountsController < ApplicationController
 
   def ability_resource
     @account
+  end
+
+  def account_params
+    params.require(AccountBuilder.for(type)).permit(:allows_allocation)
   end
 end
