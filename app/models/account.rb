@@ -22,7 +22,7 @@ class Account < ApplicationRecord
   has_many :account_users, -> { where(deleted_at: nil) }, inverse_of: :account
   has_many :deleted_account_users, -> { where.not(deleted_at: nil) }, class_name: "AccountUser"
 
-  has_many :account_transactions
+  has_many :funding_requests
   has_one :owner, -> { where(user_role: AccountUser::ACCOUNT_OWNER, deleted_at: nil) }, class_name: "AccountUser"
   has_one :owner_user, through: :owner, source: :user
   has_many :business_admins, -> { where(user_role: AccountUser::ACCOUNT_ADMINISTRATOR, deleted_at: nil) }, class_name: "AccountUser"
@@ -270,37 +270,8 @@ class Account < ApplicationRecord
     account_users.none? { |au| au.active? && au.owner? }
   end
 
-
-  
   def can_allocate?
     allows_allocation? && account_users.active.length() > 1
   end
 
-  def account_transactions_get_total_amount
-
-    i18n_patch = ".account_transactions.index."
-    operation_type = "operation_type."
-    status = "status."
-
-    @lock_fund_code = I18n.t(i18n_patch+operation_type+"lock_fund_code")
-    @unlock_fund_code = I18n.t(i18n_patch+operation_type+"unlock_fund_code")
-    @success_code = I18n.t(i18n_patch+status+"success_code")
-
-      sum = 0
-    
-      self.account_transactions.each  do |at|
-        puts "[account_transactions]"+at.status.to_s
-        puts "[account_transactions]"+@success_code
-        if at.status.eql? @success_code
-          if at.operation_type.eql? @lock_fund_code
-            sum += at.debit_amt
-          elsif at.operation_type.eql? @unlock_fund_code
-            sum -= at.credit_amt
-          end
-        end
-  
-      end
-      return sum
-    end
-  
 end

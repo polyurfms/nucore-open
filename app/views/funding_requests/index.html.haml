@@ -7,9 +7,9 @@
 
 = readonly_form_for :account do |f|
 
-  = f.input :account_number , input_html: { lable: '12312' } ,lable: '12312'
+  = f.input :account_number
   = f.label :account_number , t(".total_locked_amount")
-  = @account.account_transactions_get_total_amount
+  = @account.committed_amt
 
 :javascript
   function PopUpMessage(){
@@ -37,11 +37,11 @@
 <br>
 
 -if is_allow_request
-  = simple_form_for(AccountTransaction.new, url: account_create_account_transactions_path(@account)) do |f|
+  = simple_form_for(FundingRequest.new, url: account_create_funding_request_path(@account)) do |f|
     = f.error_messages
     = f.error_notification
-    = f.input :operation_type, collection: AccountTransaction.operation_types, label_method: ->(type) { t(type, scope: "account_transactions.operation_type.") }
-    = f.input :operation_amount
+    = f.input :request_type, collection: FundingRequest.request_types, label_method: ->(type) { t(type, scope: "funding_requests.request_type.") }
+    = f.input :request_amount
     = f.hidden_field :account_id ,  value: @account.id
     %button{:onclick => "PopUpMessage()", :type => "button", :class => "btn btn-primary"} New request
     = f.submit t(".new_request"), class: "btn btn-primary",id:"submitBtn",style:"display:none"
@@ -60,9 +60,9 @@
       %th= t(".table.status")
       %th= t(".table.Amount")
   %tbody
-    - @account.account_transactions.each  do |at|
+    - @account.funding_requests.each  do |at|
       %tr
         %td= format_usa_datetime(at.created_at)
-        %td= t("account_transactions.operation_type.#{at.operation_type}")
-        %td= t("account_transactions.status.#{at.status}")
-        %td= at.operation_amount
+        %td= t("funding_requests.request_type.#{at.request_type}")
+        %td= t("funding_requests.status.#{at.status}")
+        %td= at.request_amount

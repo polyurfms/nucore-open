@@ -226,7 +226,7 @@ en:
     allocation:
       save: Save
       committed_amt: "Commited Amount: %{committed_amt}"
-    account_transaction:
+    funding_requests:
       save: Save
       committed_amt: "Commited Amount: %{committed_amt}"
       table:
@@ -605,12 +605,12 @@ en:
       prompt: "Please select a payment source"
       note_hint: Visible to facility staff only
 
-  account_transactions:
+  funding_requests:
     status:
       PROCESSING: "In Progress"
       COMPLETED: "Completed"
       FAILED: "Failed"
-    operation_type:
+    request_type:
       LOCK_FUND_REQUEST: "Lock fund"
       UNLOCK_FUND_REQUEST: "Unlock fund"
     index:
@@ -620,7 +620,7 @@ en:
       save: "save"
       new_request : "New Request"
       type: "Type"
-      operation_type:
+      request_tpe:
         lock_fund : "Lock fund"
         lock_fund_code : "LOCK_FUND_REQUEST"
         unlock_fund : "Unlock fund"

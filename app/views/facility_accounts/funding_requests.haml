@@ -7,7 +7,7 @@
 = render "sidebar"
 %h2= @account
 %h4= t(".total_locked_amount")
-%h4= @account.account_transactions_get_total_amount
+%h4= @account.committed_amt
 
 
 
@@ -19,9 +19,9 @@
       %th= t(".table.status")
       %th= t(".table.amount")
   %tbody
-    - @account.account_transactions.each  do |at|
+    - @account.funding_requests.each  do |at|
       %tr
         %td= format_usa_datetime(at.created_at)
-        %td= t("account_transactions.operation_type.#{at.operation_type}")
-        %td= t("account_transactions.status.#{at.status}")
-        %td= at.operation_amount
+        %td= t("funding_requests.request_type.#{at.request_type}")
+        %td= t("funding_requests.status.#{at.status}")
+        %td= at.request_amount

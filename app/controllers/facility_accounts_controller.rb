@@ -42,10 +42,10 @@ class FacilityAccountsController < ApplicationController
 
 
 
-  def account_transaction
+  def funding_requests
     puts "account_transaction"
     @account_users = @account.account_users
-  end  
+  end
 
 
   def allocation_update
