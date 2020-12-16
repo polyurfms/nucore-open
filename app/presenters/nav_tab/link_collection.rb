@@ -32,7 +32,12 @@ class NavTab::LinkCollection
   end
 
   def customer
-    [orders, reservations, payment_sources, user_delegations]
+    count = User.check_academic_user_and_payment_source(@user.id).count
+    menu_array = [orders, reservations, payment_sources]
+    if(count > 0)
+      menu_array.push(user_delegations)
+    end
+    return menu_array
   end
 
   def delegate_tab
