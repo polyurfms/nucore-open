@@ -51,9 +51,10 @@
           %td.currency= order_detail.wrapped_total
 
   %p.footnote
-    %span.estimated_cost= text("users.reservations.estimated_cost.color")
+    %span.estimated_cost
+    -# = text("users.reservations.estimated_cost.color")
     = text("users.reservations.estimated_cost.note")
-    %span.actual_cost= text("users.reservations.actual_cost.color")
-    = text("users.reservations.actual_cost.note")
+    -# %span.actual_cost= text("users.reservations.actual_cost.color")
+    -# = text("users.reservations.actual_cost.note")
 
   = will_paginate(@order_details)
