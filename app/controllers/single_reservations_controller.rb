@@ -22,15 +22,24 @@ class SingleReservationsController < ApplicationController
 
   def create
     creator = ReservationCreator.new(@order, @order_detail, params)
-    if creator.save(session_user)
-      @reservation = creator.reservation
-      authorize! :create, @reservation
-      flash[:notice] = I18n.t("controllers.reservations.create.success")
-      flash[:error] = I18n.t("controllers.reservations.create.admin_hold_warning") if creator.reservation.conflicting_admin_reservation?
-      redirect_to purchase_order_path(@order, params.permit(:send_notification))
-    else
-      @reservation = creator.reservation
-      flash.now[:error] = creator.error.html_safe
+    @reservation = creator.reservation
+    @account = Account.find_by("id = #{params["order_account"].to_i} AND expires_at >= '#{@reservation.reserve_end_at}'")
+    puts @account.inspect
+    if(!@account.nil?)
+      if creator.save(session_user)
+        # @reservation = creator.reservation
+        authorize! :create, @reservation
+        flash[:notice] = I18n.t("controllers.reservations.create.success")
+        flash[:error] = I18n.t("controllers.reservations.create.admin_hold_warning") if creator.reservation.conflicting_admin_reservation?
+        redirect_to purchase_order_path(@order, params.permit(:send_notification))
+      else
+        # @reservation = creator.reservation
+        flash.now[:error] = creator.error.html_safe
+        set_windows
+        render "reservations/new"
+      end
+    else 
+      flash.now[:error] = I18n.t("controllers.reservations.create.expires_at")
       set_windows
       render "reservations/new"
     end
