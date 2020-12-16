@@ -164,7 +164,8 @@ class NavTab::LinkCollection
   end
 
   def orders
-    NavTab::Link.new(tab: :orders, text: t_my(Order), url: orders_path)
+    # NavTab::Link.new(tab: :orders, text: t_my(Order), url: orders_path)
+    NavTab::Link.new(tab: :orders, text: I18n.t("pages.my_items"), url: orders_path)
   end
 
   def reservations
