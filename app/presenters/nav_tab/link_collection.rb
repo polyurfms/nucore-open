@@ -57,11 +57,21 @@ class NavTab::LinkCollection
   private
 
   def payment_sources
-    NavTab::Link.new(
-      tab: :payment_sources,
-      text: t_my(Account),
-      subnav: [accounts, transactions, transactions_in_review],
-    )
+
+    if @user.payment_source_owner?
+      NavTab::Link.new(
+        tab: :payment_sources,
+        text: t_my(Account),
+        subnav: [accounts, transactions, transactions_in_review],
+      )
+    else
+      NavTab::Link.new(
+        tab: :payment_sources,
+        text: t_my(Account),
+        url: accounts_path,
+      )
+
+    end
   end
 
   def accounts
