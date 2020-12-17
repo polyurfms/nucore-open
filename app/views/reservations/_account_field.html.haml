@@ -18,9 +18,12 @@
         - if acting_as?
           = render_view_hook "after_account", f: f, order_detail: @order_detail
 
-      - if show_note_input_to_user?(@order_detail) && @is_delegated == false
+      - if show_note_input_to_user?(@order_detail) && (@is_delegated == false || @is_delegated.nil?)
         .span6
-          = f.input :note,
+          = f.input :note, 
             label: @order_detail.product.user_notes_label.presence,
             required: @order_detail.product.user_notes_field_mode.required?,
             hint: t(".note_hint")
+
+:javascript
+  $("#reservation_note").css("width", "85%");
