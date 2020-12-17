@@ -44,7 +44,7 @@ class OrdersController < ApplicationController
     facility_ability = Ability.new(session_user, @order.facility, self)
     @order.being_purchased_by_admin = facility_ability.can?(:act_as, @order.facility)
     @order.validate_order! if @order.new?
-    @is_delegated = has_delegated
+    # @is_delegated = has_delegated
 
   end
 

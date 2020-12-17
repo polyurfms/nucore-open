@@ -18,7 +18,7 @@
           name: "note#{order_detail.id}" }
 
       - if acting_as?
-        - if @is_delegated
+        - if has_delegated?
           = hidden_field_tag :reference_id, nil
         - else
           = odf.input :reference_id ,
