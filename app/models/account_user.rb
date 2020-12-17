@@ -111,4 +111,8 @@ class AccountUser < ApplicationRecord
       account_user_expense.expense_amt
     end
   end
+
+  def quota_balance
+    allocation_amt - expense
+  end
 end

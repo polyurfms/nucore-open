@@ -63,7 +63,7 @@ class AccountAllocationsController < ApplicationController
     @account_users = @account.account_users
 
 
-    render :edit
+    render :new
   end
 
   protected
