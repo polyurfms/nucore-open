@@ -76,6 +76,7 @@ en:
     transactions: My Transactions
     transactions_in_review: My Transactions In Review (%{count})
     user_delegations: My Delegation
+    my_items: My Items
     notices: Notices
     support: Support
 
@@ -1004,6 +1005,7 @@ en:
       between: between
       instrument_reports:
         between: Fulfilled between
+      billing_status: Billing Status
       date_start: Start Date
       date_end: End Date
       auto_cancel_name: 'Auto Cancel'
@@ -1275,35 +1277,15 @@ en:
       save: Save
 
   account_allocations:
-    index:
-      committed_amt: "Committed Amount: %{committed_amt}"
-      th:
-        name: Name (username)
-        role: Role
-        allocation_amt: Quota
-        expense_amt: Expense
-      save: Save
     new:
       committed_amt: "Committed Amount: %{committed_amt}"
       total_expense: "Total Expense Amount: %{total_expense}"
-      th:
-        name: Name (username)
-        role: Role
-        allocation_amt: Quota
-        expense_amt: Expense
-      save: Save
-    edit:
-      committed_amt: "Committed Amount: %{committed_amt}"
-      th:
-        name: Name (username)
-        role: Role
-        allocation_amt: Quota
-        expense_amt: Expense
-      save: Save
+      free_balance: "Free balance: %{free_balance}"
     member_allocation_table:
       th:
         name: Name (username)
         role: Role
-        allocation_amt: Amount
+        allocation_amt: Quota
         expense_amt: Expense
+        quota_balance: Quota balance
       save: Save

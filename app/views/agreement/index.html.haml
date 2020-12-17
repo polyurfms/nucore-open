@@ -5,7 +5,14 @@
 <a href="https://ubsn.polyu.edu.hk/Equipment/Index" target="_blank">USBN</a>
 </br>
 </br>
+
+%div
+  %input{:id => "is_agree", :type => "checkbox", :style => "margin-top: -0.25em;"}
+  %span I agree to the terms and conditions
+
 </br>
+</br>
+
 %button{:onclick => "agree()", :type => "button"} Agree
 #myModal{:style => "display: none;position: fixed; z-index: 1; padding-top: 100px; left: 0;\n  top: 0;\n  width: 100%; \n  height: 100%;\n  overflow: auto; /\n  background-color: rgb(0,0,0); \n  background-color: rgba(0,0,0,0.4);"}
   / Modal content
@@ -15,7 +22,15 @@
 
 :javascript
   function agree(){
+
+    var is_agreed = document.getElementById("is_agree");
+    if (is_agreed.checked != true)
+    {
+      alert("Please indicate that you have read and agree to the Terms and Conditions.");
+      return;
+    }
     //modal.style.display = "block";
+    
     $.ajax({
       url: "agree_terms",
       method: "POST",

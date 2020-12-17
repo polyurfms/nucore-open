@@ -178,6 +178,10 @@ class User < ApplicationRecord
     price_groups.include?(PriceGroup.base)
   end
 
+  def payment_source_owner?
+    account_users.exists?(user_role: 'Owner')
+  end
+
   def update_price_group(params)
     if params[:internal] == "true"
       price_group_members.find_by(price_group: PriceGroup.external).try(:destroy)

@@ -236,11 +236,18 @@ th.currency {
 .old-table,
 .footnote {
   .estimated_cost {
-    color: $warningText;
+    // color: $warningText;
+    color: #000;
+  }
+
+  .estimated_cost:before {
+    content: "* ";
   }
 
   .actual_cost {
-    color: $successText;
+    // color: $successText;
+    color: #000;
+    font-weight: bold;
   }
 
   .reconcile-note {

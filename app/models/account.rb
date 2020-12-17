@@ -59,9 +59,10 @@ class Account < ApplicationRecord
 
   validate { errors.add(:base, :missing_owner) if missing_owner? }
 
-  with_options if: :can_allocate? do
-    validates_with AccountValidator
-  end
+# Sum of alloation amount validation (Disabled until user clarification)
+#  with_options if: :can_allocate? do
+#    validates_with AccountValidator
+#  end
 
   delegate :administrators, to: :account_users
   delegate :global?, :per_facility?, to: :class
@@ -120,6 +121,10 @@ class Account < ApplicationRecord
 
   def total_expense
     AccountUserExpense.where(account_id: id).sum("expense_amt")
+  end
+
+  def free_balance
+    committed_amt - total_expense
   end
 
 
