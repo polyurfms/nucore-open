@@ -6,6 +6,9 @@ en:
       create:
         success: "%{accessories} added"
 
+    account_allocations:
+      errors: There was an error saving the allocation.
+
     account_facility_joins:
       update:
         success: Payment source was successfully updated.

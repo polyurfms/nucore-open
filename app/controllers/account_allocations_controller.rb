@@ -55,7 +55,7 @@ class AccountAllocationsController < ApplicationController
     if @account.save
       flash.now[:notice] = "Save success" #text("update.success")
     else
-      flash.now[:error]= @account.errors.full_messages[0]
+      flash.now[:error] = text("errors")
 
     end
 
