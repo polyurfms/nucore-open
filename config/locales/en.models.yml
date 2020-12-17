@@ -409,7 +409,6 @@ en:
         formatted_expires_at: Expiration
         description: Description
         type_string: Payment Source Type
-        allows_allocation: Allows Allocation
         owner_user: Owner
         remittance_information: Bill To
         suspended_at: Suspended
@@ -419,3 +418,6 @@ en:
         user: Name
         product: Instrument
         created_at: Requested on
+      funding_request:
+        request_type: Top up / Release
+        amt: Amount

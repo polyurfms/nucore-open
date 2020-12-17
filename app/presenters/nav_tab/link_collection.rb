@@ -33,7 +33,12 @@ class NavTab::LinkCollection
 
   def customer
     # [orders, reservations, payment_sources, user_delegations]
-    [payment_sources, reservations, orders, user_delegations]
+    count = User.check_academic_user_and_payment_source(@user.id).count
+    menu_array = [payment_sources, reservations, orders]
+    if(count > 0)
+      menu_array.push(user_delegations)
+    end
+    return menu_array
   end
 
   def delegate_tab
@@ -78,7 +83,7 @@ class NavTab::LinkCollection
 
   def user_delegations
     NavTab::Link.new(tab: :user_delegations, text: I18n.t("pages.user_delegations"), url: user_delegations_path)
-  end  
+  end
 
   def admin_billing
     if single_facility? && ability.can?(:manage_billing, facility)

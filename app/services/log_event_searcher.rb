@@ -17,6 +17,7 @@ class LogEventSearcher
                     "price_group_member.create", "price_group_member.delete",
                     "facility.activate", "facility.deactivate",
                     "price_group.create", "price_group.delete",
+                    "user_delegation.create", "user_delegation.delete", 
                     ].freeze
 
   def self.beginning_of_time

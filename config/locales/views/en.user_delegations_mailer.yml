@@ -1,0 +1,6 @@
+en:
+  views:
+    user_delegation:
+        subject:  "%{delegatee} was delegated to the %{delegator} "
+        body: |
+          This is to inform you that you have delegated.
