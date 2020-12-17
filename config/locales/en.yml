@@ -1005,6 +1005,7 @@ en:
       between: between
       instrument_reports:
         between: Fulfilled between
+      billing_status: Billing Status
       date_start: Start Date
       date_end: End Date
       auto_cancel_name: 'Auto Cancel'
