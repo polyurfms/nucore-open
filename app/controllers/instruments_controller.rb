@@ -39,6 +39,8 @@ class InstrumentsController < ProductsCommonController
   def show
     instrument_for_cart = InstrumentForCart.new(@product)
     # TODO: Remove this instance variable-not used anywhere but tests
+    # @add_to_cart = instrument_for_cart.purchasable_by?(acting_user, session_user)
+    
     @add_to_cart = false
     if(has_delegated && session[:is_selected_user] == true) 
       @add_to_cart = true
