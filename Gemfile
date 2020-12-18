@@ -76,6 +76,8 @@ gem "rake"
 gem "spreadsheet"
 gem "daemons"
 gem "ice_cube"
+gem "scenic" #Required for DB views creation
+gem "scenic-mysql_adapter"
 
 # Optional: File uploads to S3
 # gem "aws-sdk-s3"
@@ -106,8 +108,6 @@ group :development do
   gem "rubocop", "0.58", require: false
   gem "rubocop-rspec"
   gem "web-console"
-  gem "scenic", require: false#Required for DB views creation
-  gem "scenic-mysql_adapter", require: false
   gem 'meta_request'
   gem "better_errors"
   gem "binding_of_caller"
