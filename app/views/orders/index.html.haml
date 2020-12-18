@@ -1,5 +1,7 @@
 = content_for :h1 do
-  = t_my(Order)
+  -# = t_my(Order)
+  = I18n.t("pages.my_items")
+  
 = content_for :tabnav do
   %ul.nav.nav-tabs
     - @available_statuses.each do |status|
