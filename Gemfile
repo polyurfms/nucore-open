@@ -106,8 +106,8 @@ group :development do
   gem "rubocop", "0.58", require: false
   gem "rubocop-rspec"
   gem "web-console"
-  gem "scenic" #Required for DB views creation
-  gem "scenic-mysql_adapter"
+  gem "scenic", require: false#Required for DB views creation
+  gem "scenic-mysql_adapter", require: false
   gem 'meta_request'
   gem "better_errors"
   gem "binding_of_caller"
