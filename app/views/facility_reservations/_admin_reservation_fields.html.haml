@@ -45,3 +45,12 @@
       ]
       "duration": "admin_reservation[duration_mins]"
     )
+
+:javascript
+  Date.shortMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+  var start_date_str = new Date($("#admin_reservation_reserve_start_date").val());
+  var end_date_str = new Date($("#admin_reservation_reserve_end_date").val());
+
+  $("#admin_reservation_reserve_start_date").val(start_date_str.getDate() + " " + Date.shortMonths[start_date_str.getMonth()] + " " + start_date_str.getFullYear())
+  $("#admin_reservation_reserve_end_date").val(end_date_str.getDate() + " " + Date.shortMonths[end_date_str.getMonth()] + " " + end_date_str.getFullYear())

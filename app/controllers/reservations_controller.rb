@@ -10,6 +10,7 @@ class ReservationsController < ApplicationController
   authorize_resource only: [:edit, :update, :move]
 
   include TranslationHelper
+  include DateHelper
   include FacilityReservationsHelper
   helper TimelineHelper
 
@@ -265,6 +266,9 @@ class ReservationsController < ApplicationController
   private
 
   def reservation_params
+    params["reservation"]["reserve_start_date"] = parse_ddmmmyyyy_import_date(params["reservation"]["reserve_start_date"] )
+    params["reservation"]["reserve_end_date"] = parse_ddmmmyyyy_import_date(params["reservation"]["reserve_end_date"] )
+
     reservation_params = params.require(:reservation)
                                .except(:reserve_end_date, :reserve_end_hour, :reserve_end_min, :reserve_end_meridian)
                                .permit(:reserve_start_date,

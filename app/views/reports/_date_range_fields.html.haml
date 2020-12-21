@@ -12,3 +12,6 @@
 %li= form.input :date_end,
   label: t("reports.fields.#{controller_name}.date_end", default: t("reports.fields.date_end")),
   input_html: { value: format_usa_date(@date_end), class: "datepicker" }
+
+:javascript
+  $(".datepicker").datepicker({ dateFormat: 'd M yy' });

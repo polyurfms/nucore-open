@@ -5,6 +5,7 @@ module BulkEmail
   class BulkEmailController < ApplicationController
 
     include CSVHelper
+    include DateHelper
 
     admin_tab :all
     layout "two_column"
@@ -109,6 +110,9 @@ module BulkEmail
       products = Product.for_facility(current_facility).not_archived.alphabetized.includes(:facility)
       facilities = Facility.active.alphabetized if current_facility.cross_facility?
       @search_options = { products: products, facilities: facilities }
+      params["start_date"] = parse_ddmmmyyyy_import_date(params["start_date"])
+      params["end_date"] = parse_ddmmmyyyy_import_date(params["end_date"])
+
       @search_fields = params
       @user_types = user_types
       @user_types.delete(:authorized_users) unless products.exists?(requires_approval: true)

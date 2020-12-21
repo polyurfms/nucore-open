@@ -96,8 +96,9 @@ class PricePoliciesController < ApplicationController
 
   # Override CanCan's find -- it won't properly search by zoned date
   def init_price_policy
-    @start_date = parse_usa_date(params[:id] || params[:start_date])
 
+    # @start_date = parse_usa_date(params[:id] || params[:start_date])
+    @start_date = parse_usa_date(params[:id] || params[:start_date])
     @price_policy = @product
                     .price_policies
                     .for_date(@start_date)
@@ -106,6 +107,7 @@ class PricePoliciesController < ApplicationController
 
   def init_product
     id_param = params.except(:facility_id).keys.detect { |k| k.end_with?("_id") }
+
     class_name = id_param.sub(/_id\z/, "").camelize
     @product = current_facility.products
                                .of_type(class_name)
@@ -125,8 +127,10 @@ class PricePoliciesController < ApplicationController
   def update_policies_from_params
     PricePolicyUpdater.update_all(
       @price_policies,
-      parse_usa_date(params[:start_date])&.beginning_of_day,
-      parse_usa_date(params[:expire_date])&.end_of_day,
+      parse_usa_date(parse_ddmmmyyyy_import_date(params[:start_date]))&.beginning_of_day,
+      parse_usa_date(parse_ddmmmyyyy_import_date(params[:expire_date]))&.end_of_day,
+      # parse_usa_date(params[:start_date])&.beginning_of_day,
+      # parse_usa_date(params[:expire_date])&.end_of_day,
       params.merge(created_by_id: current_user.id),
     )
   end

@@ -177,6 +177,10 @@ class FacilityReservationsController < ApplicationController
   end
 
   def admin_reservation_params
+
+    params[:admin_reservation][:reserve_end_date] = parse_ddmmmyyyy_import_date(params[:admin_reservation][:reserve_end_date] ) unless params[:admin_reservation][:reserve_end_date].nil?
+    params[:admin_reservation][:reserve_start_date] = parse_ddmmmyyyy_import_date(params[:admin_reservation][:reserve_start_date] ) unless params[:admin_reservation][:reserve_start_date].nil?
+
     admin_params = params.require(:admin_reservation)
                          .except(:reserve_end_date,
                                  :reserve_end_hour,

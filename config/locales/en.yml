@@ -11,18 +11,29 @@ en:
 
   date:
     formats:
-      journal_line_reference: "%Y%m%d"
-      timeline_navigation: "%a, %B %e, %Y"
-      usa: "%m/%d/%Y"
+      journal_line_reference: "%d %b %Y"
+      timeline_navigation: "(%a) %d %b %Y"
+      usa: "%d %b %Y"
+      # usa_filename_safe: "%d %b %Y"
+      ymd: "%d %b %Y"
+      
+      # journal_line_reference: "%Y%m%d"
+      # timeline_navigation: "%a, %B %e, %Y"
+      # usa: "%m/%d/%Y"
       usa_filename_safe: "%m-%d-%Y"
-      ymd: "%Y-%m-%d"
+      # ymd: "%Y-%m-%d"
 
   time:
     formats:
-      default: "%a, %m/%d/%Y %-l:%M %p"
-      receipt: "%b %e, %Y %-l:%M %p"
+      default: "(%a) %d %b %Y %-l:%M %p"
+      receipt: "%d %b %Y %-l:%M %p"
       timeonly: "%-l:%M %p"
-      usa: "%m/%d/%Y %-l:%M %p"
+      usa: "%d %b %Y %-l:%M %p"
+      
+      # default: "%a, %m/%d/%Y %-l:%M %p"
+      # receipt: "%b %e, %Y %-l:%M %p"
+      # timeonly: "%-l:%M %p"
+      # usa: "%m/%d/%Y %-l:%M %p"
 
   Facility: "!activerecord.models.facility.one!"
   Facilities: "!activerecord.models.facility.other!"
