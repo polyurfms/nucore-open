@@ -53,6 +53,9 @@ class FundingRequestsController < ApplicationController
       @account = Account.find params[:account_id].to_i
     end
 
+    @funding_request = FundingRequest.new
+    @funding_request.request_type="LOCK_FUND_REQUEST"
+
   end
 
   def is_allow_request
@@ -80,8 +83,8 @@ class FundingRequestsController < ApplicationController
     puts "[create_funding_request()][START]"
 
     #message = "Error : Allocation must be a positive number!"
-    funding_request = params[:funding_request]
-    account_id = funding_request[:account_id].to_i
+    fr_param = params[:funding_request]
+    account_id = fr_param[:account_id].to_i
 
     @account = session_user.accounts.find(account_id)
 
@@ -94,7 +97,7 @@ class FundingRequestsController < ApplicationController
 
     if is_allow_request
 
-      @at = FundingRequest.new(
+      @funding_request = FundingRequest.new(
               funding_request_params.merge(
                 created_by: session_user.id,
                 status: "PROCESSING"
@@ -102,17 +105,18 @@ class FundingRequestsController < ApplicationController
             )
 
 
-      if @at.save
+      if @funding_request.save
         flash[:notice] = "Save success" #text("update.success")
         redirect_to account_funding_requests_path(account_id)
       else
         #@input_amt = amt
-        flash.now[:error]= @at.errors.full_messages.to_sentence
+        flash.now[:error]= @funding_request.errors.first[1]
+        puts @funding_request.request_type
         render :index
       end
 
     else
-      flash[:error] = I18n.t(".funding_requests.index.message.in_progrcess")
+      flash[:error] = I18n.t(".funding_requests.index.message.in_progress")
       redirect_to account_funding_requests_path(account_id)
     end
 

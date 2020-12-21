@@ -8,7 +8,7 @@
   <br>
   %p= t(".committed_amt", committed_amt: @account.committed_amt)
   %p= t(".total_expense", total_expense: @account.total_expense)
-
+  %p= t(".free_balance", free_balance: @account.free_balance)
 
 :javascript
   function PopUpMessage(){
@@ -36,9 +36,7 @@
 <br>
 
 -if is_allow_request
-  = simple_form_for(FundingRequest.new, url: account_create_funding_request_path(@account)) do |f|
-    = f.error_messages
-    = f.error_notification
+  = simple_form_for(@funding_request, url: account_create_funding_request_path(@account)) do |f|
     = f.input :request_type, collection: FundingRequest.request_types, label_method: ->(type) { t(type, scope: "funding_requests.request_type.") }
     = f.input :request_amount
     = f.hidden_field :account_id ,  value: @account.id
@@ -46,7 +44,7 @@
     = f.submit t(".new_request"), class: "btn btn-primary",id:"submitBtn",style:"display:none"
 -if !is_allow_request
   <div class="notice">
-  %h4= t(".message.in_progrcess")
+  %h4= t(".message.in_progress")
   </div>
   <br>
 <br>
