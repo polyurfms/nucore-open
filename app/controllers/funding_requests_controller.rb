@@ -46,10 +46,10 @@ class FundingRequestsController < ApplicationController
 
   def init_account
     if params.key? :id
-      puts "[id]" + params[:id].to_s
+#      puts "[id]" + params[:id].to_s
       @account = Account.find params[:id].to_i
     elsif params.key? :account_id
-      puts "[account_id]" + params[:account_id].to_s
+#      puts "[account_id]" + params[:account_id].to_s
       @account = Account.find params[:account_id].to_i
     end
 
@@ -80,8 +80,6 @@ class FundingRequestsController < ApplicationController
   end
 
   def create_funding_request
-    puts "[create_funding_request()][START]"
-
     #message = "Error : Allocation must be a positive number!"
     fr_param = params[:funding_request]
     account_id = fr_param[:account_id].to_i
@@ -111,7 +109,6 @@ class FundingRequestsController < ApplicationController
       else
         #@input_amt = amt
         flash.now[:error]= @funding_request.errors.first[1]
-        puts @funding_request.request_type
         render :index
       end
 
