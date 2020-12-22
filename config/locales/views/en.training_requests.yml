@@ -3,8 +3,8 @@ en:
     training_requests:
       new:
         requires_approval: |
-          The %{product} requires approval to reserve. Would you like to be
-          contacted by the !facility_downcase! for access or training?
+          The %{product} requires training to reserve. Would you like to be
+          contacted by the !facility_downcase! for training?
     training_request_mailer:
       notify_facility_staff:
         body: |

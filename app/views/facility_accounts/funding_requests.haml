@@ -6,9 +6,11 @@
 
 = render "sidebar"
 %h2= @account
-%h4= t(".total_locked_amount")
-%h4= @account.committed_amt
 
+= readonly_form_for :account do |f|
+  = f.input :committed_amt, label: text("account_allocations.new.committed_amt"), as: :readonly
+  = f.input :total_expense, label: text("account_allocations.new.total_expense"), as: :readonly
+  = f.input :free_balance, label: text("account_allocations.new.free_balance"), as: :readonly
 
 
 %table.table.table-striped.table-hover

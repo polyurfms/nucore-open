@@ -7,8 +7,10 @@
   %h3= @account.account_number
   %p= @account.description_to_s
   <br>
-  %p= t(".committed_amt", committed_amt: @account.committed_amt)
-  %p= t(".total_expense", total_expense: @account.total_expense)
-  %p= t(".free_balance", free_balance: @account.free_balance)
+
+  = readonly_form_for :account do |f|
+    = f.input :committed_amt, label: text("account_allocations.new.committed_amt")
+    = f.input :total_expense, label: text("account_allocations.new.total_expense")
+    = f.input :free_balance, label: text("account_allocations.new.free_balance")
 
 = render "member_allocation_table"
