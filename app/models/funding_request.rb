@@ -9,6 +9,7 @@ class FundingRequest < ApplicationRecord
 
     validates :debit_amt, numericality: {greater_than_or_equal_to: 1, message: "Please input postive value"}, allow_nil:true , label: false
     validates :credit_amt, numericality: {greater_than_or_equal_to: 1, message: "Please input postive value"}, allow_nil:true , label: false
+    validates :request_amount, numericality: {greater_than_or_equal_to: 1, message: "Please input postive value"}, allow_nil:true , label: false
 
     attr_accessor :request_amount
 
@@ -17,15 +18,15 @@ class FundingRequest < ApplicationRecord
     end
 
     def request_amount
-        if (request_type == "LOCK_FUND_REQUEST")
-          self.debit_amt
-        else
-          self.credit_amt
-        end
+      if (request_type == "LOCK_FUND_REQUEST")
+        self.debit_amt
+      else
+        self.credit_amt
+      end
     end
 
     def request_amount=(value)
-      if (request_type == "LOCK_FUND_REQUEST")
+      if (request_type == "LOCK_FUND_REQUEST" )
         self.debit_amt = value
       else
         self.credit_amt = value

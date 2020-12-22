@@ -618,6 +618,7 @@ en:
       head: "Lock funds"
       committed_amt: "Committed Amount: %{committed_amt}"
       total_expense: "Total Expense Amount: %{total_expense}"
+      free_balance: "Free balance: %{free_balance}"
       amount : "Amount"
       save: "save"
       new_request : "New Request"
@@ -640,7 +641,7 @@ en:
         status : "Status"
         Amount : "Amount"
       message:
-        in_progrcess : "Cannot make request until existing request executed."
+        in_progress : "Cannot submit new request until existing request executed."
 
 
   statements:
@@ -1267,7 +1268,9 @@ en:
       business_administrator: Business Administrator
     allocation:
       save: Save
-      committed_amt: "Committed Amount: %{committed_amt}"
+      committed_amt: "Committed amount"
+      _amt: "Committed amount"
+      committed_amt: "Committed amount"
     member_allocation_table:
       th:
         name: Name (username)
@@ -1278,9 +1281,9 @@ en:
 
   account_allocations:
     new:
-      committed_amt: "Committed Amount: %{committed_amt}"
-      total_expense: "Total Expense Amount: %{total_expense}"
-      free_balance: "Free balance: %{free_balance}"
+      committed_amt: "Committed Amount"
+      total_expense: "Total Expense Amount"
+      free_balance: "Free balance"
     member_allocation_table:
       th:
         name: Name (username)

@@ -36,20 +36,17 @@ class FacilityAccountsController < ApplicationController
   end
 
   def allocation
-    puts "allocation"
     @account_users = @account.account_users
   end
 
 
 
   def funding_requests
-    puts "account_transaction"
     @account_users = @account.account_users
   end
 
 
   def allocation_update
-    puts "[allocation_update][Start]"
 
     au = params[:account_user]
     auv = au.values

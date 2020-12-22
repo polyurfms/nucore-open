@@ -9,10 +9,10 @@
 
     = tab t(".orders"), facility_account_orders_path(current_facility, @account), (secondary_tab == "orders")
 
+  = tab t(".lock_fund"), facility_account_funding_requests_path(current_facility, @account), (secondary_tab == "funding_requests")
+
   - if @account.can_allocate?
     = tab t(".allocation"), facility_account_allocation_path(current_facility, @account), (secondary_tab == "allocation")
 
   - if show_account_facilities_tab?(current_ability, @account)
     = tab Facility.model_name.human(count: :other), edit_facility_account_account_facility_joins_path(current_facility, @account), (secondary_tab == "facilities")
-
-  = tab t(".lock_fund"), facility_account_funding_requests_path(current_facility, @account), (secondary_tab == "funding_requests")
