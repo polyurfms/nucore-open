@@ -119,15 +119,6 @@ class Account < ApplicationRecord
     for_user(order_detail.user).for_facility(order_detail.facility)
   end
 
-  def total_expense
-    AccountUserExpense.where(account_id: id).sum("expense_amt")
-  end
-
-  def free_balance
-    committed_amt - total_expense
-  end
-
-
   def type_string
     I18n.t("activerecord.models.#{self.class.to_s.underscore}.one", default: self.class.model_name.human)
   end
@@ -288,5 +279,18 @@ class Account < ApplicationRecord
 
   def can_allocate?
     allows_allocation? && account_users.active.length() > 1
+  end
+
+
+  def total_expense
+    AccountUserExpense.where(account_id: id).sum("expense_amt")
+  end
+
+  def free_balance
+    committed_amt - total_expense
+  end
+
+  def has_sufficient_fund?
+    committed_amt > total_expense
   end
 end

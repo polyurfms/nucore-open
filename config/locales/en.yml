@@ -762,6 +762,9 @@ en:
       missing_price_policy:
         badge: Missing Price Policy
         alert: This order does not have a price policy assigned. Please ensure that there is a price policy for the date this order was fulfilled. Saving will attempt to assign a price policy.
+      insufficient_fund:
+        badge: Insufficient Fund
+        alert: Commmitted amount unable to settle the expense.
       in_review:
         badge: In Review
         alert: This order is currently in review.
