@@ -1253,7 +1253,7 @@ en:
       head: Payment Source Details
       save: Save
     show:
-      head: Pyament Source Details
+      head: Payment Source Details
       save: Save
     member_table:
       add_access: Add Access
