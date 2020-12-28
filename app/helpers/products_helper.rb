@@ -36,7 +36,9 @@ module ProductsHelper
       { class: ["fa fa-calendar fa-lg fa-fw"], title: t("instruments.public_schedule.icon") }
     end
 
-    link_to "", facility_instrument_public_schedule_path(product.facility, product), opts
+    link_to (image_tag("calendar.png")), facility_instrument_public_schedule_path(product.facility, product), opts
+
+
   end
 
   def show_buttons_to_control_all_relays?(products)
@@ -47,13 +49,13 @@ module ProductsHelper
 
   def public_calendar_availability_options(product)
     if product.offline?
-      { class: ["fa fa-calendar fa-lg fa-fw", "in-use"],
+      { #class: ["fa fa-calendar fa-lg fa-fw", "in-use"],
         title: text("instruments.offline.note") }
     elsif product.walkup_available?
-      { class: ["fa fa-calendar fa-lg fa-fw", "available"],
+      { #class: ["fa fa-calendar fa-lg fa-fw", "available"],
         title: text("instruments.public_schedule.available") }
     else
-      { class: ["fa fa-calendar fa-lg fa-fw", "in-use"],
+      { #class: ["fa fa-calendar fa-lg fa-fw", "in-use"],
         title: text("instruments.public_schedule.unavailable") }
     end
   end
