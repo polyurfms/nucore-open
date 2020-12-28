@@ -5,7 +5,8 @@ module ExternalAccounts
     config.to_prepare do
       #Rails.logger.info "prepare engine xxxxxxxxxxxxxxxxxxxxxxxxxxx"dddd
       ApplicationController.send :include, ExternalAccounts::ApplicationControllerExtension
-      NavTab::LinkCollection.send :include, ExternalAccounts::LinkCollectionExtension
+      # disable payment source request page
+      #NavTab::LinkCollection.send :include, ExternalAccounts::LinkCollectionExtension
 
     end
 
