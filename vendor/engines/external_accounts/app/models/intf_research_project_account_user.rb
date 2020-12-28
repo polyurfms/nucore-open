@@ -1,6 +1,6 @@
 module ExternalAccounts
 
-  class ExternalAccount < ApplicationRecord
+  class IntfResearchProjectAccountUser < ApplicationRecord
 
     def to_s
       name

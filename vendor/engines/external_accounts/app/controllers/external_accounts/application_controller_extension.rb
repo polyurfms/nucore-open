@@ -26,7 +26,7 @@ module ExternalAccounts
 #        end
 
         # check if payment source not yet created
-        externalAccounts = ExternalAccount.where(username: session_user.username).where.not(account_number: accounts.pluck(:account_number))
+        externalAccounts = IntfResearchProjectAccountUser.where(username: session_user.username).where.not(account_number: accounts.pluck(:account_number))
 
         # Create missing account info
         if !externalAccounts.blank?
@@ -48,7 +48,7 @@ module ExternalAccounts
 
         #update pyament source expire date
 
-        externalAccounts = ExternalAccount.where(username: session_user.username).where(account_number: accounts.pluck(:account_number))
+        externalAccounts = IntfResearchProjectAccountUser.where(username: session_user.username).where(account_number: accounts.pluck(:account_number))
         if !externalAccounts.blank?
           externalAccounts.each do |ea|
             accounts.each do |a|
