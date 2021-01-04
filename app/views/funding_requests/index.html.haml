@@ -11,6 +11,9 @@
     = f.input :total_expense, label: text("account_allocations.new.total_expense")
     = f.input :free_balance, label: text("account_allocations.new.free_balance")
 
+-if Settings.fip_url.present?
+  Click <a href="#{Settings.fip_url}" target="_blank">here</a> to access Financial Information Platform (FIP) of the Finance Office
+
 :javascript
   function PopUpMessage(){
     document.getElementById("popUpWindow").style.display = "block";
