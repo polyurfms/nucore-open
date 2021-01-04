@@ -281,8 +281,9 @@ Rails.application.routes.draw do
       get "/allocation", to: "facility_accounts#allocation", as: "allocation"
       get "/funding_requests", to: "facility_accounts#funding_requests", as: "funding_requests"
 
-
       post "/allocation_update", to: "facility_accounts#allocation_update", as: "allocation_update"
+      post "/create_funding_request", to: "facility_accounts#create_funding_request", as: "create_funding_request"
+
 
       if Account.config.statements_enabled?
         get "/statements", to: "facility_accounts#statements", as: :statements

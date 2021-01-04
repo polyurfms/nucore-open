@@ -55,6 +55,7 @@ class FundingRequestsController < ApplicationController
 
     @funding_request = FundingRequest.new
     @funding_request.request_type="LOCK_FUND_REQUEST"
+    @funding_requests = @account.funding_requests.order(created_at: :desc)
 
   end
 

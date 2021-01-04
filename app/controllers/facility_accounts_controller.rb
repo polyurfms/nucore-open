@@ -14,6 +14,8 @@ class FacilityAccountsController < ApplicationController
   before_action :build_account, only: [:new, :create]
 
   authorize_resource :account
+  helper_method :is_allow_request
+
 
   layout "two_column"
   before_action { @active_tab = "admin_users" }
@@ -21,10 +23,7 @@ class FacilityAccountsController < ApplicationController
   # GET /facilties/:facility_id/accounts
   def index
     accounts = Account.with_orders_for_facility(current_facility)
-
     @accounts = accounts.paginate(page: params[:page])
-
-
   end
 
   # GET /facilties/:facility_id/accounts/:id
@@ -39,12 +38,58 @@ class FacilityAccountsController < ApplicationController
     @account_users = @account.account_users
   end
 
-
+  def funding_request_params
+      params.require(:funding_request).permit(:request_type, :credit_amt, :debit_amt, :account_id, :request_amount)
+  end
 
   def funding_requests
     @account_users = @account.account_users
+    @funding_request = FundingRequest.new
+    @funding_request.request_type="LOCK_FUND_REQUEST"
+    @funding_requests = @account.funding_requests.order(created_at: :desc)
   end
 
+  def create_funding_request
+    #puts "funding request update starts"
+    @funding_requests = @account.funding_requests.order(created_at: :desc)
+
+    fr_param = params[:funding_request]
+
+    if is_allow_request
+
+      @funding_request = FundingRequest.new(
+              funding_request_params.merge(
+                created_by: session_user.id,
+                status: "PROCESSING"
+              ),
+            )
+
+
+      if @funding_request.save
+        flash[:notice] = "Save success" #text("update.success")
+        redirect_to facility_account_funding_requests_path(current_facility, @account)
+      else
+        #@input_amt = amt
+        flash.now[:error]= @funding_request.errors.first[1]
+        render :funding_requests
+      end
+
+    else
+      flash[:error] = I18n.t(".funding_requests.index.message.in_progress")
+      redirect_to facility_account_funding_requests_path(current_facility, @account)
+    end
+
+  end
+
+  def is_allow_request
+    allow_request = true
+    @account.funding_requests.each  do |at|
+      if at.status == "PROCESSING"
+        allow_request = false
+      end
+    end
+    return allow_request
+  end
 
   def allocation_update
 
@@ -64,76 +109,7 @@ class FacilityAccountsController < ApplicationController
     #load model for form display
     @account_users = @account.account_users
     render :allocation
-=begin
-    accountUsersJson = (params[:account_user])
-    indexValue = 1
 
-    # get allocation_sum
-    allocation_sum = 100000.1
-
-    inputSum = 0.0
-
-    isValid = true
-
-    message = ""
-
-    if !accountUsersJson.nil?
-      accountUsersJson.each do |au|
-        inputAllocationAmt = 0
-        if !inputAllocationAmt.nil? || !au[indexValue][:allocation_amt].empty?
-          inputAllocationAmt = au[indexValue][:allocation_amt].to_f
-        end
-
-
-        if inputAllocationAmt < 0
-          isValid = false
-          message = "Error : Allocation must be a positive number!"
-        end
-        inputSum += inputAllocationAmt
-      end
-
-      if !@account.allows_allocation && isValid
-        isValid = false
-        message = "Error : The allocation is not active "
-      end
-
-      if  inputSum > allocation_sum && isValid
-        isValid = false
-        message = "Error : The allocation must be less than budget amount. "
-      end
-
-
-      if isValid
-        accountUsersJson.each do |au|
-          acountUserUpdate = AccountUser.find_by(id:au[indexValue][:id])
-          if au[indexValue][:allocation_amt].nil? || au[indexValue][:allocation_amt].empty?
-            acountUserUpdate.allocation_amt = 0
-          else
-            acountUserUpdate.allocation_amt = au[indexValue][:allocation_amt]
-          end
-          acountUserUpdate.save
-        end
-        message  = "Allocation update"
-      end
-
-    else
-      isValid = false
-      message = "Error : No members in payment sources!"
-    end
-
-
-    if isValid
-      flash[:notice] = message
-    else
-      flash[:error] = message
-    end
-
-    redirect_to facility_account_allocation_path
-    puts "[allocation_update][end]"
-
-
-    return true
-=end
   end
 
   def edit
