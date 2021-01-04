@@ -12,8 +12,8 @@
   = f.input :total_expense, label: text("account_allocations.new.total_expense"), as: :readonly
   = f.input :free_balance, label: text("account_allocations.new.free_balance"), as: :readonly
 
-
-Click <a href="https://appuat01.polyu.edu.hk/fofip/" target="_blank">here</a> to access Financial Information Platform (FIP) of the Finance Office
+-if Settings.fip_url.present?
+  Click <a href="#{Settings.fip_url}" target="_blank">here</a> to access Financial Information Platform (FIP) of the Finance Office
 
 %table.table.table-striped.table-hover
   %thead
