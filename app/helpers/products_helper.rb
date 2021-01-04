@@ -51,12 +51,13 @@ module ProductsHelper
     if product.offline?
       { #class: ["fa fa-calendar fa-lg fa-fw", "in-use"],
         title: text("instruments.offline.note") }
-    elsif product.walkup_available?
-      { #class: ["fa fa-calendar fa-lg fa-fw", "available"],
-        title: text("instruments.public_schedule.available") }
-    else
-      { #class: ["fa fa-calendar fa-lg fa-fw", "in-use"],
-        title: text("instruments.public_schedule.unavailable") }
+    #  }
+    #elsif product.walkup_available?
+    #  { #class: ["fa fa-calendar fa-lg fa-fw", "available"],
+    #    title: text("instruments.public_schedule.available") }
+    #else
+    #  { #class: ["fa fa-calendar fa-lg fa-fw", "in-use"],
+    #    title: text("instruments.public_schedule.unavailable") }
     end
   end
 
