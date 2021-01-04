@@ -46,13 +46,14 @@ class FacilityAccountsController < ApplicationController
     @account_users = @account.account_users
     @funding_request = FundingRequest.new
     @funding_request.request_type="LOCK_FUND_REQUEST"
+    @funding_requests = @account.funding_requests.order(created_at: :desc)
   end
 
   def create_funding_request
-    puts "funding request update starts"
+    #puts "funding request update starts"
+    @funding_requests = @account.funding_requests.order(created_at: :desc)
 
     fr_param = params[:funding_request]
-
 
     if is_allow_request
 

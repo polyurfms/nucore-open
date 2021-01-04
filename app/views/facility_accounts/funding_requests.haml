@@ -34,7 +34,7 @@
       %th= t(".table.status")
       %th= t(".table.amount")
   %tbody
-    - @account.funding_requests.each  do |at|
+    - @funding_requests.each  do |at|
       %tr
         %td= format_usa_datetime(at.created_at)
         %td= t("funding_requests.request_type.#{at.request_type}")
