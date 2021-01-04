@@ -1284,6 +1284,7 @@ en:
       committed_amt: "Committed Amount"
       total_expense: "Total Expense Amount"
       free_balance: "Free balance"
+      alert_threshold: "Alert threshold"
     member_allocation_table:
       th:
         name: Name (username)

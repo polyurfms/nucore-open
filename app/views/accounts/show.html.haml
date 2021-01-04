@@ -14,6 +14,8 @@
   = f.input :committed_amt, label: text("account_allocations.new.committed_amt"), as: :readonly
   = f.input :total_expense, label: text("account_allocations.new.total_expense"), as: :readonly
   = f.input :free_balance, label: text("account_allocations.new.free_balance"), as: :readonly
+  - if @account.type == "NufsAccount"
+    = f.input :alert_threshold, label: text("account_allocations.new.alert_threshold")
 
   = f.input :type, as: :hidden, input_html: { value: @account.type, name: "type" }
   - if @account.affiliate
