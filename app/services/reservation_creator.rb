@@ -46,11 +46,11 @@ class ReservationCreator
                 raise ActiveRecord::Rollback
               end  
             end
-            
-            if(@account.free_balance <= @order_detail.estimated_cost)
-              not_enough = "Free balance not enough"
-              raise ActiveRecord::Rollback
-            end
+          end
+
+          if(@account.free_balance <= @order_detail.estimated_cost)
+            not_enough = "Free balance not enough"
+            raise ActiveRecord::Rollback
           end
         end
 
