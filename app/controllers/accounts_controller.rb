@@ -73,13 +73,13 @@ class AccountsController < ApplicationController
 
   def check_alert_threshold
     if(@account.type == "NufsAccount")
-      if(params[:nufs_account][:alert_threshold].nil? || params[:nufs_account][:alert_threshold] == "")
+      if(params[:nufs_account][:alert_threshold].nil? || params[:nufs_account][:alert_threshold] == "" || params[:nufs_account][:alert_threshold].to_f < 0)
         flash[:error] = "Alert threshold must be equal to or larger than 0"
         redirect_to account_path
       end
       @account.alert_threshold = params[:nufs_account][:alert_threshold].to_f
       free_balance = @account.free_balance
-      if(@account.alert_threshold < 0 || @account.alert_threshold > free_balance)
+      if(@account.alert_threshold > free_balance)
         flash[:error] = "Free balance must be equal to or larger than alert threshold"
         redirect_to account_path
       end
