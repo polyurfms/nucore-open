@@ -169,12 +169,6 @@ class FacilityAccountsController < ApplicationController
       owner_user: @owner_user,
       params: params,
     ).update
-    
-    if(@account.type == "NufsAccount")
-      @account.alert_threshold = params[:nufs_account][:alert_threshold].to_f
-    else
-      @account.alert_threshold = 0
-    end
 
     if @account.save
       LogEvent.log(@account, :update, current_user)

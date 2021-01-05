@@ -8,7 +8,7 @@ class NufsAccountBuilder < AccountBuilder
 
   # Override strong_params for `build` account.
   def account_params_for_build
-    super + [{ account_number_parts: NufsAccount.account_number_field_names}] + [:allows_allocation] + [:affiliate_id] + [:affiliate_other]
+    super + [{ account_number_parts: NufsAccount.account_number_field_names}] + [:allows_allocation] + [:affiliate_id] + [:affiliate_other] + [:alert_threshold] 
   end
 
   # Hooks into superclass's `build` method.
@@ -28,7 +28,8 @@ class NufsAccountBuilder < AccountBuilder
     :description,
     :allows_allocation,
     :affiliate_id,
-    :affiliate_other
+    :affiliate_other, 
+    :alert_threshold
   ]
 end
 
