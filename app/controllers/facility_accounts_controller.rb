@@ -12,7 +12,7 @@ class FacilityAccountsController < ApplicationController
   before_action :init_current_facility
   before_action :init_account, except: :search_results
   before_action :build_account, only: [:new, :create]
-  before_action :check_alert_threshold, only: [:update]
+  before_action :check_alert_threshold, only: [:update, :create]
 
   authorize_resource :account
 
@@ -271,17 +271,27 @@ class FacilityAccountsController < ApplicationController
 
   def check_alert_threshold
 
+    render_page = false
     if(@account.type == "NufsAccount")
-      if(params[:nufs_account][:alert_threshold].nil? || params[:nufs_account][:alert_threshold] == "")
+      if(params[:nufs_account][:alert_threshold].nil? || params[:nufs_account][:alert_threshold] == "" || @account.alert_threshold < 0)
         flash[:error] = "Alert threshold must be equal to or larger than 0"
-        render action: "edit"
+        render_page = true
       end
       @account.alert_threshold = params[:nufs_account][:alert_threshold].to_f
       free_balance = @account.free_balance
-      if(@account.alert_threshold < 0 || @account.alert_threshold > free_balance)
-        flash[:error] = "Free balance must be equal to or larger than alert threshold"
-        render action: "edit"
+
+      if(request.env['PATH_INFO'].eql?('/edit'))
+        if(@account.alert_threshold < 0 || @account.alert_threshold > free_balance)
+          flash[:error] = "Free balance must be equal to or larger than alert threshold"
+          render_page = true
+        end
       end
+      
+    end
+
+    if(render_page == true)
+      render action: "edit" if(request.env['PATH_INFO'].eql?('/edit'))
+      render action: "new"
     end
   end
 
