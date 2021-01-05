@@ -318,6 +318,7 @@ Rails.application.routes.draw do
 
     get "disputed_orders", to: "facilities#disputed_orders"
     get "notifications",       to: "facility_notifications#index"
+    get "insufficient_fund",       to: "facility_insufficient_fund#index"
     post "notifications/send", to: "facility_notifications#send_notifications", as: "send_notifications"
     get "transactions",        to: "facilities#transactions"
     get "in_review",           to: "facility_notifications#in_review",          as: "notifications_in_review"
