@@ -32,7 +32,7 @@ class ReservationCreator
 
         save_reservation_and_order_detail(session_user)
 
-        # When allows_allocation is true, free_balance must more than that stimated_cost 
+        # When allows_allocation is true, free_balance must more than that stimated_cost
         not_enough = ""
 
         if(session_user.administrator? != true)
@@ -41,15 +41,15 @@ class ReservationCreator
             @account_user = AccountUser.find_by(account_id: @order_detail.account_id, deleted_at: nil, user_id: session_user.id)
 
             if(@account_user.user_role != "Owner")
-              if(@account_user.quota_balance <= @order_detail.estimated_cost)
-                not_enough = "Quota balance not enough"
+              if(@account_user.quota_balance < @order_detail.estimated_cost)
+                not_enough = "Payment source insufficient fund"
                 raise ActiveRecord::Rollback
-              end  
+              end
             end
           end
 
-          if(@account.free_balance <= @order_detail.estimated_cost)
-            not_enough = "Free balance not enough"
+          if(@account.free_balance < @order_detail.estimated_cost)
+            not_enough = "Payment source insufficient fund"
             raise ActiveRecord::Rollback
           end
         end
@@ -70,7 +70,7 @@ class ReservationCreator
       rescue StandardError => e
         msg = e.message
         unless not_enough == ""
-          msg = not_enough 
+          msg = not_enough
         end
         @error = I18n.t("orders.purchase.error", message: msg).html_safe
         # @error = I18n.t("orders.purchase.error", message: e.message).html_safe
