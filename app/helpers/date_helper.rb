@@ -20,20 +20,19 @@ module DateHelper
   # Expected date format: "MM/DD/YYYY"
   # Time string: "HH:MM AM/PM"
   def parse_usa_date(date, time_string = nil)
-    date = date.to_s.strip
-
     # TODO: Many tests pass either a Date, a Time, or an YYYY-MM-DD formatted
     # string as a parameter. This conditional will handle those cases. We should
     # probably go through and clean up the tests at some point.
+
     date = format_usa_date(Date.parse(date)) if date =~ /\A\d{4}-\d{2}-\d{2}/
 
+    date = human_date(Date.strptime(date, "%m/%d/%Y"))  if date =~ /\A\d{4}-\d{2}-\d{2}/
+    
     # return unless usa_formatted_date?(date)
     # date_string = Date.strptime(date, "%m/%d/%Y").to_s
 
     return unless ddmmmyyyy_formatted_date?(date)
     date_string = Date.strptime(date, "%d %b %Y").to_s
-
-
 
     date_string += " #{time_string}" if time_string
 

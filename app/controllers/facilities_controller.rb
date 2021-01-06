@@ -148,8 +148,8 @@ class FacilitiesController < ApplicationController
     order_details = OrderDetail.in_dispute.for_facility(current_facility)    
     @search_form = TransactionSearch::SearchForm.new(params[:search])
 
-    @search_form.date_range_start = parse_ddmmmyyyy_import_date(@search_form.date_range_start) unless @search_form.date_range_start.nil?
-    @search_form.date_range_end = parse_ddmmmyyyy_import_date(@search_form.date_range_end) unless @search_form.date_range_end.nil?
+    @search_form.date_range_start = @search_form.date_range_start unless @search_form.date_range_start.nil?
+    @search_form.date_range_end = @search_form.date_range_end unless @search_form.date_range_end.nil?
     @search = TransactionSearch::Searcher.billing_search(order_details, @search_form, include_facilities: current_facility.cross_facility?)
     @date_range_field = @search_form.date_params[:field]
     @order_details = @search.order_details.reorder(:dispute_at).paginate(page: params[:page])
@@ -160,8 +160,8 @@ class FacilitiesController < ApplicationController
     
     @search_form = TransactionSearch::SearchForm.new(params[:search])
 
-    @search_form.date_range_start = parse_ddmmmyyyy_import_date(@search_form.date_range_start) unless @search_form.date_range_start.nil?
-    @search_form.date_range_end = parse_ddmmmyyyy_import_date(@search_form.date_range_end) unless @search_form.date_range_end.nil?
+    @search_form.date_range_start = @search_form.date_range_start unless @search_form.date_range_start.nil?
+    @search_form.date_range_end = @search_form.date_range_end unless @search_form.date_range_end.nil?
     @search = TransactionSearch::Searcher.billing_search(
       OrderDetail.all_movable.for_facility(current_facility),
       @search_form,

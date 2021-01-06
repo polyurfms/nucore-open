@@ -21,9 +21,6 @@ class SingleReservationsController < ApplicationController
   end
 
   def create
-    params["reservation"]["reserve_start_date"] = parse_ddmmmyyyy_import_date(params["reservation"]["reserve_start_date"] )
-    params["reservation"]["reserve_end_date"] = parse_ddmmmyyyy_import_date(params["reservation"]["reserve_end_date"] )
-    
     creator = ReservationCreator.new(@order, @order_detail, params)
     @reservation = creator.reservation
     @account = Account.find_by("id = #{params["order_account"].to_i} AND expires_at >= '#{@reservation.reserve_end_at}'")

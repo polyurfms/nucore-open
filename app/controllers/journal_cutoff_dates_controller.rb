@@ -52,7 +52,6 @@ class JournalCutoffDatesController < ApplicationController
   end
 
   def journal_cutoff_date_params
-    params["journal_cutoff_date"]["cutoff_date"]["date"] = parse_ddmmmyyyy_import_date(params["journal_cutoff_date"]["cutoff_date"]["date"])
     params.require(:journal_cutoff_date).permit(cutoff_date: [:date, :hour, :minute, :ampm])
   end
 

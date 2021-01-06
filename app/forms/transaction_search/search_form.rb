@@ -34,8 +34,8 @@ module TransactionSearch
     end
 
     def date_params
-      start_d = parse_ddmmmyyyy_import_date(date_range_start)
-      end_d = parse_ddmmmyyyy_import_date(date_range_end)
+      start_d = date_range_start
+      end_d = date_range_end
 
       {
         field: date_range_field,

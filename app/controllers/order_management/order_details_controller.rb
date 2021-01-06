@@ -50,9 +50,6 @@ class OrderManagement::OrderDetailsController < ApplicationController
   # GET /facilities/:facility_id/orders/:order_id/order_details/:id/pricing
   def pricing
     checker = OrderDetails::PriceChecker.new(@order_detail)
-    
-    params[:order_detail]["reservation"]["reserve_start_date"] = parse_ddmmmyyyy_import_date(params[:order_detail]["reservation"]["reserve_start_date"]) unless params[:order_detail]["reservation"]["reserve_start_date"].nil?
-    params[:order_detail]["reservation"]["actual_start_date"] = parse_ddmmmyyyy_import_date(params[:order_detail]["reservation"]["actual_start_date"]) unless params[:order_detail]["reservation"]["actual_start_date"].nil?
     @prices = checker.prices_from_params(params[:order_detail] || empty_params)
 
     render json: @prices.to_json

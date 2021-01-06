@@ -58,7 +58,7 @@ module Reports
     def init_report_params
       
       # @date_start = parse_usa_date(params[:date_start])
-      @date_start = parse_usa_date(parse_ddmmmyyyy_import_date(params[:date_start]))
+      @date_start = parse_usa_date(params[:date_start])
       @date_start = if @date_start.blank?
                       (Time.zone.now - 1.month).beginning_of_month
                     else
@@ -66,7 +66,7 @@ module Reports
                     end
 
       # @date_end = parse_usa_date(params[:date_end])
-      @date_end = parse_usa_date(parse_ddmmmyyyy_import_date(params[:date_end]))
+      @date_end = parse_usa_date(params[:date_end])
       @date_end = if @date_end.blank?
                     @date_start.end_of_month
                   else
