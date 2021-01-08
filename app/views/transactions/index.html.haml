@@ -8,3 +8,6 @@
   = render "shared/transactions/table", order_details: @order_details, show_statements: true
 - else
   %p.alert.alert-info= t(".no_transactions")
+
+:javascript
+  $(".datepicker").datepicker({ dateFormat: 'd M yy' });

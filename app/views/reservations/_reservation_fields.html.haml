@@ -20,3 +20,6 @@
 
       .span5
         = f.input :duration_mins, hint: text(".duration_hint"), input_html: { value: f.object.duration_mins || default_duration, class: "timeinput", disabled: end_time_editing_disabled?(f.object) }
+
+:javascript
+  $(".datepicker").datepicker({ dateFormat: 'd M yy' });

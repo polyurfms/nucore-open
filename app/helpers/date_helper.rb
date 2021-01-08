@@ -20,16 +20,20 @@ module DateHelper
   # Expected date format: "MM/DD/YYYY"
   # Time string: "HH:MM AM/PM"
   def parse_usa_date(date, time_string = nil)
-    date = date.to_s.strip
-
     # TODO: Many tests pass either a Date, a Time, or an YYYY-MM-DD formatted
     # string as a parameter. This conditional will handle those cases. We should
     # probably go through and clean up the tests at some point.
+
     date = format_usa_date(Date.parse(date)) if date =~ /\A\d{4}-\d{2}-\d{2}/
 
-    return unless usa_formatted_date?(date)
+    date = human_date(Date.strptime(date, "%m/%d/%Y"))  if date =~ /\A\d{4}-\d{2}-\d{2}/
+    
+    # return unless usa_formatted_date?(date)
+    # date_string = Date.strptime(date, "%m/%d/%Y").to_s
 
-    date_string = Date.strptime(date, "%m/%d/%Y").to_s
+    return unless ddmmmyyyy_formatted_date?(date)
+    date_string = Date.strptime(date, "%d %b %Y").to_s
+
     date_string += " #{time_string}" if time_string
 
     Time.zone.parse(date_string)
@@ -45,8 +49,17 @@ module DateHelper
     datetime.present? ? I18n.l(datetime, format: :usa) : ""
   end
 
+  def ddmmmyyyy_format_usa_date(datetime)
+    ddmmmyyyy_format_usa_datetime(datetime.try(:to_date))
+  end
+
+  def ddmmmyyyy_format_usa_datetime(datetime)
+    datetime.present? ? I18n.l(datetime, format: :receipt) : ""
+  end
+
   def human_date(date)
-    date.strftime("%B %e, %Y")
+    date.strftime("%d %b %Y")
+    # date.strftime("%B %e, %Y")
   end
 
   def human_time(dt)
@@ -109,5 +122,25 @@ module DateHelper
   def parse_mmddyyyy_in_current_zone!(date_string)
     DateTime.strptime(date_string, "%m/%d/%Y").to_date.beginning_of_day
   end
+
+  DDMMMYYYY_DATE_FORMAT = %r(^(([0-9])|([0-2][0-9])|([3][0-1]))\ (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\ \d{4}$)
+
+  def ddmmmyyyy_formatted_date?(date_string)
+    date_string.present? && date_string =~ DDMMMYYYY_DATE_FORMAT
+  end
+
+  def parse_ddmmmyyyy_import_date(date_string)
+    return nil unless ddmmmyyyy_formatted_date?(date_string)
+    begin
+      parse_ddmmmyyyy_in_current_zone!(date_string)
+    rescue ArgumentError
+      nil
+    end
+  end
+
+  def parse_ddmmmyyyy_in_current_zone!(date_string)
+    date_string.to_date.strftime("%m/%d/%Y")
+  end  
+
 
 end

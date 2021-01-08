@@ -6,6 +6,8 @@ module TransactionSearch
 
     include ActiveModel::Model
 
+    include DateHelper
+
     attr_accessor :date_range_field, :date_range_start, :date_range_end, :allowed_date_fields
     attr_accessor :facilities, :accounts, :products, :account_owners,
                   :order_statuses, :statements, :date_ranges, :ordered_fors
@@ -32,10 +34,13 @@ module TransactionSearch
     end
 
     def date_params
+      start_d = date_range_start
+      end_d = date_range_end
+
       {
         field: date_range_field,
-        start: date_range_start,
-        end: date_range_end,
+        start: start_d,
+        end: end_d,
       }
     end
 
