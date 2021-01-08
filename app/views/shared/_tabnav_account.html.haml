@@ -3,6 +3,7 @@
   - if @account.class.using_statements?
     = tab t('shared.tabnav_account.statement'), account_statements_path(@account), (secondary_tab == 'statements')
   = tab t('shared.tabnav_account.members'), account_account_users_path(@account), (secondary_tab == 'members')
-  = tab t('shared.tabnav_account.funding_requests'), account_funding_requests_path(@account), (secondary_tab == 'funding_requests')
+  - if @account.type == 'NufsAccount'
+    = tab t('shared.tabnav_account.funding_requests'), account_funding_requests_path(@account), (secondary_tab == 'funding_requests')
   - if @account.can_allocate?
     = tab t(".allocations"), account_account_allocations_path(@account), (secondary_tab == "allocations")

@@ -611,9 +611,11 @@ en:
 
   funding_requests:
     status:
-      PROCESSING: "In Progress"
-      COMPLETED: "Completed"
-      FAILED: "Failed"
+      PENDING_CHECK_FUND: "In Progress"
+      PENDING_LOCK_FUND: "In Progress"
+      SUCCESS: "Success"
+      FAILED_CHECK_FUND: "Failed"
+      FAILED_LOCK_FUND: "Failed"
     request_type:
       LOCK_FUND_REQUEST: "Top up"
       UNLOCK_FUND_REQUEST: "Release"
