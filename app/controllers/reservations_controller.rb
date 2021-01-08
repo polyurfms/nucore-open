@@ -175,11 +175,6 @@ class ReservationsController < ApplicationController
       return
     end
 
-    puts "Update"
-    puts "Update"
-    puts "Update"
-    puts reservation_params
-
     @reservation.assign_times_from_params(reservation_params)
     with_dropped_params do
       reservation_update_attributes = params.require(:reservation).permit(:note)
@@ -188,9 +183,6 @@ class ReservationsController < ApplicationController
       @reservation.assign_attributes(reservation_update_attributes)
     end
 
-    puts "0000000"
-    puts "0000000"
-    puts reservation_params
     render_edit && return unless changes_valid_for_update?
 
     Reservation.transaction do
