@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_29_093049) do
+ActiveRecord::Schema.define(version: 2021_01_07_093049) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -208,6 +208,7 @@ ActiveRecord::Schema.define(version: 2020_12_29_093049) do
     t.string "status", limit:40, null: false
     t.decimal "debit_amt", precision: 10, scale: 2
     t.decimal "credit_amt", precision: 10, scale: 2
+    t.string "remarks", limit: 100
     t.integer "created_by", null: false
     t.integer "updated_by", null: false
     t.datetime "created_at", null: false
