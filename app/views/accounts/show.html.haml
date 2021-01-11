@@ -29,4 +29,5 @@
   = render_view_hook("after_end_of_form", f: f, account: @account)
 
   = render partial: "accounts/suspend_button"
-  = f.submit t(".save"), class: "btn btn-primary"
+  - if @account.type == 'NufsAccount'
+    = f.submit t(".save"), class: "btn btn-primary"

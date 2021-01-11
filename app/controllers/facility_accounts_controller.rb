@@ -38,10 +38,6 @@ class FacilityAccountsController < ApplicationController
     @account_users = @account.account_users
   end
 
-  def funding_request_params
-      params.require(:funding_request).permit(:request_type, :credit_amt, :debit_amt, :account_id, :request_amount)
-  end
-
   def funding_requests
     @account_users = @account.account_users
     @funding_request = FundingRequest.new
@@ -56,23 +52,33 @@ class FacilityAccountsController < ApplicationController
     fr_param = params[:funding_request]
 
     if is_allow_request
-
-      @funding_request = FundingRequest.new(
-              funding_request_params.merge(
-                created_by: session_user.id,
-                status: "PROCESSING"
-              ),
-            )
-
-
+      creator = FundingRequestCreator.new(@account, session_user.id, params)
+      if creator.save()
+        redirect_to facility_account_funding_requests_path(current_facility, @account)
+      else
+        flash.now[:error] = creator.error.html_safe
+        @funding_request = creator.funding_request
+        render :funding_requests
+      end
+=begin
       if @funding_request.save
         flash[:notice] = "Save success" #text("update.success")
+        if @account.type == "ChequeOrOtherAccount"
+          if @funding_request.request_type == 'LOCK_FUND_REQUEST'
+            @account.committed_amt = @account.committed_amt + @funding_request.debit_amt
+          else
+            @account.committed_amt = @account.committed_amt + @funding_request.credit_amt
+          end
+          @account.save
+        end
+
         redirect_to facility_account_funding_requests_path(current_facility, @account)
       else
         #@input_amt = amt
         flash.now[:error]= @funding_request.errors.first[1]
         render :funding_requests
       end
+=end
 
     else
       flash[:error] = I18n.t(".funding_requests.index.message.in_progress")
@@ -84,7 +90,7 @@ class FacilityAccountsController < ApplicationController
   def is_allow_request
     allow_request = true
     @account.funding_requests.each  do |at|
-      if at.status == "PROCESSING"
+      if at.status == "PENDING_CHECK_FUND" or at.status == "PENDING_LOCK_FUND"
         allow_request = false
       end
     end

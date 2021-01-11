@@ -61,12 +61,10 @@ class FundingRequestsController < ApplicationController
 
   def is_allow_request
     #account_transactions = AccountTransaction.find_by(account_id:@account)
-
     allow_request = true
-
     @account.funding_requests.each  do |at|
 
-      if at.status == "PROCESSING"
+      if at.status == "PENDING_CHECK_FUND" or at.status == "PENDING_LOCK_FUND"
         allow_request = false
       end
 
@@ -87,29 +85,14 @@ class FundingRequestsController < ApplicationController
 
     @account = session_user.accounts.find(account_id)
 
-   # puts "[create_account_transactions()][@account.id]" + @account.to_s
-   #  operation_type = account_transaction[:operation_type].to_s
-   # puts "[create_account_transactions()][operation_type]" + operation_type
-   #  amt = account_transaction[:amt].to_f
-   # puts "[create_account_transactions()][amt]" + amt.to_s
-
-
     if is_allow_request
 
-      @funding_request = FundingRequest.new(
-              funding_request_params.merge(
-                created_by: session_user.id,
-                status: "PROCESSING"
-              ),
-            )
-
-
-      if @funding_request.save
-        flash[:notice] = "Save success" #text("update.success")
+      creator = FundingRequestCreator.new(@account, session_user.id, params)
+      if creator.save()
         redirect_to account_funding_requests_path(account_id)
       else
-        #@input_amt = amt
-        flash.now[:error]= @funding_request.errors.first[1]
+        flash.now[:error] = creator.error.html_safe
+        @funding_request = creator.funding_request
         render :index
       end
 
