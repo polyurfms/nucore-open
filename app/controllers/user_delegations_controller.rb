@@ -19,7 +19,11 @@ class UserDelegationsController < ApplicationController
       @user  = User.find_by(username: session_user[:username])
       unless @user.nil?
         # @delegate_list = User.joins("LEFT JOIN user_delegations ON user_delegations.delegator = users.id WHERE user_delegations.delegatee LIKE '#{session_user[:username]}' or users.id = #{session_user[:id]}")
-        @delegate_list = User.joins("LEFT JOIN user_delegations ON user_delegations.delegator = users.id WHERE user_delegations.deleted_at IS NULL AND (user_delegations.delegatee LIKE '#{session_user[:username]}' or users.id = #{session_user[:id]} ) ORDER BY FIELD(users.id, #{session_user[:id]}) DESC , users.username ")
+        # @delegate_list = User.joins("LEFT JOIN user_delegations ON user_delegations.delegator = users.id WHERE user_delegations.deleted_at IS NULL AND (user_delegations.delegatee LIKE '#{session_user[:username]}' or users.id = #{session_user[:id]} ) ORDER BY FIELD(users.id, #{session_user[:id]}) DESC , users.username ")
+        @delegate_list1 = User.where(id: session_user[:id])  
+        @delegate_list2 = User.joins("LEFT JOIN user_delegations ON user_delegations.delegator = users.id WHERE user_delegations.deleted_at IS NULL AND user_delegations.delegatee LIKE '#{session_user[:username]}' ORDER BY users.username ")
+
+        @delegate_list = @delegate_list1 + @delegate_list2
       end
 
       unless  @delegate_list.size > 1
