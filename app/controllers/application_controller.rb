@@ -36,6 +36,9 @@ class ApplicationController < ActionController::Base
           return true
         end      
       end
+
+      return true if session_user.administrator?
+
     end
     return false
   end
