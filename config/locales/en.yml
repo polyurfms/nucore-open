@@ -663,11 +663,14 @@ en:
         failded_string : "Failed"
       table:
         date : "Date"
+        transaction_date: Transaction Date
         type : "Top Up / Release"
         status : "Status"
-        Amount : "Amount"
+        # Amount : "Amount"
+        Amount : "Amount (HKD)"
       message:
-        in_progress : "Cannot submit new request until existing request executed."
+        # in_progress : "Cannot submit new request until existing request executed."
+        in_progress : "You cannot make new requests when the fund locking is in progress."
 
 
   statements:
