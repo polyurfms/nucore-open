@@ -248,9 +248,11 @@ en:
       committed_amt: "Committed Amount: %{committed_amt}"
       table:
         date: Date
+        transaction_date: Transaction Date
         type: Type
         status: Status
-        amount: Amount
+        # amount: Amount
+        amount: Amount (HKD)
       total_locked_amount: Total committed amount
       new_request : "New Request"
   facility_accounts_reconciliation:

@@ -126,14 +126,16 @@ class OrderDetail < ApplicationRecord
   ## TODO validate order status is global or a member of the product's facility
   ## TODO validate which fields can be edited for which states
 
+  scope :my_item, -> { joins(:order, :order_status).merge(Order.purchased) }
+
   scope :batch_updatable, -> { where(dispute_at: nil, state: %w(new inprocess)) }
   scope :new_or_inprocess, -> { purchased.where(state: %w(new inprocess)) }
   scope :non_canceled, -> { where.not(state: "canceled") }
 
-  scope :new_states, -> { purchased.where(state: %w(new inprocess)) }
+  scope :new_states, -> { my_item.where(state: %w(new inprocess), order_status_id: %w(1)) }
   scope :canceled_states, -> { purchased.where(state: %w(canceled)) }
   scope :complete_states, -> { purchased.where(state: %w(complete)) }
-  scope :inprocess_states, -> { purchased.where(state: %w(inprocess)) }
+  scope :inprocess_states, -> { my_item.where(state: %w(new inprocess), order_status_id: %w(2)) }
 
   def self.for_facility(facility)
     for_facility_id(facility.id)
