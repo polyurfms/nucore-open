@@ -21,7 +21,7 @@
 
   - if @reservation.admin_editable?
     .datetime-block
-      = f.input :reserve_start_date, input_html: { class: "datepicker" }
+      = f.input :reserve_start_date, input_html: { class: "datepicker", id: "reserve_start_date"  }
       .control-group
         .controls
           .string.optional.control-label &nbsp;
@@ -34,7 +34,7 @@
 
   - if @reservation.can_edit_actuals?
     .datetime-block
-      = f.input :actual_start_date, input_html: { class: "datepicker" }
+      = f.input :actual_start_date, input_html: { class: "datepicker", id: "actual_start_date" }
       .control-group
         .controls
           .string.optional.control-label &nbsp;
@@ -62,3 +62,18 @@
   #spinner
     #hide
       #calendar
+
+:javascript
+  $(".datepicker").datepicker({ dateFormat: 'd M yy' });
+  Date.shortMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+ 
+  if($("#reserve_start_date").val()){
+    var reserve_start_date = new Date($("#reserve_start_date").val());
+    $("#reserve_start_date").val(reserve_start_date.getDate() + " " + Date.shortMonths[reserve_start_date.getMonth()] + " " + reserve_start_date.getFullYear())
+  }
+
+  if($("#actual_start_date").val()){
+    var actual_start_date = new Date($("#actual_start_date").val());
+    $("#actual_start_date").val(actual_start_date.getDate() + " " + Date.shortMonths[actual_start_date.getMonth()] + " " + actual_start_date.getFullYear())
+  }
+  
