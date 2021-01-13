@@ -41,7 +41,7 @@
 
 -if is_allow_request
   = simple_form_for(@funding_request, url: account_create_funding_request_path(@account)) do |f|
-    = f.input :request_type, collection: FundingRequest.request_types, label_method: ->(type) { t(type, scope: "funding_requests.request_type.") }
+    -# = f.input :request_type, collection: FundingRequest.request_types, label_method: ->(type) { t(type, scope: "funding_requests.request_type.") }
     = f.input :request_amount
     = f.hidden_field :account_id ,  value: @account.id
     %button{:onclick => "PopUpMessage()", :type => "button", :class => "btn btn-primary"} New request

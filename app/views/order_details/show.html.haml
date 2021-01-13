@@ -65,7 +65,8 @@
           - if res
             %th.centered= text("views.reservations.my_table.actions")
           %th= OrderDetail.human_attribute_name(:quantity)
-          %th= OrderDetail.human_attribute_name(:product)
+          -# %th= OrderDetail.human_attribute_name(:product)
+          %th= "Purchased Item"
           %th= OrderDetail.human_attribute_name(:status)
           %th.currency= t(".th.cost")
           - if @order_detail.has_subsidies?

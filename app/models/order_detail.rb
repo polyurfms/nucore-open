@@ -130,6 +130,11 @@ class OrderDetail < ApplicationRecord
   scope :new_or_inprocess, -> { purchased.where(state: %w(new inprocess)) }
   scope :non_canceled, -> { where.not(state: "canceled") }
 
+  scope :new_states, -> { purchased.where(state: %w(new inprocess)) }
+  scope :canceled_states, -> { purchased.where(state: %w(canceled)) }
+  scope :complete_states, -> { purchased.where(state: %w(complete)) }
+  scope :inprocess_states, -> { purchased.where(state: %w(inprocess)) }
+
   def self.for_facility(facility)
     for_facility_id(facility.id)
   end
@@ -685,7 +690,7 @@ class OrderDetail < ApplicationRecord
   alias to_s order_number
 
   def description
-    "Order # #{self}"
+    "Ref. No. #{self}"
   end
 
   # Only used by Journals. Consider pulling into the journal/journal row
@@ -813,7 +818,7 @@ class OrderDetail < ApplicationRecord
   def to_notice(notification_class, *_args)
     case notification_class.name
     when MergeNotification.name
-      notice = "<a href=\"#{facility_order_path(order.facility, order.merge_order)}\">Order ##{order.merge_order.id}</a> needs your attention. A line item was added after purchase and "
+      notice = "<a href=\"#{facility_order_path(order.facility, order.merge_order)}\">Ref. No.#{order.merge_order.id}</a> needs your attention. A line item was added after purchase and "
 
       notice += case product
                 when Instrument then "has an incomplete reservation."
@@ -901,7 +906,7 @@ class OrderDetail < ApplicationRecord
   end
 
   def to_log_s
-    "Order ##{order_number}"
+    "Ref. No.#{order_number}"
   end
 
   def resolve_dispute?

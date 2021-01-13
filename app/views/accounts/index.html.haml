@@ -10,7 +10,9 @@
         %th= Account.model_name.human
         %th= Account.human_attribute_name(:description)
         %th= Account.human_attribute_name(:type)
-        %th= Account.human_attribute_name(:expires_at)
+        -# %th= Account.human_attribute_name(:expires_at)
+        -# %th= "Valid Until"
+        %th= text("account_allocations.new.expires_at")
         %th= Facility.model_name.human
         %th.hidden
         %th.hidden
@@ -30,7 +32,7 @@
           - if au.can_administer? || session_user.administrator?
             - show_th = true
             %td= link_to text("transactions"), transactions_path(search: { accounts: [account] })
-            %td= link_to text("members"), account_account_users_path(account)
+            %td= link_to "Payment Source Users", account_account_users_path(account)
 
     - if show_th
       = javascript_tag "$(function(){ $('th.hidden').show(); });"
