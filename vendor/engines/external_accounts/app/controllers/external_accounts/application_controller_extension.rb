@@ -26,29 +26,47 @@ module ExternalAccounts
 #        end
 
         # check if payment source not yet created
-        externalAccounts = IntfResearchProjectAccountUser.where(username: session_user.username).where.not(account_number: accounts.pluck(:account_number))
+
+#        externalAccounts = ResearchProjectMember.where(username: session_user.username).where.not(account_number :accounts.pluck(:account_number))
+
+#        externalAccounts = ResearchProjectMember.where(username: session_user.username, user_role: AccountUser::ACCOUNT_OWNER)
+
+#        externalAccounts = ResearchProject.joins(:research_project_members).where.not(account_number :accounts.pluck(:account_number)).where(username: session_user.username, user_role: AccountUser::ACCOUNT_OWNER)
+
+        externalAccounts = ResearchProject.find_by_sql(["select * from research_projects rp
+          join research_project_members rm
+            on rm.research_project_id = rp.id
+            and rm.username = ?
+            and rm.is_left_project = 0
+            and rm.user_role = 'OWNER'
+          where rp.account_number not in (select a.account_number from accounts a)", session_user.username])
 
         # Create missing account info
         if !externalAccounts.blank?
           externalAccounts.each do |ea|
-            account = Account.new
-            account.type = "NufsAccount"
-            account.account_number = ea.account_number
-            account.description = ea.description
-            account.expires_at = ea.expires_at
-            account.created_by = session_user.id
-            account.created_at = Time.now
-            account.updated_at = Time.now
-            user = User.find(session_user.id)
+            @account = Account.new
+            @account.type = "NufsAccount"
+            @account.account_number = ea.account_number
+            @account.description = "PGMS Project Account " + ea.pgms_project_id
+            @account.project_title = ea.project_title
+            @account.expires_at = ea.expires_at
+            @account.created_by = session_user.id
+            @account.updated_by =session_user.id
+            @account.created_at = Time.now
+            @account.updated_at = Time.now
 
-            account_user = AccountUser.grant(user, AccountUser::ACCOUNT_OWNER, account, by: session_user)
+            #skip missing account user validation
+            @account.save(validate: false)
+
+            user = User.find(session_user.id)
+            account_user = AccountUser.grant(user, AccountUser::ACCOUNT_OWNER, @account, by: session_user)
             puts ea.id
           end
         end
 
         #update pyament source expire date
-
-        externalAccounts = IntfResearchProjectAccountUser.where(username: session_user.username).where(account_number: accounts.pluck(:account_number))
+=begin
+        externalAccounts = IntfResearchProjectMember.where(username: session_user.username).where(account_number: accounts.pluck(:account_number))
         if !externalAccounts.blank?
           externalAccounts.each do |ea|
             accounts.each do |a|
@@ -61,7 +79,7 @@ module ExternalAccounts
 
           end
         end
-
+=end
         #call super method for the follow up task
         super
       end

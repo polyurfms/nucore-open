@@ -2,7 +2,7 @@
 
 module ExternalAccounts
 
-  class IntfResearchProjectAccountUsersController < ApplicationController
+  class ResearchProjectMembersController < ApplicationController
 
     def index
       #Rails.logger.info "External accounts controller index"
