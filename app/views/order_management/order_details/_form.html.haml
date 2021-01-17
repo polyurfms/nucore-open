@@ -24,6 +24,8 @@
                 data: { min_date: ValidFulfilledAtDate.min.iso8601,
                   max_date: ValidFulfilledAtDate.max.iso8601,
                   complete_target: "#order_detail_order_status_id"}}
+            
+
 
         - else
           = f.label :order_status
@@ -85,3 +87,18 @@
     .hidden.updating-message= t("facility_order_details.edit.label.updating")
     = f.submit "Save", class: ["btn", "btn-primary"]
     = modal_cancel_button
+
+:javascript
+  $(".datepicker").datepicker({ dateFormat: 'd M yy' });
+
+  Date.shortMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+  if($("#order_detail_reservation_actual_start_date").val()){
+    var actual_start_date_str = new Date($("#order_detail_reservation_actual_start_date").val());
+    $("#order_detail_reservation_actual_start_date").val(actual_start_date_str.getDate() + " " + Date.shortMonths[actual_start_date_str.getMonth()] + " " + actual_start_date_str.getFullYear())
+  }
+
+  if($("#order_detail_reservation_reserve_start_date").val()){
+    var reserve_start_date_str = new Date($("#order_detail_reservation_reserve_start_date").val());
+    $("#order_detail_reservation_reserve_start_date").val(reserve_start_date_str.getDate() + " " + Date.shortMonths[reserve_start_date_str.getMonth()] + " " + reserve_start_date_str.getFullYear())
+  }

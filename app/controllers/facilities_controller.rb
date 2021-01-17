@@ -16,6 +16,7 @@ class FacilitiesController < ApplicationController
   skip_load_and_authorize_resource only: [:index, :show]
 
   include AZHelper
+  include DateHelper
   include OrderDetailsCsvExport
 
   layout lambda {
@@ -142,11 +143,13 @@ class FacilitiesController < ApplicationController
     end
   end
 
-  # GET /facilities/:facility_id/disputed_orders
+# GET /facilities/:facility_id/disputed_orders
   def disputed_orders
-    order_details = OrderDetail.in_dispute.for_facility(current_facility)
-
+    order_details = OrderDetail.in_dispute.for_facility(current_facility)    
     @search_form = TransactionSearch::SearchForm.new(params[:search])
+
+    @search_form.date_range_start = @search_form.date_range_start unless @search_form.date_range_start.nil?
+    @search_form.date_range_end = @search_form.date_range_end unless @search_form.date_range_end.nil?
     @search = TransactionSearch::Searcher.billing_search(order_details, @search_form, include_facilities: current_facility.cross_facility?)
     @date_range_field = @search_form.date_params[:field]
     @order_details = @search.order_details.reorder(:dispute_at).paginate(page: params[:page])
@@ -154,7 +157,11 @@ class FacilitiesController < ApplicationController
 
   # GET /facilities/:facility_id/movable_transactions
   def movable_transactions
+    
     @search_form = TransactionSearch::SearchForm.new(params[:search])
+
+    @search_form.date_range_start = @search_form.date_range_start unless @search_form.date_range_start.nil?
+    @search_form.date_range_end = @search_form.date_range_end unless @search_form.date_range_end.nil?
     @search = TransactionSearch::Searcher.billing_search(
       OrderDetail.all_movable.for_facility(current_facility),
       @search_form,

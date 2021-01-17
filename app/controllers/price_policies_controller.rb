@@ -97,7 +97,6 @@ class PricePoliciesController < ApplicationController
   # Override CanCan's find -- it won't properly search by zoned date
   def init_price_policy
     @start_date = parse_usa_date(params[:id] || params[:start_date])
-
     @price_policy = @product
                     .price_policies
                     .for_date(@start_date)

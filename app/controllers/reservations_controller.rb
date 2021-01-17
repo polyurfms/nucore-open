@@ -10,6 +10,7 @@ class ReservationsController < ApplicationController
   authorize_resource only: [:edit, :update, :move]
 
   include TranslationHelper
+  include DateHelper
   include FacilityReservationsHelper
   helper TimelineHelper
 

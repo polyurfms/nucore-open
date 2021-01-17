@@ -54,6 +54,7 @@ class User < ApplicationRecord
   scope :with_recent_orders, ->(facility) { distinct.joins(:order_details).merge(OrderDetail.recent.for_facility(facility)) }
   scope :sort_last_first, -> { order(Arel.sql("LOWER(users.last_name), LOWER(users.first_name)")) }
 
+  scope :check_academic_user_and_payment_source, -> (users_id) {joins(:account_users).where("LOWER(user_role) = LOWER('Owner') or LOWER(user_type) = LOWER('staff') and user_id = ? ", users_id)}
   # finds all user role mappings for a this user in a facility
   def facility_user_roles(facility)
     UserRole.where(facility_id: facility.id, user_id: id)
@@ -176,6 +177,10 @@ class User < ApplicationRecord
     price_groups.include?(PriceGroup.base)
   end
 
+  def payment_source_owner?
+    account_users.exists?(user_role: 'Owner')
+  end
+
   def update_price_group(params)
     if params[:internal] == "true"
       price_group_members.find_by(price_group: PriceGroup.external).try(:destroy)
@@ -197,5 +202,4 @@ class User < ApplicationRecord
 
     price_group_members.find_or_create_by!(price_group: default_price_group)
   end
-
 end

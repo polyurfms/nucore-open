@@ -5,7 +5,7 @@ en:
       table:
         name: "Assigned"
         button_name: "Remove"
-      message: "Confrim to remove?"
+      message: "confirm to remove?"
     account_selection:
       header: "Account"
       table:

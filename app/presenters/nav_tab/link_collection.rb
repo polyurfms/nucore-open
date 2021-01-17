@@ -32,7 +32,13 @@ class NavTab::LinkCollection
   end
 
   def customer
-    [orders, reservations, payment_sources, user_delegations]
+    # [orders, reservations, payment_sources, user_delegations]
+    count = User.check_academic_user_and_payment_source(@user.id).count
+    menu_array = [payment_sources, reservations, orders]
+    if(count > 0)
+      menu_array.push(user_delegations)
+    end
+    return menu_array
   end
 
   def delegate_tab
@@ -51,11 +57,21 @@ class NavTab::LinkCollection
   private
 
   def payment_sources
-    NavTab::Link.new(
-      tab: :payment_sources,
-      text: t_my(Account),
-      subnav: [accounts, transactions, transactions_in_review],
-    )
+
+    if @user.payment_source_owner?
+      NavTab::Link.new(
+        tab: :payment_sources,
+        text: t_my(Account),
+        subnav: [accounts, transactions, transactions_in_review],
+      )
+    else
+      NavTab::Link.new(
+        tab: :payment_sources,
+        text: t_my(Account),
+        url: accounts_path,
+      )
+
+    end
   end
 
   def accounts
@@ -77,7 +93,7 @@ class NavTab::LinkCollection
 
   def user_delegations
     NavTab::Link.new(tab: :user_delegations, text: I18n.t("pages.user_delegations"), url: user_delegations_path)
-  end  
+  end
 
   def admin_billing
     if single_facility? && ability.can?(:manage_billing, facility)
@@ -163,7 +179,8 @@ class NavTab::LinkCollection
   end
 
   def orders
-    NavTab::Link.new(tab: :orders, text: t_my(Order), url: orders_path)
+    # NavTab::Link.new(tab: :orders, text: t_my(Order), url: orders_path)
+    NavTab::Link.new(tab: :orders, text: I18n.t("pages.my_items"), url: orders_path)
   end
 
   def reservations

@@ -1,11 +1,14 @@
 = content_for :tabnav do
-  = render "admin/shared/tabnav_payment_method", secondary_tab: "allocation"
+  = render "admin/shared/tabnav_payment_method", secondary_tab: "allocations"
 
 = content_for :h1 do
   = current_facility
 
 = render "sidebar"
 %h2= @account
-%h3= t(".committed_amt", committed_amt: @account.committed_amt)
+= readonly_form_for :account do |f|
+  = f.input :committed_amt, label: text("account_allocations.new.committed_amt"), as: :readonly
+  = f.input :total_expense, label: text("account_allocations.new.total_expense"), as: :readonly
+  = f.input :free_balance, label: text("account_allocations.new.free_balance"), as: :readonly
 
 = render "member_allocation_table"

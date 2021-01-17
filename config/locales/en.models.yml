@@ -272,7 +272,7 @@ en:
         url_name: URL Name
         requires_approval: Requires Approval?
         allows_training_requests: Allows Training Requests?
-        requires_approval_show: Requires Approval
+        requires_approval_show: Requires Training
         initial_order_status: Initial Order Status
         is_archived: Is Inactive?
         is_hidden: Is Hidden?
@@ -409,7 +409,6 @@ en:
         formatted_expires_at: Expiration
         description: Description
         type_string: Payment Source Type
-        allows_allocation: Allows Allocation
         owner_user: Owner
         remittance_information: Bill To
         suspended_at: Suspended
@@ -419,3 +418,6 @@ en:
         user: Name
         product: Instrument
         created_at: Requested on
+      funding_request:
+        request_type: Top up / Release
+        amt: Amount

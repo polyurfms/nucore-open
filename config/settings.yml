@@ -94,7 +94,7 @@ feature:
   product_specific_contacts: true
   training_requests: true
   daily_view: true
-  split_accounts: false
+  split_accounts: true
   print_order_detail: false
   user_based_price_groups: true
   my_files: true
@@ -158,5 +158,5 @@ order_detail_price_change_reason_options: ~
 
 google_analytics_key: ~
 
-
 send_payment_source_requests: <%= 12.hours %>
+fip_url: ~

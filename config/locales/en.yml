@@ -11,18 +11,29 @@ en:
 
   date:
     formats:
-      journal_line_reference: "%Y%m%d"
-      timeline_navigation: "%a, %B %e, %Y"
-      usa: "%m/%d/%Y"
+      journal_line_reference: "%d %b %Y"
+      timeline_navigation: "(%a) %d %b %Y"
+      usa: "%d %b %Y"
+      # usa_filename_safe: "%d %b %Y"
+      ymd: "%d %b %Y"
+      
+      # journal_line_reference: "%Y%m%d"
+      # timeline_navigation: "%a, %B %e, %Y"
+      # usa: "%m/%d/%Y"
       usa_filename_safe: "%m-%d-%Y"
-      ymd: "%Y-%m-%d"
+      # ymd: "%Y-%m-%d"
 
   time:
     formats:
-      default: "%a, %m/%d/%Y %-l:%M %p"
-      receipt: "%b %e, %Y %-l:%M %p"
+      default: "(%a) %d %b %Y %-l:%M %p"
+      receipt: "%d %b %Y %-l:%M %p"
       timeonly: "%-l:%M %p"
-      usa: "%m/%d/%Y %-l:%M %p"
+      usa: "%d %b %Y %-l:%M %p"
+      
+      # default: "%a, %m/%d/%Y %-l:%M %p"
+      # receipt: "%b %e, %Y %-l:%M %p"
+      # timeonly: "%-l:%M %p"
+      # usa: "%m/%d/%Y %-l:%M %p"
 
   Facility: "!activerecord.models.facility.one!"
   Facilities: "!activerecord.models.facility.other!"
@@ -45,9 +56,10 @@ en:
       tabnav_payment_method:
         details: Details
         members: Members
-        allocation : Allocation
+        allocations : Allocations
         orders: Orders
         statements: Statements
+        funding_requests: Funding Requests
 
   pages:
     home: Home
@@ -76,6 +88,7 @@ en:
     payment_source_requests: Request Payment Source
     transactions_in_review: My Transactions In Review (%{count})
     user_delegations: My Delegation
+    my_items: My Items
     notices: Notices
     support: Support
 
@@ -140,7 +153,8 @@ en:
       transact: "Transactions"
       statement: "Statements"
       members: "Members"
-      allocation: "Allocations"
+      funding_requests: "Funding Requests"
+      allocations: "Allocations"
     tabnav_price_group:
       accounts: "Payment Sources"
       users: "Users"
@@ -219,12 +233,24 @@ en:
       th:
         name: Name (username)
         role: Role
-        allocation_amt: Amount
+        allocation_amt: Quota
         expense_amt: Expense
       save: Save
     allocation:
       save: Save
-      committed_amt: "Commited Amount: %{committed_amt}"
+      committed_amt: "Committed Amount: %{committed_amt}"
+    funding_requests:
+      message:
+        in_progress: "Cannot submit new request until existing request executed."
+      save: Save
+      committed_amt: "Committed Amount: %{committed_amt}"
+      table:
+        date: Date
+        type: Type
+        status: Status
+        amount: Amount
+      total_locked_amount: Total committed amount
+      new_request : "New Request"
   facility_accounts_reconciliation:
     index:
       head: Reconcile %{model}
@@ -595,6 +621,46 @@ en:
       prompt: "Please select a payment source"
       note_hint: Visible to facility staff only
 
+  funding_requests:
+    status:
+      PENDING_CHECK_FUND: "In Progress"
+      PENDING_LOCK_FUND: "In Progress"
+      SUCCESS: "Success"
+      FAILED_CHECK_FUND: "Failed"
+      FAILED_LOCK_FUND: "Failed"
+    request_type:
+      LOCK_FUND_REQUEST: "Top up"
+      UNLOCK_FUND_REQUEST: "Release"
+    index:
+      head: "Lock funds"
+      committed_amt: "Committed Amount: %{committed_amt}"
+      total_expense: "Total Expense Amount: %{total_expense}"
+      free_balance: "Free balance: %{free_balance}"
+      amount : "Amount"
+      save: "save"
+      new_request : "New Request"
+      type: "Type"
+      request_tpe:
+        lock_fund : "Top up"
+        lock_fund_code : "LOCK_FUND_REQUEST"
+        unlock_fund : "Release"
+        unlock_fund_code : "UNLOCK_FUND_REQUEST"
+      status:
+        processing_code : "PROCESSING"
+        processing_string : "In Progress"
+        success_code : "COMPLETED"
+        success_string : "Completed"
+        failded_code : "FAILED"
+        failded_string : "Failed"
+      table:
+        date : "Date"
+        type : "Top Up / Release"
+        status : "Status"
+        Amount : "Amount"
+      message:
+        in_progress : "Cannot submit new request until existing request executed."
+
+
   statements:
     index:
       h1: "Payment Source Transactions"
@@ -957,6 +1023,7 @@ en:
       between: between
       instrument_reports:
         between: Fulfilled between
+      billing_status: Billing Status
       date_start: Start Date
       date_end: End Date
       auto_cancel_name: 'Auto Cancel'
@@ -1203,7 +1270,7 @@ en:
       head: Payment Source Details
       save: Save
     show:
-      head: Pyament Source Details
+      head: Payment Source Details
       save: Save
     member_table:
       add_access: Add Access
@@ -1218,7 +1285,9 @@ en:
       business_administrator: Business Administrator
     allocation:
       save: Save
-      committed_amt: "Commited Amount: %{committed_amt}"
+      committed_amt: "Committed amount"
+      _amt: "Committed amount"
+      committed_amt: "Committed amount"
     member_allocation_table:
       th:
         name: Name (username)
@@ -1228,34 +1297,15 @@ en:
       save: Save
 
   account_allocations:
-    index:
-      committed_amt: "Commited Amount: %{committed_amt}"
-      th:
-        name: Name (username)
-        role: Role
-        allocation_amt: Amount
-        expense_amt: Expense
-      save: Save
     new:
-      committed_amt: "Commited Amount: %{committed_amt}"
-      th:
-        name: Name (username)
-        role: Role
-        allocation_amt: Amount
-        expense_amt: Expense
-      save: Save
-    edit:
-      committed_amt: "Commited Amount: %{committed_amt}"
-      th:
-        name: Name (username)
-        role: Role
-        allocation_amt: Amount
-        expense_amt: Expense
-      save: Save
+      committed_amt: "Committed Amount"
+      total_expense: "Total Expense Amount"
+      free_balance: "Free balance"
     member_allocation_table:
       th:
         name: Name (username)
         role: Role
-        allocation_amt: Amount
+        allocation_amt: Quota
         expense_amt: Expense
+        quota_balance: Quota balance
       save: Save

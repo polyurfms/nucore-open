@@ -51,6 +51,9 @@ en:
         object: Object
         query: Query
         start_date: Start Date
+        user_delegation:
+          create: User Delegate created
+          delete: User Delegate deleted
         user:
           create: User added
           suspended: User suspended

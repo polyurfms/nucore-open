@@ -19,7 +19,11 @@ class UserDelegationsController < ApplicationController
       @user  = User.find_by(username: session_user[:username])
       unless @user.nil?
         # @delegate_list = User.joins("LEFT JOIN user_delegations ON user_delegations.delegator = users.id WHERE user_delegations.delegatee LIKE '#{session_user[:username]}' or users.id = #{session_user[:id]}")
-        @delegate_list = User.joins("LEFT JOIN user_delegations ON user_delegations.delegator = users.id WHERE user_delegations.delegatee LIKE '#{session_user[:username]}' or users.id = #{session_user[:id]} ORDER BY FIELD(users.id, #{session_user[:id]}) DESC , users.username ")
+        # @delegate_list = User.joins("LEFT JOIN user_delegations ON user_delegations.delegator = users.id WHERE user_delegations.deleted_at IS NULL AND (user_delegations.delegatee LIKE '#{session_user[:username]}' or users.id = #{session_user[:id]} ) ORDER BY FIELD(users.id, #{session_user[:id]}) DESC , users.username ")
+        @delegate_list1 = User.where(id: session_user[:id])  
+        @delegate_list2 = User.joins("LEFT JOIN user_delegations ON user_delegations.delegator = users.id WHERE user_delegations.deleted_at IS NULL AND user_delegations.delegatee LIKE '#{session_user[:username]}' ORDER BY users.username ")
+
+        @delegate_list = @delegate_list1 + @delegate_list2
       end
 
       unless  @delegate_list.size > 1
@@ -47,15 +51,28 @@ class UserDelegationsController < ApplicationController
   def index
     @user_delegation = UserDelegation.new
     @user_id = session_user[:id]
-    @assigned_list = UserDelegation.find_by delegator: session_user[:id]
+    @assigned_list = UserDelegation.find_by ("delegator = #{session_user[:id]} AND deleted_at IS NULL " )
     @is_assigned = !@assigned_list.nil?
+
+    count = User.check_academic_user_and_payment_source(@user_id).count
+    unless(count > 0)
+      redirect_to '/'
+    end
+
   end
 
   def create
-    @user_delegation = UserDelegation.create(user_delegation_params)
+    @delegate_info = user_delegation_params
+    @user_delegation = UserDelegation.create(@delegate_info)
+ 
+    delegatee= User.find_by(username: @delegate_info["delegatee"])
+    delegator = User.find(session_user[:id])
+
+    LogEvent.log(@user_delegation, :create, delegator)
 
     unless (@user_delegation.delegator.nil?)
       if @user_delegation.save
+        UserDelegationMailer.notify(delegatee: delegatee, delegator: delegator).deliver_later
         flash[:notice] = text("#{@user_delegation.delegatee} delegated")
       else 
         flash[:notice] = text("#{@user_delegation.delegatee} could not be delegated")
@@ -65,21 +82,44 @@ class UserDelegationsController < ApplicationController
   end
 
   def destroy
+
     begin
       user_delegation = UserDelegation.find_by delegator: session_user[:id], id: params[:id].to_i
+      delegator = User.find(session_user[:id])
     rescue ActiveRecord::RecordNotFound
       flash[:error] = "User not found!"
     else
-      user_delegation.destroy
-
-      if user_delegation.destroyed?
-        flash[:notice] = "Delegatee #{user_delegation.delegatee} removed"
-      else
-        flash[:error] = "Delegatee #{ser_delegation.delegatee} could not be removed"
+      unless (user_delegation.delegator.nil?)
+        user_delegation.deleted_at = Time.zone.now
+        user_delegation.deleted_by = session_user[:id]
+        if user_delegation.save
+          LogEvent.log(user_delegation, :delete, delegator)
+          flash[:notice] = "Delegatee #{user_delegation.delegatee} removed"
+        else 
+          flash[:error] = "Delegatee #{ser_delegation.delegatee} could not be removed"
+        end 
       end
     end
     redirect_to action: :index
+
+    # begin
+    #   user_delegation = UserDelegation.find_by delegator: session_user[:id], id: params[:id].to_i
+    #   delegator = User.find(session_user[:id])
+    # rescue ActiveRecord::RecordNotFound
+    #   flash[:error] = "User not found!"
+    # else
+    #   user_delegation.destroy
+    #   LogEvent.log(user_delegation, :delete, delegator)
+
+    #   if user_delegation.destroyed?
+    #     flash[:notice] = "Delegatee #{user_delegation.delegatee} removed"
+    #   else
+    #     flash[:error] = "Delegatee #{ser_delegation.delegatee} could not be removed"
+    #   end
+    # end
+    # redirect_to action: :index
   end
+  
 
   private 
 

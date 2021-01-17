@@ -48,6 +48,16 @@ Rails.application.routes.draw do
       get "unsuspend", to: "accounts#unsuspend", as: "unsuspend"
     end
 
+    get "/lock_fund", to: "accounts#lock_fund", as: "lock_fund"
+
+    resources :funding_requests, only: [:new, :show, :destroy, :create, :index, :edit] do
+      collection do
+        get "funding_requests"
+      end
+    end
+
+    post "/create_funding_request", to: "funding_requests#create_funding_request", as: "create_funding_request"
+
     resources :account_allocations, only: [:index, :create, :new, :edit, :show, :update] do
       collection do
         post "update_allocation"
@@ -270,9 +280,11 @@ Rails.application.routes.draw do
 
       get "/members", to: "facility_accounts#members", as: "members"
       get "/allocation", to: "facility_accounts#allocation", as: "allocation"
-
+      get "/funding_requests", to: "facility_accounts#funding_requests", as: "funding_requests"
 
       post "/allocation_update", to: "facility_accounts#allocation_update", as: "allocation_update"
+      post "/create_funding_request", to: "facility_accounts#create_funding_request", as: "create_funding_request"
+
 
       if Account.config.statements_enabled?
         get "/statements", to: "facility_accounts#statements", as: :statements
@@ -403,14 +415,13 @@ Rails.application.routes.draw do
 
   # user_delegation
   get "user_delegations/switch", to:"user_delegations#switchUser", as: "switch"
-  
-  
+
   users_options = if SettingsHelper.feature_on?(:create_users)
     {}
   else
     { except: [:edit, :update, :new, :create], constraints: { id: /\d+/ } }
   end
-  
+
   resources :user_delegations, users_options do
     get "switch_to",    to: "user_delegations#switch_to"
   end
@@ -424,6 +435,7 @@ Rails.application.routes.draw do
   put   "/#{I18n.t('facilities_downcase')}/:facility_id/services/:service_id/surveys/:external_service_passer_id/deactivate", to: "surveys#deactivate",               as: "deactivate_survey"
   get "/#{I18n.t('facilities_downcase')}/:facility_id/services/:service_id/surveys/:external_service_id/complete", to: "surveys#complete", as: "complete_survey"
 
+  #post  "create_account_transactions" , to: "account_transaction#create_account_transactions"
   namespace :admin do
     namespace :services do
       post "process_one_minute_tasks"
