@@ -1,7 +1,16 @@
 = f.input :account_number, label: t('facility_accounts.account_fields.label.co_number'), required: true
 = f.input :name_on_card, label: t('facility_accounts.account_fields.label.co_name'), required: true
 =f.input :formatted_expires_at, required: true,
-  input_html: { class: "datepicker" },
+  input_html: { class: "datepicker" ,id: "expiration_datepicker"},
   label: Account.human_attribute_name(:expires_at)
 
 = f.input :description, required: true, hint: t('facility_accounts.account_fields.label.all_instruct'), hint_html: { class: 'help-inline' }
+:javascript
+  $(".datepicker").datepicker({ dateFormat: 'd M yy' });
+  Date.shortMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+ 
+  if($("#expiration_datepicker").val()){
+    var expiration_datepicker = new Date($("#expiration_datepicker").val());
+    $("#expiration_datepicker").val(expiration_datepicker.getDate() + " " + Date.shortMonths[expiration_datepicker.getMonth()] + " " + expiration_datepicker.getFullYear())
+  }
+  
