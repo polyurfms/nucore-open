@@ -1,0 +1,14 @@
+en:
+  views:
+    payment_source_requests:
+        subject:  "%{requestUser} - Request to become member of  %{accountNumber}"
+        body: |
+          **Request username:** %{username}
+
+          **Request full-name:** %{last_name} %{first_name}
+
+          **Accont number:** %{account_number}
+
+          **Description:** %{description}
+
+          **Expires at:** %{expires_at}

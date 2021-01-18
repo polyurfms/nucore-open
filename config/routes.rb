@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   get "/users/sign_in.pdf" => redirect("/users/sign_in")
   devise_for :users
   mount SangerSequencing::Engine => "/" if defined?(SangerSequencing)
+  mount ExternalAccounts::Engine => "/" if defined?(ExternalAccounts)
 
   if SettingsHelper.feature_on?(:password_update)
     match "/users/password/edit_current", to: "user_password#edit_current", as: "edit_current_password", via: [:get, :post]
