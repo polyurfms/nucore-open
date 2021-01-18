@@ -8,6 +8,8 @@
         reservations_status_path(status: status),
         (@status == status)
 
+<p> #{I18n.t("views.reservations.message")} </p>
+
 - if @order_details.any?
   = render "my_table", order_details: @order_details
 - else

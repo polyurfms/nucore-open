@@ -10,7 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_29_093049) do
+ActiveRecord::Schema.define(version: 2021_01_07_101243) do
+
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -55,7 +56,7 @@ ActiveRecord::Schema.define(version: 2020_12_29_093049) do
     t.string "ar_number"
     t.boolean "allows_allocation", default: false, null: false
     t.decimal "committed_amt", precision: 10, scale: 2, default: "0.0"
-    t.string "project_title", limit: 200
+    t.string "project_title", limit: 1000
     t.index ["affiliate_id"], name: "index_accounts_on_affiliate_id"
   end
 
@@ -204,14 +205,15 @@ ActiveRecord::Schema.define(version: 2020_12_29_093049) do
 
   create_table "funding_requests", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "account_id", null: false
-    t.string "request_type", limit:50, null: false
-    t.string "status", limit:40, null: false
+    t.string "request_type", limit: 50, null: false, comment: "PENDING_CHECK_FUND, PENDING_LOCK_FUND, SUCCESS, FAILED_CHECK_FUND, FAILED_LOCK_FUND "
+    t.string "status", limit: 50, null: false
     t.decimal "debit_amt", precision: 10, scale: 2
     t.decimal "credit_amt", precision: 10, scale: 2
     t.integer "created_by", null: false
-    t.integer "updated_by", null: false
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.integer "updated_by"
+    t.datetime "updated_at"
+    t.string "remarks", limit: 100
   end
 
   create_table "instrument_alerts", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -421,6 +423,17 @@ ActiveRecord::Schema.define(version: 2020_12_29_093049) do
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
+  create_table "payment_source_requests", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "account_id", null: false
+    t.string "created_by", null: false
+    t.string "updated_by", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "fk_rails_dc478d7167"
+    t.index ["user_id"], name: "fk_rails_f4b221a150"
+  end
+
   create_table "payments", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "account_id", null: false
     t.integer "statement_id"
@@ -623,6 +636,22 @@ ActiveRecord::Schema.define(version: 2020_12_29_093049) do
     t.integer "auto_logout_minutes", default: 60
     t.integer "ip_port"
     t.index ["instrument_id"], name: "index_relays_on_instrument_id"
+  end
+
+  create_table "research_project_members", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "research_project_id", null: false
+    t.string "username", null: false
+    t.string "user_role", limit: 50, null: false
+    t.boolean "is_left_project"
+    t.datetime "left_project_date"
+    t.index ["research_project_id"], name: "index_research_project_members_on_research_project_id"
+  end
+
+  create_table "research_projects", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "pgms_project_id", limit: 20
+    t.string "account_number", limit: 50
+    t.datetime "expires_at"
+    t.string "project_title", limit: 1000, null: false
   end
 
   create_table "reservations", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -854,7 +883,7 @@ ActiveRecord::Schema.define(version: 2020_12_29_093049) do
     t.integer "deleted_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["delegator", "delegatee"], name: "index_user_delegations_on_delegator_and_delegatee", unique: true
+    t.index ["delegator", "delegatee"], name: "index_user_delegations_on_delegator_and_delegatee"
   end
 
   create_table "user_preferences", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -979,6 +1008,8 @@ ActiveRecord::Schema.define(version: 2020_12_29_093049) do
   add_foreign_key "orders", "order_imports"
   add_foreign_key "orders", "orders", column: "merge_with_order_id"
   add_foreign_key "orders", "users"
+  add_foreign_key "payment_source_requests", "accounts"
+  add_foreign_key "payment_source_requests", "users"
   add_foreign_key "payments", "accounts"
   add_foreign_key "payments", "statements"
   add_foreign_key "payments", "users", column: "paid_by_id"
@@ -997,6 +1028,7 @@ ActiveRecord::Schema.define(version: 2020_12_29_093049) do
   add_foreign_key "products", "facility_accounts", name: "fk_facility_accounts"
   add_foreign_key "products", "schedules", name: "fk_instruments_schedule"
   add_foreign_key "projects", "facilities"
+  add_foreign_key "research_project_members", "research_projects"
   add_foreign_key "reservations", "order_details"
   add_foreign_key "reservations", "products", name: "reservations_instrument_id_fk"
   add_foreign_key "reservations", "users", column: "created_by_id"

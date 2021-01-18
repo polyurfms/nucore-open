@@ -32,6 +32,28 @@ class ReservationCreator
 
         save_reservation_and_order_detail(session_user)
 
+        # When allows_allocation is true, free_balance must more than that stimated_cost
+        not_enough = ""
+
+        if(session_user.administrator? != true)
+          @account = Account.find(@order_detail.order.account_id.to_i)
+          if(@account.allows_allocation == true)
+            @account_user = AccountUser.find_by(account_id: @order_detail.account_id, deleted_at: nil, user_id: session_user.id)
+
+            if(@account_user.user_role != "Owner")
+              if(@account_user.quota_balance < @order_detail.estimated_cost)
+                not_enough = "Payment source insufficient fund"
+                raise ActiveRecord::Rollback
+              end
+            end
+          end
+
+          if(@account.free_balance < @order_detail.estimated_cost)
+            not_enough = "Payment source insufficient fund"
+            raise ActiveRecord::Rollback
+          end
+        end
+
         if to_be_merged
           # The purchase_order_path or cart_path will handle the backdating, but we need
           # to do this here for merged reservations.
@@ -46,7 +68,12 @@ class ReservationCreator
         @error = e.message
         raise ActiveRecord::Rollback
       rescue StandardError => e
-        @error = I18n.t("orders.purchase.error", message: e.message).html_safe
+        msg = e.message
+        unless not_enough == ""
+          msg = not_enough
+        end
+        @error = I18n.t("orders.purchase.error", message: msg).html_safe
+        # @error = I18n.t("orders.purchase.error", message: e.message).html_safe
         raise ActiveRecord::Rollback
       end
     end

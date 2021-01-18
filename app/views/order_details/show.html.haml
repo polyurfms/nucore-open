@@ -65,9 +65,10 @@
           - if res
             %th.centered= text("views.reservations.my_table.actions")
           %th= OrderDetail.human_attribute_name(:quantity)
-          %th= OrderDetail.human_attribute_name(:product)
+          -# %th= OrderDetail.human_attribute_name(:product)
+          %th= "Purchased Item"
           %th= OrderDetail.human_attribute_name(:status)
-          %th.currency= t(".th.cost")
+          -# %th.currency= t(".th.cost")
           - if @order_detail.has_subsidies?
             %th.currency= t(".th.adjust")
           %th.currency= t(".th.total")
@@ -91,7 +92,7 @@
             = @order_detail.order_status
             = order_detail_status_badges(@order_detail)
           - if @order_detail.cost_estimated?
-            %td.estimated_cost.currency= show_estimated_cost(@order_detail)
+            -# %td.estimated_cost.currency= show_estimated_cost(@order_detail)
             - if @order_detail.has_subsidies?
               %td.estimated_cost.currency= show_estimated_subsidy(@order_detail)
             %td.estimated_cost.currency= show_estimated_total(@order_detail)
@@ -99,7 +100,7 @@
             %td{ colspan: 2 }= t(".unassigned")
 
           - else
-            %td.actual_cost.currency= show_actual_cost(@order_detail)
+            -# %td.actual_cost.currency= show_actual_cost(@order_detail)
             - if @order_detail.has_subsidies?
               %td.actual_cost.currency= show_actual_subsidy(@order_detail)
             %td.actual_cost.currency= show_actual_total(@order_detail)

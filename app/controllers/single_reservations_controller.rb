@@ -24,7 +24,7 @@ class SingleReservationsController < ApplicationController
     creator = ReservationCreator.new(@order, @order_detail, params)
     @reservation = creator.reservation
     @account = Account.find_by("id = #{params["order_account"].to_i} AND expires_at >= '#{@reservation.reserve_end_at}'")
-    puts @account.inspect
+
     if(!@account.nil?)
       if creator.save(session_user)
         # @reservation = creator.reservation

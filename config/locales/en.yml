@@ -11,18 +11,29 @@ en:
 
   date:
     formats:
-      journal_line_reference: "%Y%m%d"
-      timeline_navigation: "%a, %B %e, %Y"
-      usa: "%m/%d/%Y"
+      journal_line_reference: "%d %b %Y"
+      timeline_navigation: "(%a) %d %b %Y"
+      usa: "%d %b %Y"
+      # usa_filename_safe: "%d %b %Y"
+      ymd: "%d %b %Y"
+      
+      # journal_line_reference: "%Y%m%d"
+      # timeline_navigation: "%a, %B %e, %Y"
+      # usa: "%m/%d/%Y"
       usa_filename_safe: "%m-%d-%Y"
-      ymd: "%Y-%m-%d"
+      # ymd: "%Y-%m-%d"
 
   time:
     formats:
-      default: "%a, %m/%d/%Y %-l:%M %p"
-      receipt: "%b %e, %Y %-l:%M %p"
+      default: "(%a) %d %b %Y %-l:%M %p"
+      receipt: "%d %b %Y %-l:%M %p"
       timeonly: "%-l:%M %p"
-      usa: "%m/%d/%Y %-l:%M %p"
+      usa: "%d %b %Y %-l:%M %p"
+      
+      # default: "%a, %m/%d/%Y %-l:%M %p"
+      # receipt: "%b %e, %Y %-l:%M %p"
+      # timeonly: "%-l:%M %p"
+      # usa: "%m/%d/%Y %-l:%M %p"
 
   Facility: "!activerecord.models.facility.one!"
   Facilities: "!activerecord.models.facility.other!"
@@ -44,11 +55,12 @@ en:
         access_list: "Access List"
       tabnav_payment_method:
         details: Details
-        members: Members
-        allocation : Allocation
+        # members: Members
+        members: Payment Source Members
+        allocations : Allocations
         orders: Orders
         statements: Statements
-        lock_fund: Funding Requests
+        funding_requests: Funding Requests
 
   pages:
     home: Home
@@ -74,6 +86,7 @@ en:
     manage: Manage %{model}
     my_tab: My %{model}
     transactions: My Transactions
+    payment_source_requests: Request Payment Source
     transactions_in_review: My Transactions In Review (%{count})
     user_delegations: My Delegation
     my_items: My Items
@@ -140,9 +153,10 @@ en:
       details: "Payment Source Details"
       transact: "Transactions"
       statement: "Statements"
-      members: "Members"
-      lock_fund: "Funding Requests"
-      allocation: "Allocations"
+      members: "Payment Source Users"
+      # members: "Members"
+      funding_requests: "Funding Requests"
+      allocations: "Allocations"
     tabnav_price_group:
       accounts: "Payment Sources"
       users: "Users"
@@ -219,7 +233,8 @@ en:
         orders: "# of Orders"
     member_allocation_table:
       th:
-        name: Name (username)
+        # name: Name (username)
+        name: Name (Net ID)
         role: Role
         allocation_amt: Quota
         expense_amt: Expense
@@ -228,14 +243,19 @@ en:
       save: Save
       committed_amt: "Committed Amount: %{committed_amt}"
     funding_requests:
+      message:
+        in_progress: "Cannot submit new request until existing request executed."
       save: Save
       committed_amt: "Committed Amount: %{committed_amt}"
       table:
         date: Date
+        transaction_date: Transaction Date
         type: Type
         status: Status
-        amount: Amount
+        # amount: Amount
+        amount: Amount (HKD)
       total_locked_amount: Total committed amount
+      new_request : "New Request"
   facility_accounts_reconciliation:
     index:
       head: Reconcile %{model}
@@ -255,7 +275,8 @@ en:
       no_orders: No transactions exist for this period.
       th:
         amount: Amount
-        order_number: "Order #"
+        # order_number: "Order #"
+        order_number: "Ref. No."
         order_status: Order Status
         product: Product
         transaction_date: Transaction Date
@@ -392,7 +413,8 @@ en:
     edit:
       attention: "The following order details need your attention. Before you can add to this order you need to address them."
       head:
-        h1: "Summary Of Order #%{order_number}"
+        # h1: "Summary Of Order #%{order_number}"
+        h1: "Summary Of Ref. No.%{order_number}"
         h2: "Order Detail #%{order_number}"
     show_problems:
       instructions: |
@@ -484,7 +506,8 @@ en:
   facility_order_details:
     edit:
       head:
-        h2: "Edit Order # %{order_number}"
+        # h2: "Edit Order # %{order_number}"
+        h2: "Edit Ref. No. %{order_number}"
         h3: "Resolve Dispute"
         resolve_dispute: Resolve Dispute
         h3-2: "Dispute Information"
@@ -496,7 +519,8 @@ en:
           at: "Ordered At"
           for: "Ordered For"
           by: "Ordered By"
-          summary: "Summary Of Order #%{order_number}"
+          # summary: "Summary Of Order #%{order_number}"
+          summary: "Summary Of Ref. No. #%{order_number}"
         fulfilled: "Fulfilled At"
         account: "Payment Source"
         assigned: "Assigned User"
@@ -518,7 +542,8 @@ en:
         save_html: "You <b>must</b> click \"Save\" to apply any changes made to the order."
       th:
         product: "Quantity*/Product"
-        order: "Order #"
+        # order: "Order #"
+        order: "Ref. No."
         quantity: "Quantity/Product"
         status: "Status"
         assigned: "Assigned To"
@@ -608,9 +633,13 @@ en:
 
   funding_requests:
     status:
-      PROCESSING: "In Progress"
-      COMPLETED: "Completed"
-      FAILED: "Failed"
+      PENDING_CHECK_FUND: "In Progress"
+      PENDING_LOCK_FUND: "In Progress"
+      SUCCESS: "Success"
+      FAILED_CHECK_FUND: "Failed"
+      FAILED_LOCK_FUND: "Failed"
+      # For Test?
+      PROCESSING: "PROCESSING"
     request_type:
       LOCK_FUND_REQUEST: "Top up"
       UNLOCK_FUND_REQUEST: "Release"
@@ -637,11 +666,14 @@ en:
         failded_string : "Failed"
       table:
         date : "Date"
+        transaction_date: Transaction Date
         type : "Top Up / Release"
         status : "Status"
-        Amount : "Amount"
+        # Amount : "Amount"
+        Amount : "Amount (HKD)"
       message:
-        in_progress : "Cannot submit new request until existing request executed."
+        # in_progress : "Cannot submit new request until existing request executed."
+        in_progress : "You cannot make new requests when the fund locking is in progress."
 
 
   statements:
@@ -734,13 +766,14 @@ en:
       failure: This order is not currently editable.
     show:
       head:
-        h1: "Order #%{order_number}"
+        # h1: "Order #%{order_number}"
+        h1: "Ref. No.%{order_number}"
         dispute: "Dispute Order"
         results: "Download Results"
       instruct:
         dispute: "If you wish to dispute the charges for this purchase, please explain the issue with the charges and click \"Dispute Purchase\"."
       link:
-        receipt: "View Receipt"
+        receipt: "View Order Details"
         change_account: "Change"
         reservation:
           cancel: "Cancel"
@@ -754,6 +787,7 @@ en:
         cost: "Cost"
         adjust: "Adjustment"
         total: "Total"
+        # total: Amount (HKD)
       unassigned: "Unassigned"
     notices:
       missing_actuals:
@@ -870,19 +904,22 @@ en:
     role:
         owner: Owner
         business_administrator: Business Administrator
-        purchaser: Member
+        # purchaser: Member
+        purchaser: User
     member_table:
       add_access: Add Access
       remove_access: Remove Access
       th:
-        name: Name (username)
+        # name: Name (username)
+        name: Name (Net ID)
         email: Email
         role: Role
     member_allocation_table:
       add_access: Add Access
       remove_access: Remove Access
       th:
-        name: Name (username)
+        # name: Name (username)
+        name: Name (Net ID)
         email: Email
         role: Role
         allocation_amt: Allocation amount
@@ -1259,12 +1296,14 @@ en:
       add_access: Add Access
       remove_access: Remove Access
       th:
-        name: Name (username)
+        # name: Name (username)
+        name: Name (Net ID)
         email: Email
         role: Role
     role:
       owner: Owner
-      purchaser: Member
+      # purchaser: Member
+      purchaser: User
       business_administrator: Business Administrator
     allocation:
       save: Save
@@ -1273,7 +1312,8 @@ en:
       committed_amt: "Committed amount"
     member_allocation_table:
       th:
-        name: Name (username)
+        # name: Name (username)
+        name: Name (Net ID)
         role: Role
         allocation_amt: Amount
         expense_amt: Expense
@@ -1285,9 +1325,11 @@ en:
       total_expense: "Total Expense Amount"
       free_balance: "Free balance"
       alert_threshold: "Alert threshold"
+      expires_at: "Valid Until"
     member_allocation_table:
       th:
-        name: Name (username)
+        # name: Name (username)
+        name: Name (Net ID)
         role: Role
         allocation_amt: Quota
         expense_amt: Expense

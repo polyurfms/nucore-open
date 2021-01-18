@@ -332,7 +332,8 @@ en:
         estimated_subsidy: Estimated Adjustment
         estimated_total: Estimated Total
         fulfilled_at: Fulfilled Date
-        id: "Order #"
+        # id: "Order #"
+        id: "Ref. No."
         journal_date: Journal Date
         journal_reference: Journal Reference
         journal_or_statement_date: "Journal/Statement Date"

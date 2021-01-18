@@ -2,6 +2,8 @@
 
 class NufsAccount < Account
 
+  include AffiliateAccount
+
   validates_uniqueness_of :account_number, message: "already exists"
   validates_presence_of :expires_at
 
