@@ -6,6 +6,7 @@ class AccountsController < ApplicationController
   before_action :authenticate_user!
   before_action :check_acting_as
   before_action :init_account, only: [:show, :user_search, :transactions, :suspend, :unsuspend, :edit, :update]
+  before_action :check_alert_threshold, only: [:update]
   include AccountSuspendActions
   load_and_authorize_resource only: [:show, :user_search, :transactions, :suspend, :unsuspend]
 
@@ -51,7 +52,7 @@ class AccountsController < ApplicationController
       owner_user: current_user,
       params: params,
     ).update
-
+    
     @account.valid?
     @account.errors.full_messages
 
@@ -69,6 +70,21 @@ class AccountsController < ApplicationController
   end
 
   private
+
+  def check_alert_threshold
+    if(@account.type == "NufsAccount")
+      if(params[:nufs_account][:alert_threshold].nil? || params[:nufs_account][:alert_threshold] == "" || params[:nufs_account][:alert_threshold].to_f < 0)
+        flash[:error] = "Alert threshold must be equal to or larger than 0"
+        redirect_to account_path
+      end
+      @account.alert_threshold = params[:nufs_account][:alert_threshold].to_f
+      free_balance = @account.free_balance
+      if(@account.alert_threshold > free_balance)
+        flash[:error] = "Free balance must be equal to or larger than alert threshold"
+        redirect_to account_path
+      end
+    end
+  end
 
   def ability_resource
     @account
