@@ -318,17 +318,43 @@ class OrdersController < ApplicationController
     # new or in process
     # @order_details = session_user.order_details.item_and_service_orders
     @order_details = acting_user.order_details.item_and_service_orders
-    
+    @current_type = "All"
+
+    params[:status] = "all" unless params[:commit].nil?
+    @type_array = ["All","New","In Process","Canceled","Complete"]
+
+    @current_type = params[:status] unless params[:status].nil?
+
     @available_statuses = %w(pending all)
     case params[:status]
     when "pending"
       @order_details = @order_details.new_or_inprocess
     when "all"
       @order_details = @order_details.purchased
+      case params[:order_status_id]
+        # when "0" # All
+        #   @order_details = @order_details.new_or_inprocess
+        when "New" # New
+          @order_details = @order_details.new_states
+          @current_type = "New"
+        when "In Process" # In process
+          @order_details = @order_details.inprocess_states
+          @current_type = "In Process"
+        when "Canceled" # Canceled
+          @order_details = @order_details.canceled_states
+          @current_type = "Canceled"
+        when "Complete" #complete
+          @order_details = @order_details.complete_states
+          @current_type = "Complete"
+        else
+          @order_details = @order_details.purchased
+          @current_type = "All"
+        end
     else
       redirect_to orders_status_path(status: "pending")
       return
     end
+
     @order_details = @order_details. order("order_details.created_at DESC").paginate(page: params[:page])
   end
 

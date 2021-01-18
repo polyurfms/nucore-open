@@ -42,7 +42,7 @@ class AutoLogout
     MoveToProblemQueue.move!(order_detail, cause: :auto_logout)
   rescue => e
     ActiveSupport::Notifications.instrument("background_error",
-                                            exception: e, information: "Error on Order # #{order_detail} - #{e}")
+                                            exception: e, information: "Error on Ref. No. #{order_detail} - #{e}")
     raise ActiveRecord::Rollback
   end
 
