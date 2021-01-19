@@ -5,25 +5,14 @@ module ExternalAccounts
   module ApplicationControllerExtension extend ActiveSupport::Concern
 
     included do
-      def after_sign_in_path_for(resource)
+      # def after_sign_in_path_for(resource)
+      before_action :check_new_payment_source
+    end
 
-#        if !session_user.blank?
-#          Rails.logger.info session_user.id
-#          account_users = session_user.account_users
-#          account_users.each do |f|
-#            puts f.to_log_s
-#          end
-#        else
-#          Rails.logger.info "empty session user"
-#        end if
-
+    def check_new_payment_source
+      if !session_user.blank? && session[:load_payment_source] == nil
+        session[:load_payment_source] = 1
         accounts = Account.for_user(session_user)
-
-#        if !accounts.blank?
-#          accounts.each do |a|
-#            puts a.id
-#          end
-#        end
 
         # check if payment source not yet created
 
@@ -81,14 +70,14 @@ module ExternalAccounts
         end
 =end
         #call super method for the follow up task
-        super
+        #super
       end
 
 
 
     end
-
-
   end
 
 end
+
+#end
