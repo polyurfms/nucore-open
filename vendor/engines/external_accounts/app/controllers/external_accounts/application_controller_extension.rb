@@ -28,7 +28,8 @@ module ExternalAccounts
             and rm.username = ?
             and rm.is_left_project = 0
             and rm.user_role = 'OWNER'
-          where rp.account_number not in (select a.account_number from accounts a)", session_user.username])
+          where rp.account_number not in (select a.account_number from accounts a)
+          and expires_at > now() ", session_user.username])
 
         # Create missing account info
         if !externalAccounts.blank?
