@@ -1,6 +1,6 @@
 en:
   views:
     user_delegation:
-        subject:  "%{delegatee} was delegated to the %{delegator} "
+        subject:  "URFMS delegate assinged "
         body: |
-          This is to inform you that you have delegated.
+          This is to inform you that you have just assigned xxx as your delegate.

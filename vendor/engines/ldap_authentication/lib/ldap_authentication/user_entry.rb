@@ -48,6 +48,16 @@ module LdapAuthentication
       @ldap_entry.mail.first
     end
 
+    def dept_abbrev
+      #polyuStaffMainDept
+      @ldap_entry.departmentNumber.first
+    end
+
+    def user_type
+      #polyuUserType
+      @ldap_entry.employeeType.first
+    end
+
     def to_user
       UserConverter.new(self).to_user
     end
