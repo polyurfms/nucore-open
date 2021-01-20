@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_07_101243) do
-
+ActiveRecord::Schema.define(version: 2021_01_14_092639) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -57,6 +56,7 @@ ActiveRecord::Schema.define(version: 2021_01_07_101243) do
     t.boolean "allows_allocation", default: false, null: false
     t.decimal "committed_amt", precision: 10, scale: 2, default: "0.0"
     t.string "project_title", limit: 1000
+    t.decimal "alert_threshold", precision: 10, scale: 2, default: "0.0"
     t.index ["affiliate_id"], name: "index_accounts_on_affiliate_id"
   end
 
@@ -120,17 +120,6 @@ ActiveRecord::Schema.define(version: 2021_01_07_101243) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["user_id", "key"], name: "index_email_events_on_user_id_and_key", unique: true
-  end
-
-  create_table "intf_research_project_account_users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.text "description", null: false
-    t.datetime "expires_at"
-    t.string "account_number", limit: 50
-    t.string "username", null: false
-    t.string "user_role", limit: 50, null: false
-    t.boolean "is_left_project"
-    t.datetime "left_project_date"
-    t.index ["account_number", "username"], name: "index_external_accounts_on_account_number_and_username"
   end
 
   create_table "external_service_passers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -203,6 +192,32 @@ ActiveRecord::Schema.define(version: 2021_01_07_101243) do
     t.index ["facility_id"], name: "fk_facilities"
   end
 
+  create_table "fo_journal_rows", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "fo_journal_id"
+    t.string "source_name", limit: 25, null: false
+    t.string "account_date", limit: 8, null: false
+    t.string "currency_code", limit: 3, null: false
+    t.string "actual_flag", limit: 1, null: false
+    t.string "account_code", limit: 9, null: false
+    t.decimal "debit_amt", precision: 13, scale: 2
+    t.decimal "credit_amt", precision: 13, scale: 2
+    t.string "system_code", limit: 2, null: false
+    t.string "create_date_time", limit: 12, null: false
+    t.string "ref_no", limit: 6, null: false
+    t.string "description", limit: 240, null: false
+    t.string "ecumbrance_type", limit: 3
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["fo_journal_id"], name: "index_fo_journal_rows_on_fo_journal_id"
+  end
+
+  create_table "fo_journals", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "journal_id"
+    t.string "status", limit: 25
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "funding_requests", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "account_id", null: false
     t.string "request_type", limit: 50, null: false, comment: "PENDING_CHECK_FUND, PENDING_LOCK_FUND, SUCCESS, FAILED_CHECK_FUND, FAILED_LOCK_FUND "
@@ -214,6 +229,7 @@ ActiveRecord::Schema.define(version: 2021_01_07_101243) do
     t.integer "updated_by"
     t.datetime "updated_at"
     t.string "remarks", limit: 100
+    t.integer "fo_journal_id"
   end
 
   create_table "instrument_alerts", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -980,6 +996,7 @@ ActiveRecord::Schema.define(version: 2021_01_07_101243) do
   add_foreign_key "bundle_products", "products", name: "fk_bundle_prod_bundle"
   add_foreign_key "email_events", "users"
   add_foreign_key "facility_accounts", "facilities", name: "fk_facilities"
+  add_foreign_key "fo_journal_rows", "fo_journals"
   add_foreign_key "instrument_statuses", "products", column: "instrument_id", name: "fk_int_stats_product"
   add_foreign_key "journal_rows", "accounts"
   add_foreign_key "journal_rows", "journals"

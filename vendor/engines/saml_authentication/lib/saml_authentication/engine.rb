@@ -21,6 +21,7 @@ module SamlAuthentication
                           "header_login",
                           "saml_authentication/header"
 
+
       end
 
       OneLogin::RubySaml::Logging.logger.level = Rails.env.production? ? Logger::INFO : Logger::DEBUG
