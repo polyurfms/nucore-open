@@ -23,6 +23,9 @@
 
   = f.input :allows_allocation
 
+  - if @account.type == "NufsAccount"
+    = f.input  :alert_threshold, label: text("account_allocations.new.alert_threshold"), as: :readonly
+    
   -# TODO: use render_view_hook instead
   - if lookup_context.exists? "facility_accounts/#{@account.class.name.underscore}/show", [], true
     = render "facility_accounts/#{@account.class.name.underscore}/show", f: f
