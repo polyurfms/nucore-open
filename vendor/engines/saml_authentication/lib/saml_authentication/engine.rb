@@ -19,7 +19,7 @@ module SamlAuthentication
                           "saml_authentication/sessions/new"
         ViewHook.add_hook "shared.header",
                           "header_login",
-                          "external_accounts/header"
+                          "saml_authentication/header"
 
       end
 
