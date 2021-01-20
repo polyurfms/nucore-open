@@ -15,6 +15,11 @@ module SamlAuthentication
         encrypted_password: nil,
         password_salt: nil,
       )
+
+      if Settings.uat.email.present?
+        attributes['email'] = attributes['username']+'@polyu.edu.hk'
+      end
+
       user.update!(attributes)
     end
 
