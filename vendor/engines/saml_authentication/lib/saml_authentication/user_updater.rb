@@ -17,7 +17,7 @@ module SamlAuthentication
       )
 
       if Settings.uat.email.present?
-        attributes['email'] = attributes['username']+'@polyu.edu.hk'
+        attributes['email'] = attributes['username']+Settings.uat.email
       end
 
       user.update!(attributes)
