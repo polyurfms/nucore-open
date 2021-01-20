@@ -7,8 +7,8 @@ class CreateFoJournalRows < ActiveRecord::Migration[5.2]
 		t.string "currency_code", limit: 3, null: false
 		t.string "actual_flag", limit: 1, null: false
 		t.string "account_code", limit: 9, null: false
-		t.decimal "debit_amt" , null: false
-		t.decimal "credit_amt", null: false
+		t.decimal "debit_amt" ,precision: 10 , scale: 2, default: 0
+		t.decimal "credit_amt",precision: 10 , scale: 2, default: 0
 		t.string "system_code", limit: 2, null: false
 		t.string "create_date_time", limit: 12, null: false
 		t.string "ref_no", limit: 6, null: false
