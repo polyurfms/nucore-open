@@ -25,12 +25,13 @@ class FacilityInsufficientFundController < ApplicationController
   # GET /facilities/notifications
   def index
     order_details = OrderDetail.need_notification.for_facility(current_facility)
-
     @search_form = TransactionSearch::SearchForm.new(params[:search])
     @search = TransactionSearch::Searcher.billing_search(order_details, @search_form, include_facilities: current_facility.cross_facility?)
     @date_range_field = @search_form.date_params[:field]
     @order_details = @search.order_details
 
+    @order_details = @order_details.select{ |x| !x.has_sufficient_fund? }
+    
     @order_detail_action = :send_notifications
   end
 
