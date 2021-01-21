@@ -3,7 +3,8 @@ en:
     user_delegation:
       header: My Delegation 
       table:
-        name: "Assigned"
+        name: "NetID"
+        date: "Assign date"
         button_name: "Remove"
       message: "Confrim to remove?"
     account_selection:

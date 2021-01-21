@@ -28,8 +28,10 @@
     %thead
       %tr
         %th= t("views.user_delegation.table.name")
+        %th= t("views.user_delegation.table.date")
     %tbody
       - @assigned_list.each do |od| 
         %tr
           %td= od.delegatee
+          %td= format_usa_date(od.created_at)          
           %td= link_to t("views.user_delegation.table.button_name"), od, data: { confirm: t("views.user_delegation.message") }, method: :delete

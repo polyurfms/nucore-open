@@ -3,4 +3,4 @@ en:
     user_delegation:
         subject:  "URFMS delegate assinged "
         body: |
-          This is to inform you that you have just assigned xxx as your delegate.
+          This is to inform you that you have just assigned %{delegator} as your delegate.
