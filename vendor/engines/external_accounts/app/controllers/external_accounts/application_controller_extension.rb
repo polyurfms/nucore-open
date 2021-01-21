@@ -42,6 +42,9 @@ module ExternalAccounts
             @account.expires_at = ea.expires_at
             @account.created_by = session_user.id
             @account.updated_by =session_user.id
+            if Settings.research_project_affiliate_id.present?
+              @account.affiliate_id = Settings.research_project_affiliate_id
+            end
             @account.created_at = Time.now
             @account.updated_at = Time.now
 
