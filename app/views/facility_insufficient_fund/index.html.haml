@@ -22,7 +22,7 @@
       -#       .submit.inline-block
       -#         = submit_tag text("send_notifications", scope: "admin.transaction_search.actions"), class: ["btn", "btn-primary"]
       .row
-        .span12= render "shared/transactions/table_inside", order_details: @order_details
+        .span12= render "shared/transactions/table_inside", order_details: @order_details, is_insufficient_fund: true
 
   = render "shared/reconcile_footnote"
 - else

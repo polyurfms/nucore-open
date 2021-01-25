@@ -784,7 +784,8 @@ class OrderDetail < ApplicationRecord
 
   def has_sufficient_fund?
     puts "has sufficient fund xxxxxxxxxxxxxxxxx"
-    if !reviewed_at.blank? && ( journal_id.blank? && statement_id.blank?)
+    # if !reviewed_at.blank? && ( journal_id.blank? && statement_id.blank?)
+    if journal_id.blank? && statement_id.blank?
       account.has_sufficient_fund?
     else
       true
