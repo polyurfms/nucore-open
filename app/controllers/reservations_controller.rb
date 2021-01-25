@@ -83,9 +83,8 @@ class ReservationsController < ApplicationController
     @status = params[:status]
     @available_statuses = [in_progress.blank? ? "upcoming" : "upcoming_and_in_progress", "all"]
 
-   @available_statuses = %w(pending all)
-    
-   
+#   @available_statuses = %w(pending all)
+       
    case params[:status]
     when "upcoming"
       @status = @available_statuses.first
