@@ -29,6 +29,8 @@ class ReservationsController < ApplicationController
 
   # GET /facilities/1/instruments/1/reservations.js?_=1279579838269&start=1279429200&end=1280034000
   def index
+
+
     @facility = Facility.find_by!(url_name: params[:facility_id])
     @instrument = @facility.instruments.find_by!(url_name: params[:instrument_id])
 
@@ -72,13 +74,52 @@ class ReservationsController < ApplicationController
   def list
     notices = []
 
+    params[:status] = "all" unless params[:commit].nil?
+    @type_array = ["All","New","In Process","Canceled","Complete"]
+
+
     relation = acting_user.order_details
     in_progress = relation.with_in_progress_reservation
     @status = params[:status]
     @available_statuses = [in_progress.blank? ? "upcoming" : "upcoming_and_in_progress", "all"]
 
-    if @status == "all"
+   @available_statuses = %w(pending all)
+    
+   
+   case params[:status]
+    when "upcoming"
+      @status = @available_statuses.first
+      @order_details = in_progress + relation.with_upcoming_reservation
+    when "all"
       @order_details = relation.with_reservation
+      case params[:order_status_id]
+        # when "0" # All
+        #   @order_details = @order_details.new_or_inprocess
+        when "New" # New
+          @order_details = @order_details.new_states
+          @current_type = "New"
+        when "In Process" # In process
+          @order_details = @order_details.inprocess_states
+          @current_type = "In Process"
+        when "Canceled" # Canceled
+          @order_details = @order_details.canceled_states
+          @current_type = "Canceled"
+        when "Complete" #complete
+          @order_details = @order_details.complete_states
+          @current_type = "Complete"
+        else
+          @order_details = @order_details.purchased
+          @current_type = "All"
+        end
+    else
+      redirect_to orders_status_path(status: "pending")
+      return
+    end
+
+
+
+    if @status == "all"
+      #@order_details = relation.with_reservation
     elsif @status == "upcoming"
       @status = @available_statuses.first
       @order_details = in_progress + relation.with_upcoming_reservation
