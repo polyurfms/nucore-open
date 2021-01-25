@@ -112,7 +112,7 @@ class ReservationsController < ApplicationController
           @current_type = "All"
         end
     else
-      redirect_to orders_status_path(status: "pending")
+      redirect_to reservations_status_path(status: "upcoming")
       return
     end
 
@@ -124,7 +124,7 @@ class ReservationsController < ApplicationController
       @status = @available_statuses.first
       @order_details = in_progress + relation.with_upcoming_reservation
     else
-      return redirect_to reservations_status_path(status: "upcoming")
+      #return redirect_to reservations_status_path(status: "upcoming")
     end
 
     @order_details = @order_details.paginate(page: params[:page])
