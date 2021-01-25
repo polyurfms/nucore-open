@@ -601,6 +601,7 @@ en:
       notify: Send Notification
     list:
       status:
+        pending: Pending 
         upcoming: Upcoming
         upcoming_and_in_progress: "Upcoming & In Progress"
         all: All
