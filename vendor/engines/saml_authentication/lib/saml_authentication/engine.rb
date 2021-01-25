@@ -17,6 +17,11 @@ module SamlAuthentication
         ViewHook.add_hook "devise.sessions.new",
                           "before_login_form",
                           "saml_authentication/sessions/new"
+        ViewHook.add_hook "shared.header",
+                          "header_login",
+                          "saml_authentication/sessions/header"
+
+
       end
 
       OneLogin::RubySaml::Logging.logger.level = Rails.env.production? ? Logger::INFO : Logger::DEBUG

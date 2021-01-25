@@ -6,6 +6,12 @@
   - <%= account.to_s(with_facility: false) %>
 <% end %>
 
+<%= text("insufficient_fund_msg") %>
+<% accounts.each do |account| %>
+  <%if account.free_balance.to_f < 0 %>
+      - <%= account.to_s(with_facility: false) %>
+  <% end %>
+<% end %>
 <% end %>
 <%= text("outro", login_url: in_review_transactions_url) %>
 

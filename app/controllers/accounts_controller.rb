@@ -19,7 +19,9 @@ class AccountsController < ApplicationController
   def index
     # @account_users = session_user.account_users
     # @administered_order_details_in_review = current_user.administered_order_details.in_review
-    @account_users = @acting_user.account_users
+    # @account_users = @acting_user.account_users
+
+    @account_users = @acting_user.account_users.joins("INNER JOIN accounts on accounts.id = account_users.account_id").order(account_number: :ASC)
     @administered_order_details_in_review = @acting_user.administered_order_details.in_review
   end
 
