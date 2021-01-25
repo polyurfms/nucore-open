@@ -393,6 +393,22 @@ en:
         reference: "Reference"
         status: "Status"
 
+
+  facility_insufficient_fund:
+    in_review:
+      head: "Orders with Insufficient Fund"
+      no_orders: "No orders are currently in review"
+      instructions: |
+        The orders listed below are still in review by the customer.  The time the review window will close is listed.
+        You may manually mark an order as reviewed, allowing you to create a statement for or journal the order immediately.
+      submit: "Mark As Reviewed"
+    index:
+      head: "Orders with Insufficient Fund"
+      no_orders: "No notifications are currently pending"
+      foot: "* Reflects only orders that the user has not been notified of yet."
+      submit: "Send Notifications"
+
+
   facility_notifications:
     in_review:
       head: "Orders In Review"
@@ -797,6 +813,9 @@ en:
       missing_price_policy:
         badge: Missing Price Policy
         alert: This order does not have a price policy assigned. Please ensure that there is a price policy for the date this order was fulfilled. Saving will attempt to assign a price policy.
+      insufficient_fund:
+        badge: Insufficient Fund
+        alert: Commmitted amount unable to settle the expense.
       in_review:
         badge: In Review
         alert: This order is currently in review.

@@ -789,6 +789,16 @@ class OrderDetail < ApplicationRecord
     can_reconcile? && in_closed_journal?
   end
 
+  def has_sufficient_fund?
+    # if !reviewed_at.blank? && ( journal_id.blank? && statement_id.blank?)
+    if journal_id.blank? && statement_id.blank?
+      account.has_sufficient_fund?
+    else
+      true
+    end
+
+  end
+
   def self.account_unreconciled(facility, account)
     if account.class.using_journal?
       joins(:journal)
