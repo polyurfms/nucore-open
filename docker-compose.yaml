@@ -20,7 +20,7 @@ services:
       - MYSQL_USER=root
       - MYSQL_PASSWORD=root
       - SMTP_HOST=mailcatcher
-      - LDAP_HOST=ldap
+#      - LDAP_HOST=ldap
       - SPROCKETS_CACHE=/cache #Added to support Window 10 Docker
     tty: true
     stdin_open: true
@@ -61,34 +61,34 @@ services:
       - gem_cache:/gems
     tty: true
     stdin_open: true
-  ldap:
-    image: osixia/openldap
-    command: "--copy-service"
-    ports:
-      - "389:389"
-    volumes:
-      - "ldap-data:/var/lib/ldap"
-      - "slapd-config:/etc/ldap/slapd.d"
+#  ldap:
+#    image: osixia/openldap
+#    command: "--copy-service"
+#    ports:
+#      - "389:389"
+#    volumes:
+#      - "ldap-data:/var/lib/ldap"
+#      - "slapd-config:/etc/ldap/slapd.d"
       # Loads some default users into the database
-      - "./vendor/engines/ldap_authentication/spec/fixtures:/container/service/slapd/assets/config/bootstrap/ldif/custom"
+#      - "./vendor/engines/ldap_authentication/spec/fixtures:/container/service/slapd/assets/config/bootstrap/ldif/custom"
 
   # Optional administrative website
-  ldap-admin:
-    image: osixia/phpldapadmin
-    ports:
-      - "8081:80"
-    depends_on:
-      - ldap
-    environment:
-      - PHPLDAPADMIN_LDAP_HOSTS=ldap
-      - PHPLDAPADMIN_HTTPS=false
+#  ldap-admin:
+#    image: osixia/phpldapadmin
+#    ports:
+#      - "8081:80"
+#    depends_on:
+#      - ldap
+#    environment:
+#      - PHPLDAPADMIN_LDAP_HOSTS=ldap
+#      - PHPLDAPADMIN_HTTPS=false
     
 volumes:
   cache: #Added to support Window 10 Docker
   db-data:
     driver: local
   gem_cache: {}
-  slapd-config:
-    driver: local
-  ldap-data:
-    driver: local
+#  slapd-config:
+#    driver: local
+#  ldap-data:
+#    driver: local
