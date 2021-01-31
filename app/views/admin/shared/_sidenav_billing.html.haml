@@ -5,6 +5,7 @@
   = tab text("disputed_orders"), facility_disputed_orders_path, (sidenav_tab == "disputed_orders") if SettingsHelper::has_review_period?
 
   %li.nav-spacer
+  = tab text("facility_insufficient_fund"), facility_insufficient_fund_path, (sidenav_tab == 'insufficient_fund') if SettingsHelper::has_review_period?
   = tab text("send_notifications"), facility_notifications_path, (sidenav_tab == 'notifications') if SettingsHelper::has_review_period?
   = tab text("orders_in_review"), facility_notifications_in_review_path, (sidenav_tab == 'in_review') if SettingsHelper::has_review_period?
 

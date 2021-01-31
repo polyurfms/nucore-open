@@ -1,15 +1,31 @@
 class window.DateTimeSelectionWidgetGroup
   constructor: (@$dateField, @$hourField, @$minuteField, @$meridianField) ->
 
+  Date.shortMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
   getDateTime: ->
     return false unless @$dateField.val() && @$hourField.val() && @$minuteField.val() && @$meridianField.val()
-    formatter = TimeFormatter.fromString(@$dateField.val(), @$hourField.val(), @$minuteField.val(), @$meridianField.val())
+
+    date_str = new Date(this.$dateField.val())
+    year = date_str.getFullYear()
+    month = (1 + date_str.getMonth()).toString()
+    # month = month.length > 1 ? month : '0' + month
+    day = date_str.getDate().toString()
+    # day = day.length > 1 ? day : '0' + day
+
+    date_result =  month + '/' + day + '/' + year
+    this.$dateField.val(date_str.getDate() + " " + Date.shortMonths[date_str.getMonth()] + " " + date_str.getFullYear())
+    formatter = TimeFormatter.fromString(date_result, @$hourField.val(), @$minuteField.val(), @$meridianField.val())
+    # formatter = TimeFormatter.fromString(date_result, @$hourField.val(), @$minuteField.val(), @$meridianField.val())
+    # formatter = TimeFormatter.fromString(@$dateField.val(), @$hourField.val(), @$minuteField.val(), @$meridianField.val())
     formatter.toDateTime()
 
   setDateTime: (dateTime) ->
     formatter = new TimeFormatter(dateTime)
+    date_str = new Date(formatter.dateString())
+    @$dateField.val(date_str.getDate() + " " + Date.shortMonths[date_str.getMonth()] + " " + date_str.getFullYear())
 
-    @$dateField.val(formatter.dateString())
+    # @$dateField.val(formatter.dateString())
     @$hourField.val(formatter.hour12())
     @$meridianField.val(formatter.meridian())
 
@@ -56,7 +72,7 @@ class window.ReservationTimeFieldAdjustor
     @reserveEnd.change(@_reserveEndChangeCallback)
     # Trying to bind directly to the element can cause timeing problems
     @$form.on "change", @durationFieldSelector, @_durationChangeCallback
-    @$form.on "reservation:set_times", (evt, data) =>
+    @$form.on "reservation:set_times", (evt, data) =>      
       @setTimes(data.start, data.end)
 
   # in minutes
@@ -100,6 +116,7 @@ class window.ReservationTimeFieldAdjustor
 
   _reserveStartChangeCallback: =>
     # Wait until all the fields are filled before we do anything here
+    @durationField().val()
     return unless @reserveStart.valid()
 
     duration = @durationField().val()

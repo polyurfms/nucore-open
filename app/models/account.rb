@@ -14,8 +14,6 @@ class Account < ApplicationRecord
   include Accounts::AccountNumberSectionable
   include DateHelper
   include Nucore::Database::WhereIdsIn
-  include AffiliateAccount
-
 
   # belongs_to :facility, required: false
   has_many :account_facility_joins
@@ -24,6 +22,7 @@ class Account < ApplicationRecord
   has_many :account_users, -> { where(deleted_at: nil) }, inverse_of: :account
   has_many :deleted_account_users, -> { where.not(deleted_at: nil) }, class_name: "AccountUser"
 
+  has_many :funding_requests
   has_one :owner, -> { where(user_role: AccountUser::ACCOUNT_OWNER, deleted_at: nil) }, class_name: "AccountUser"
   has_one :owner_user, through: :owner, source: :user
   has_many :business_admins, -> { where(user_role: AccountUser::ACCOUNT_ADMINISTRATOR, deleted_at: nil) }, class_name: "AccountUser"
@@ -58,9 +57,10 @@ class Account < ApplicationRecord
 
   validate { errors.add(:base, :missing_owner) if missing_owner? }
 
-  with_options if: :can_allocate? do
-    validates_with AccountValidator
-  end
+# Sum of alloation amount validation (Disabled until user clarification)
+#  with_options if: :can_allocate? do
+#    validates_with AccountValidator
+#  end
 
   delegate :administrators, to: :account_users
   delegate :global?, :per_facility?, to: :class
@@ -277,5 +277,18 @@ class Account < ApplicationRecord
 
   def can_allocate?
     allows_allocation? && account_users.active.length() > 1
+  end
+
+
+  def total_expense
+    AccountUserExpense.where(account_id: id).sum("expense_amt")
+  end
+
+  def free_balance
+    committed_amt - total_expense
+  end
+
+  def has_sufficient_fund?
+    committed_amt > total_expense
   end
 end

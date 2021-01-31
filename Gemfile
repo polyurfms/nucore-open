@@ -76,6 +76,8 @@ gem "rake"
 gem "spreadsheet"
 gem "daemons"
 gem "ice_cube"
+gem "scenic" #Required for DB views creation
+gem "scenic-mysql_adapter"
 
 # Optional: File uploads to S3
 # gem "aws-sdk-s3"
@@ -90,6 +92,7 @@ gem "saml_authentication", path: "vendor/engines/saml_authentication"
 gem "sanger_sequencing", path: "vendor/engines/sanger_sequencing"
 #gem "secure_rooms", path: "vendor/engines/secure_rooms"
 gem "split_accounts", path: "vendor/engines/split_accounts"
+gem "external_accounts", path: "vendor/engines/external_accounts"
 gem "synaccess_connect"
 
 group :development do
@@ -106,8 +109,6 @@ group :development do
   gem "rubocop", "0.58", require: false
   gem "rubocop-rspec"
   gem "web-console"
-  gem "scenic" #Required for DB views creation
-  gem "scenic-mysql_adapter"
   gem 'meta_request'
   gem "better_errors"
   gem "binding_of_caller"

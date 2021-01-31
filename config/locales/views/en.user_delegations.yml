@@ -6,7 +6,7 @@ en:
         name: "NetID"
         date: "Assign date"
         button_name: "Remove"
-      message: "Confrim to remove?"
+      message: "confirm to remove?"
     account_selection:
       header: "Account"
       table:

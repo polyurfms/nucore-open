@@ -1,0 +1,45 @@
+= content_for :tabnav do
+  = render "admin/shared/tabnav_payment_method", secondary_tab: "funding_requests"
+
+= content_for :h1 do
+  = current_facility
+
+= render "sidebar"
+%h2= @account
+
+= readonly_form_for :account do |f|
+  = f.input :committed_amt, label: text("account_allocations.new.committed_amt"), as: :readonly
+  = f.input :total_expense, label: text("account_allocations.new.total_expense"), as: :readonly
+  = f.input :free_balance, label: text("account_allocations.new.free_balance"), as: :readonly
+
+-if Settings.fip_url.present?
+  Click <a href="#{Settings.fip_url}" target="_blank">here</a> to access Financial Information Platform (FIP) of the Finance Office
+
+-if is_allow_request
+  = simple_form_for(@funding_request, url: facility_account_create_funding_request_path(current_facility, @account)) do |f|
+    = f.input :request_type, collection: FundingRequest.request_types, label_method: ->(type) { t(type, scope: "funding_requests.request_type.") }
+    = f.input :request_amount
+    = f.hidden_field :account_id ,  value: @account.id
+    = f.submit t(".new_request"), class: "btn btn-primary"
+-else
+  <div class="notice">
+  %h4= t(".message.in_progress")
+  </div>
+  <br>
+<br>
+
+<h3>Transaction History </h3> 
+%table.table.table-striped.table-hover
+  %thead
+    %tr
+      %th= t(".table.transaction_date")
+      %th= t(".table.type")
+      %th= t(".table.status")
+      %th= t(".table.amount")
+  %tbody
+    - @funding_requests.each  do |at|
+      %tr
+        %td= format_usa_datetime(at.created_at)
+        %td= t("funding_requests.request_type.#{at.request_type}")
+        %td= t("funding_requests.status.#{at.status}")
+        %td= at.request_amount

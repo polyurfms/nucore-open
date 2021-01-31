@@ -43,6 +43,8 @@ en:
           **Payment source(s) and Owner**:
         owner_header: "Owner: %{owner}"
 
+        insufficient_fund_msg: "Below accout balance is insufficient"
+        
         outro: Please log in to [!app_name!](%{login_url}) and review these charges.
 
       statement:

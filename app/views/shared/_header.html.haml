@@ -8,7 +8,10 @@
       - if session_user.nil?
         %ul.nav.pull-right.hide-from-print
           = render "/shared/support"
-          %li= link_to t("pages.login"), :new_user_session
+          - if view_hook_exists?("header_login")
+            = render_view_hook "header_login"
+          -else
+            %li= link_to t("pages.login"), :new_user_session
       - else
         - if responsive?
           %a.btn.btn-navbar.hide-from-print{ data: { target: ".nav-collapse", toggle: "collapse" } }
@@ -30,9 +33,9 @@
               - else
                 %li.navbar-text= "#{acting_user.full_name} (#{acting_user.username})"
               %li.divider-vertical
-              - if current_user.password_updatable? && SettingsHelper.feature_on?(:password_update)
-                %li= link_to t("user_password.edit.head"), :edit_current_password
-                %li.divider-vertical
+              -# - if current_user.password_updatable? && SettingsHelper.feature_on?(:password_update)
+              -#   %li= link_to t("user_password.edit.head"), :edit_current_password
+              -#   %li.divider-vertical
               -# .visible-with-nav is visible > 979px
               = render "/shared/support"
               %li.visible-with-nav= link_to t('pages.cart') + " (#{current_cart.order_details.count})", :cart
@@ -43,5 +46,3 @@
                 %li
                   = form_tag global_search_path, class: "navbar-search pull-right hidden-with-nav" do
                     = text_field_tag :search, nil, placeholder: t("global_search.search"), class: "search-query span2", aria: { label: t("global_search.search") }
-
-

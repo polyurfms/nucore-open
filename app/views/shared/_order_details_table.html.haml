@@ -4,9 +4,11 @@
       %th.centered= OrderDetail.human_attribute_name(:id)
       %th= OrderDetail.human_attribute_name(:ordered_at)
       %th= OrderDetail.human_attribute_name(:quantity)
-      %th= OrderDetail.human_attribute_name(:product)
+      -# %th= OrderDetail.human_attribute_name(:product)
+      %th= "Purchased Item"
       %th.centered= OrderDetail.human_attribute_name(:status)
-      %th.currency= OrderDetail.human_attribute_name(:actual_total)
+      -# %th.currency= OrderDetail.human_attribute_name(:actual_total)
+      %th.currency= "Amount (HKD)"
   %tbody
     - @order_details.each do |od|
       - order_detail = OrderDetailPresenter.new(od)
@@ -26,9 +28,10 @@
         %td.currency= order_detail.wrapped_total
 
 %p.footnote
-  %span.estimated_cost= text("users.reservations.estimated_cost.color")
+  %span.estimated_cost
+  -# = text("users.reservations.estimated_cost.color")
   = text("users.reservations.estimated_cost.note")
-  %span.actual_cost= text("users.reservations.actual_cost.color")
-  = text("users.reservations.actual_cost.note")
+  -# %span.actual_cost= text("users.reservations.actual_cost.color")
+  -# = text("users.reservations.actual_cost.note")
 
 = will_paginate(@order_details)

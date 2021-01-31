@@ -126,9 +126,16 @@ class OrderDetail < ApplicationRecord
   ## TODO validate order status is global or a member of the product's facility
   ## TODO validate which fields can be edited for which states
 
+  scope :my_item, -> { joins(:order, :order_status).merge(Order.purchased) }
+
   scope :batch_updatable, -> { where(dispute_at: nil, state: %w(new inprocess)) }
   scope :new_or_inprocess, -> { purchased.where(state: %w(new inprocess)) }
   scope :non_canceled, -> { where.not(state: "canceled") }
+
+  scope :new_states, -> { my_item.where(state: %w(new inprocess), order_status_id: %w(1)) }
+  scope :canceled_states, -> { purchased.where(state: %w(canceled)) }
+  scope :complete_states, -> { purchased.where(state: %w(complete)) }
+  scope :inprocess_states, -> { my_item.where(state: %w(new inprocess), order_status_id: %w(2)) }
 
   def self.for_facility(facility)
     for_facility_id(facility.id)
@@ -685,7 +692,7 @@ class OrderDetail < ApplicationRecord
   alias to_s order_number
 
   def description
-    "Order # #{self}"
+    "Ref. No. #{self}"
   end
 
   # Only used by Journals. Consider pulling into the journal/journal row
@@ -782,6 +789,16 @@ class OrderDetail < ApplicationRecord
     can_reconcile? && in_closed_journal?
   end
 
+  def has_sufficient_fund?
+    # if !reviewed_at.blank? && ( journal_id.blank? && statement_id.blank?)
+    if journal_id.blank? && statement_id.blank?
+      account.has_sufficient_fund?
+    else
+      true
+    end
+
+  end
+
   def self.account_unreconciled(facility, account)
     if account.class.using_journal?
       joins(:journal)
@@ -813,7 +830,7 @@ class OrderDetail < ApplicationRecord
   def to_notice(notification_class, *_args)
     case notification_class.name
     when MergeNotification.name
-      notice = "<a href=\"#{facility_order_path(order.facility, order.merge_order)}\">Order ##{order.merge_order.id}</a> needs your attention. A line item was added after purchase and "
+      notice = "<a href=\"#{facility_order_path(order.facility, order.merge_order)}\">Ref. No.#{order.merge_order.id}</a> needs your attention. A line item was added after purchase and "
 
       notice += case product
                 when Instrument then "has an incomplete reservation."
@@ -901,7 +918,7 @@ class OrderDetail < ApplicationRecord
   end
 
   def to_log_s
-    "Order ##{order_number}"
+    "Ref. No.#{order_number}"
   end
 
   def resolve_dispute?

@@ -8,6 +8,19 @@
         reservations_status_path(status: status),
         (@status == status)
 
+<p> #{I18n.t("views.reservations.message")} </p>
+
+- if params[:status] == "all"
+  = form_tag(reservations_status_path, method: :get, enforce_utf8: false) do      
+    %table.table.table-striped.table-hover.occupancies.old-table
+      %td.action-form
+        %select{ name: "order_status_id", class: "sync_select", id: nil }
+          - @type_array.each do |order_status|
+            = options_for_select([order_status], @current_type)
+
+      %td= submit_tag "Filter", class: ["btn", "btn-primary"]
+
+
 - if @order_details.any?
   = render "my_table", order_details: @order_details
 - else

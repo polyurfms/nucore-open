@@ -7,15 +7,25 @@
   = f.input :account_number, as: :readonly
   = f.input :type_string, as: :readonly
   = f.input :description, as: :readonly
-  - if @account.affiliate
-    = f.input :affiliate, input_html: { value: @account.affiliate_to_s }, as: :readonly
-  = f.input :expires_at, as: :readonly, date_only: true
+
+  = f.input :expires_at, label: text("account_allocations.new.expires_at"), as: :readonly, date_only: true
   - if @account.suspended?
     = f.input :suspended_at, as: :readonly, date_only: true
-  = f.label :facility_accounts, t("facility_accounts.account_fields.label.allows_allocation")
-  = f.check_box :allows_allocation
+  = f.input :committed_amt, label: text("account_allocations.new.committed_amt"), as: :readonly
+  = f.input :total_expense, label: text("account_allocations.new.total_expense"), as: :readonly
+  = f.input :free_balance, label: text("account_allocations.new.free_balance"), as: :readonly
+  - if @account.type == "NufsAccount"
+    = f.input :alert_threshold, label: text("account_allocations.new.alert_threshold")
+
   = f.input :type, as: :hidden, input_html: { value: @account.type, name: "type" }
-  = f.input :affiliate_id, as: :hidden
+  - if @account.affiliate
+    = f.label :facility_accounts, t("facility_accounts.account_fields.label.allows_allocation")
+    = f.check_box :allows_allocation
+    <br>
+    <br>
+    = f.input :affiliate_id, as: :hidden
+    = f.input :affiliate_other, as: :hidden
+    = f.input :affiliate, input_html: { value: @account.affiliate_to_s }, as: :readonly
 
   <br>
   <br>
@@ -23,4 +33,5 @@
   = render_view_hook("after_end_of_form", f: f, account: @account)
 
   = render partial: "accounts/suspend_button"
-  = f.submit t(".save"), class: "btn btn-primary"
+  - if @account.type == 'NufsAccount'
+    = f.submit t(".save"), class: "btn btn-primary"

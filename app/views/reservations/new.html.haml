@@ -29,8 +29,8 @@
   = f.error_messages
   = render "reservations/account_field", f: f unless @order_detail.bundled?
   = render "reservations/reservation_fields", f: f
-
-  - if acting_as? && @is_delegated == false
+  
+  - if acting_as? && has_delegated? == false
     .row
       .span4
         = f.input :reference_id

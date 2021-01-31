@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
 
   # Make the following methods available to all views
   helper_method :cross_facility?
-  helper_method :current_facility, :session_user, :manageable_facilities, :operable_facilities, :acting_user, :acting_as?, :check_acting_as, :current_cart, :backend?
+  helper_method :current_facility, :session_user, :manageable_facilities, :operable_facilities, :acting_user, :acting_as?, :check_acting_as, :current_cart, :backend?, :has_delegated?
   helper_method :open_or_facility_path
 
   before_action :set_paper_trail_whodunnit ,:check_agreement
@@ -200,6 +200,10 @@ class ApplicationController < ActionController::Base
 
   def acting_user
     @acting_user ||= User.find_by(id: session[:acting_user_id]) || session_user
+  end
+
+  def has_delegated?
+    return has_delegated
   end
 
   def acting_as?

@@ -56,6 +56,7 @@ module Reports
     end
 
     def init_report_params
+      
       @date_start = parse_usa_date(params[:date_start])
       @date_start = if @date_start.blank?
                       (Time.zone.now - 1.month).beginning_of_month

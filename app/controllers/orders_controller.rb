@@ -44,7 +44,7 @@ class OrdersController < ApplicationController
     facility_ability = Ability.new(session_user, @order.facility, self)
     @order.being_purchased_by_admin = facility_ability.can?(:act_as, @order.facility)
     @order.validate_order! if @order.new?
-    @is_delegated = has_delegated
+    # @is_delegated = has_delegated
 
   end
 
@@ -238,13 +238,37 @@ class OrdersController < ApplicationController
     # define send notifcation - delegate order
     params[:send_notification] = 1 if has_delegated
     @is_delegated = has_delegated
+    not_enough = false
 
-    if params[:commit] == "Update"
-      update
-    else
-      purchase
+    if(session_user.administrator? != true)      
+      @account = Account.find(@order.account_id.to_i)
+      if(@account.allows_allocation == true)
+        @account_user = AccountUser.find_by(account_id: @order.account_id.to_i, deleted_at: nil, user_id: session_user.id)
+
+        if(@account_user.user_role != "Owner")
+          if(@account_user.quota_balance < @order.estimated_total)
+            flash.now[:error] = I18n.t("orders.insufficient_fund.error").html_safe
+            not_enough = true;
+          end
+        end
+      end
+
+      if(@account.free_balance < @order.estimated_total)
+        flash.now[:error] = I18n.t("orders.insufficient_fund.error").html_safe
+        not_enough = true;
+      end
     end
 
+    if(not_enough == false)
+      if params[:commit] == "Update"
+        update
+      else
+        purchase
+      end
+    else 
+      render :show
+    end
+    
   end
 
   # PUT /orders/:id/update
@@ -318,17 +342,43 @@ class OrdersController < ApplicationController
     # new or in process
     # @order_details = session_user.order_details.item_and_service_orders
     @order_details = acting_user.order_details.item_and_service_orders
-    
+    @current_type = "All"
+
+    params[:status] = "all" unless params[:commit].nil?
+    @type_array = ["All","New","In Process","Canceled","Complete"]
+
+    @current_type = params[:status] unless params[:status].nil?
+
     @available_statuses = %w(pending all)
     case params[:status]
     when "pending"
       @order_details = @order_details.new_or_inprocess
     when "all"
       @order_details = @order_details.purchased
+      case params[:order_status_id]
+        # when "0" # All
+        #   @order_details = @order_details.new_or_inprocess
+        when "New" # New
+          @order_details = @order_details.new_states
+          @current_type = "New"
+        when "In Process" # In process
+          @order_details = @order_details.inprocess_states
+          @current_type = "In Process"
+        when "Canceled" # Canceled
+          @order_details = @order_details.canceled_states
+          @current_type = "Canceled"
+        when "Complete" #complete
+          @order_details = @order_details.complete_states
+          @current_type = "Complete"
+        else
+          @order_details = @order_details.purchased
+          @current_type = "All"
+        end
     else
       redirect_to orders_status_path(status: "pending")
       return
     end
+
     @order_details = @order_details. order("order_details.created_at DESC").paginate(page: params[:page])
   end
 

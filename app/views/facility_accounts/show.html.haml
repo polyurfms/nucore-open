@@ -15,13 +15,17 @@
   = f.input :description
   - if SettingsHelper.feature_on?(:account_reference_field)
     = f.input :reference
-  = f.input :expires_at, date_only: true
+    
+  = f.input :expires_at, date_only: true, label: "Valid Until"
 
   - if @account.suspended?
     = f.input :suspended_at, date_only: true
 
   = f.input :allows_allocation
 
+  - if @account.type == "NufsAccount"
+    = f.input  :alert_threshold, label: text("account_allocations.new.alert_threshold"), as: :readonly
+    
   -# TODO: use render_view_hook instead
   - if lookup_context.exists? "facility_accounts/#{@account.class.name.underscore}/show", [], true
     = render "facility_accounts/#{@account.class.name.underscore}/show", f: f
