@@ -49,8 +49,11 @@ module LdapAuthentication
     end
 
     def dept_abbrev
+      #UAT
+      @ldap_entry.polyuStaffMainDept.first
       #polyuStaffMainDept
-      @ldap_entry.departmentNumber.first
+      #DEV
+      #@ldap_entry.departmentNumber.first
     end
 
     def user_type
