@@ -29,7 +29,7 @@ class ReservationsController < ApplicationController
 
   # GET /facilities/1/instruments/1/reservations.js?_=1279579838269&start=1279429200&end=1280034000
   def index
-
+    
 
     @facility = Facility.find_by!(url_name: params[:facility_id])
     @instrument = @facility.instruments.find_by!(url_name: params[:instrument_id])
@@ -72,10 +72,27 @@ class ReservationsController < ApplicationController
   # GET /reservations
   # All My Resesrvations
   def list
+    #@order_status_all = OrderStatus.all.select("id , name , facility_id ,CASE WHEN parent_id IS NULL THEN id ELSE parent_id END as group_id").order(group_id: :asc , id: :asc )
+
+
+    #= form_tag(reservations_status_path, method: :get, enforce_utf8: false) do      
+    #  %table.table.table-striped.table-hover.occupancies.old-table
+    #    %td.action-form
+    #      %select{ name: "order_status_id", class: "sync_select" , id: nil }
+    #        = options_for_select([["All",0]],@current_type)
+    #        - @order_status_all.each do |order_status|
+    #          = options_for_select([[order_status.name,order_status.id]],@current_type)
+    #    %td= submit_tag "Filter", class: ["btn", "btn-primary"]
+    
+    
+
+
+
+
     notices = []
 
     params[:status] = "all" unless params[:commit].nil?
-    @type_array = ["All","New","In Process","Canceled","Complete"]
+    @type_array = ["All","New","In Process","Canceled","Complete","Reconciled"]
 
 
     relation = acting_user.order_details
@@ -107,6 +124,9 @@ class ReservationsController < ApplicationController
         when "Complete" #complete
           @order_details = @order_details.complete_states
           @current_type = "Complete"
+        when "Reconciled" #Reconciled
+          @order_details = @order_details.reconciled_states
+          @current_type = "Reconciled"   
         else
           @order_details = @order_details.purchased
           @current_type = "All"
