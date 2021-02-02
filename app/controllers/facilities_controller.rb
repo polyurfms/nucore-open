@@ -2,6 +2,8 @@
 
 class FacilitiesController < ApplicationController
 
+  include SortableColumnController
+
   customer_tab :index, :list, :show
   admin_tab :edit, :manage, :update, :transactions,
             :reassign_chart_strings, :movable_transactions,
@@ -135,8 +137,12 @@ class FacilitiesController < ApplicationController
 
     @search = TransactionSearch::Searcher.billing_search(order_details, @search_form, include_facilities: current_facility.cross_facility?)
     @date_range_field = @search_form.date_params[:field]
-    @order_details = @search.order_details
-
+    if params[:sort].nil?
+      @order_details = @search.order_details
+    else 
+      @order_details = @search.order_details.reorder(sort_clause)
+    end
+    
     respond_to do |format|
       format.html { @order_details = @order_details.paginate(page: params[:page]) }
       format.csv { handle_csv_search }
@@ -152,7 +158,12 @@ class FacilitiesController < ApplicationController
     @search_form.date_range_end = @search_form.date_range_end unless @search_form.date_range_end.nil?
     @search = TransactionSearch::Searcher.billing_search(order_details, @search_form, include_facilities: current_facility.cross_facility?)
     @date_range_field = @search_form.date_params[:field]
-    @order_details = @search.order_details.reorder(:dispute_at).paginate(page: params[:page])
+    
+    if params[:sort].nil?
+      @order_details = @search.order_details.reorder(:dispute_at).paginate(page: params[:page])
+    else
+      @order_details = @search.order_details.reorder(sort_clause).paginate(page: params[:page])
+    end
   end
 
   # GET /facilities/:facility_id/movable_transactions
@@ -168,7 +179,7 @@ class FacilitiesController < ApplicationController
       include_facilities: current_facility.cross_facility?,
     )
     @date_range_field = @search_form.date_params[:field]
-    @order_details = @search.order_details.paginate(page: params[:page], per_page: 100)
+    @order_details = @search.order_details.reorder(sort_clause).paginate(page: params[:page], per_page: 100)
 
     @order_detail_action = :reassign_chart_strings
   end
@@ -275,4 +286,16 @@ class FacilitiesController < ApplicationController
     SettingsHelper.feature_on?(:azlist)
   end
   helper_method :azlist_on?
+
+  def sort_lookup_hash
+    {      
+      "order_number" => ["order_details.order_id", "order_details.id"],
+      "fulfilled_date" => "order_details.fulfilled_at",
+      "product_name" => "products.name",
+      "ordered_for" => ["#{User.table_name}.last_name", "#{User.table_name}.first_name"],
+      "payment_source" => "accounts.description",
+      "actual_subsidy" => "order_details.actual_subsidy", 
+      "state" => "order_details.state",
+    }
+  end
 end

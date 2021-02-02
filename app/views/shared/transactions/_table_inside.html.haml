@@ -6,20 +6,20 @@
       - if(!is_insufficient_fund)
         -if @order_detail_action or @order_detail_link
           %th
-      %th= Order.model_name.human
+      %th= sortable "order_number", Order.model_name.human
       %th= OrderDetail.model_name.human
-      %th.nowrap= OrderDetail.human_attribute_name(@date_range_field)
+      %th.nowrap= sortable "fulfilled_date", OrderDetail.human_attribute_name(@date_range_field)
       - if @extra_date_column
         %th.nowrap= OrderDetail.human_attribute_name(@extra_date_column_header || @extra_date_column)
       - if current_facility.blank? || cross_facility?
-        %th= Facility.model_name.human
+        %th= sortable "product_name", Facility.model_name.human
       %th.order-note= OrderDetail.human_attribute_name("description")
-      %th.nowrap= OrderDetail.human_attribute_name("user")
+      %th.nowrap= sortable "ordered_for", OrderDetail.human_attribute_name("user")
       - unless @account
-        %th= Account.model_name.human
+        %th= sortable "payment_source", Account.model_name.human
         %th= Account.human_attribute_name("owner")
-      %th.currency= OrderDetail.human_attribute_name("cost")
-      %th= OrderDetail.human_attribute_name("order_status")
+      %th.currency= sortable "actual_subsidy",OrderDetail.human_attribute_name("cost")
+      %th= sortable "status",OrderDetail.human_attribute_name("order_status")
       - if local_assigns[:show_statements]
         %th= Statement.model_name.human
   %tbody
