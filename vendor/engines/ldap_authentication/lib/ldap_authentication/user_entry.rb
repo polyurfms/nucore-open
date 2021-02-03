@@ -57,7 +57,6 @@ module LdapAuthentication
     end
 
     def user_type
-
       #polyuUserType
       @ldap_entry.polyuUserType.first
     end
