@@ -1,12 +1,12 @@
 = content_for :h1 do
   -# = t_my(Order)
   = I18n.t("pages.my_items")
-  A
+  
 = content_for :tabnav do
   %ul.nav.nav-tabs
     - @available_statuses.each do |status|
       = tab status.humanize.html_safe, orders_status_path(:status => status), (params[:status] == status)
-  B    
+
 - if params[:status] == "all"
   = form_tag(orders_status_path, method: :get, enforce_utf8: false) do      
     %table.table.table-striped.table-hover.occupancies.old-table
@@ -16,10 +16,9 @@
             = options_for_select([order_status], @current_type)
 
       %td= submit_tag "Filter", class: ["btn", "btn-primary"]
-  C
+
 - if @order_details.empty?
   %p.notice= "You have not placed any #{Order.model_name.human.pluralize.downcase}."
 - else
   = render :partial => 'shared/order_details_table', :locals => { :order_details => @order_details }
 
-= render :partial => 'shared/order_details_table', :locals => { :order_details => @order_details }  
