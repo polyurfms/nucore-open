@@ -29,7 +29,6 @@ class ReservationsController < ApplicationController
 
   # GET /facilities/1/instruments/1/reservations.js?_=1279579838269&start=1279429200&end=1280034000
   def index
-    
 
     @facility = Facility.find_by!(url_name: params[:facility_id])
     @instrument = @facility.instruments.find_by!(url_name: params[:instrument_id])
@@ -92,8 +91,8 @@ class ReservationsController < ApplicationController
     notices = []
 
     params[:status] = "all" unless params[:commit].nil?
-    @type_array = ["All","New","In Process","Canceled","Complete","Reconciled"]
 
+    @type_array = ["All","New","In Process","Canceled","Complete","Reconciled"]
 
     relation = acting_user.order_details
     in_progress = relation.with_in_progress_reservation

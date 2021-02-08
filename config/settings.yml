@@ -161,5 +161,7 @@ google_analytics_key: ~
 send_payment_source_requests: <%= 12.hours %>
 fip_url: ~
 
+research_project_affiliate_id: 3
+
 uat:
   email: ~

@@ -1,9 +1,11 @@
 = will_paginate(order_details) if order_details.respond_to? :total_pages
+- is_insufficient_fund|=false
 %table.table.table-striped.table-hover.dense.old-table
   %thead
     %tr
-      -if @order_detail_action or @order_detail_link
-        %th
+      - if(!is_insufficient_fund)
+        -if @order_detail_action or @order_detail_link
+          %th
       %th= Order.model_name.human
       %th= OrderDetail.model_name.human
       %th.nowrap= OrderDetail.human_attribute_name(@date_range_field)
@@ -27,9 +29,10 @@
     - order_details.each do |order_detail|
       - colspan_for_total = 5
       %tr{ class: row_class(order_detail) }
-        - if @order_detail_action
-          %td= check_box_tag "order_detail_ids[]", order_detail.id, false, {:class => 'toggle'}
-          - colspan_for_total += 1
+        - if(!is_insufficient_fund)
+          - if @order_detail_action
+            %td= check_box_tag "order_detail_ids[]", order_detail.id, false, {:class => 'toggle'}
+            - colspan_for_total += 1
         - if @order_detail_link
           %td.nowrap= link_to @order_detail_link[:text], @order_detail_link[:proc].call(order_detail) if @order_detail_link[:display?].call(order_detail)
           - colspan_for_total += 1

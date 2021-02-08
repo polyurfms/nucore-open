@@ -15,6 +15,7 @@
     %table.table.table-striped.table-hover.occupancies.old-table
       %td.action-form{style: "width: 400px"}
         %select{ name: "order_status_id", class: "sync_select", id: nil  , style: "width: 400px"}
+
           - @type_array.each do |order_status|
             = options_for_select([order_status], @current_type)
 
