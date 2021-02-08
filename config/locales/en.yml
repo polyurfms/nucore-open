@@ -16,7 +16,7 @@ en:
       usa: "%d %b %Y"
       # usa_filename_safe: "%d %b %Y"
       ymd: "%d %b %Y"
-      
+
       # journal_line_reference: "%Y%m%d"
       # timeline_navigation: "%a, %B %e, %Y"
       # usa: "%m/%d/%Y"
@@ -29,7 +29,7 @@ en:
       receipt: "%d %b %Y %-l:%M %p"
       timeonly: "%-l:%M %p"
       usa: "%d %b %Y %-l:%M %p"
-      
+
       # default: "%a, %m/%d/%Y %-l:%M %p"
       # receipt: "%b %e, %Y %-l:%M %p"
       # timeonly: "%-l:%M %p"
@@ -618,7 +618,7 @@ en:
       notify: Send Notification
     list:
       status:
-        pending: Pending 
+        pending: Pending
         upcoming: Upcoming
         upcoming_and_in_progress: "Upcoming & In Progress"
         all: All
@@ -1312,7 +1312,7 @@ en:
       save: Save
     show:
       head: Payment Source Details
-      submenu: "Account No. %{account_number}"
+      submenu: "%{account_number}"
       save: Save
     member_table:
       add_access: Add Access
