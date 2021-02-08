@@ -11,6 +11,8 @@ module BreadcrumbHelper
   def my_breadcrumb_label
     if @active_tab == "reservations"
       t_my(Reservation)
+    elsif @active_tab == "accounts"
+      I18n.t("pages.my_payment_sources")
     else
       # t_my(Order)
       I18n.t("pages.my_items")
