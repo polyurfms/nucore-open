@@ -345,7 +345,7 @@ class OrdersController < ApplicationController
     @current_type = "All"
 
     params[:status] = "all" unless params[:commit].nil?
-    @type_array = ["All","New","In Process","Canceled","Complete"]
+    @type_array = ["All","New","In Process","Canceled","Complete","Reconciled"]
 
     @current_type = params[:status] unless params[:status].nil?
 
@@ -370,6 +370,9 @@ class OrdersController < ApplicationController
         when "Complete" #complete
           @order_details = @order_details.complete_states
           @current_type = "Complete"
+        when "Reconciled" #Reconciled
+          @order_details = @order_details.reconciled_states
+          @current_type = "Reconciled"   
         else
           @order_details = @order_details.purchased
           @current_type = "All"
