@@ -512,9 +512,12 @@ class OrderDetail < ApplicationRecord
   end
 
   def get_fo_journal_status?
-    return "" if fo_journal_id.blank?
-    @status = FoJournal.where(id: id)
-    return @status[0].status || ""
+    return "" if fo_journal_id.blank?    
+    @status = FoJournal.where(id: fo_journal_id)
+    
+    return "" if @status.blank?    
+
+    return @status[0].status
   end
 
   def validate_for_purchase
