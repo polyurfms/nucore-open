@@ -13,7 +13,7 @@ class FacilityJournalsController < ApplicationController
   before_action :init_journals, except: :create
 
   layout lambda {
-    action_name.in?(%w(new)) ? "two_column_head" : "two_column"
+    action_name.in?(%w(new order_for_journal)) ? "two_column_head" : "two_column"
   }
 
   def initialize
@@ -26,6 +26,39 @@ class FacilityJournalsController < ApplicationController
   def index
     set_pending_journals if @journals.current_page == 1
   end
+  
+  def order_for_journal
+  raise ActiveRecord::RecordNotFound if current_facility.cross_facility?
+
+  order_details = OrderDetail.for_facility(current_facility).need_journal
+  @search_form = TransactionSearch::SearchForm.new(params[:search])
+
+  @search_form.date_range_start = @search_form.date_range_start unless @search_form.date_range_start.nil?
+  @search_form.date_range_end = @search_form.date_range_end unless @search_form.date_range_end.nil?
+
+  @search = TransactionSearch::Searcher.billing_search(order_details, @search_form, include_facilities: current_facility.cross_facility?)
+  @date_range_field = @search_form.date_params[:field]
+  @order_details = @search.order_details
+
+  set_earliest_journal_date
+
+  unless current_facility.has_pending_journals?
+    @order_detail_action = :create
+    @action_date_field = { journal_date: @earliest_journal_date }
+  end
+
+  @valid_order_details, @invalid_order_details = ValidatorFactory.partition_valid_order_details(@order_details.unexpired_account)
+  @invalid_order_details += @order_details.expired_account
+
+  respond_to do |format|
+    format.csv do
+      # used for "Export as CSV" link for order details with expired accounts
+      @order_details = @invalid_order_details
+      handle_csv_search
+    end
+    format.any {}
+  end
+end
 
   # GET /facilities/journals/new
   def new

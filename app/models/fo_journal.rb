@@ -1,0 +1,3 @@
+class FoJournal < ApplicationRecord
+
+end

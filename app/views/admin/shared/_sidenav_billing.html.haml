@@ -11,7 +11,9 @@
 
   %li.divider
   %li.nav-header= text("internal_billing")
-  = tab t_create_model(Journal), new_facility_journal_path, (sidenav_tab == 'new_journal') if current_facility.single_facility?
+  = tab text("orders_ready_for_journal"), facility_order_for_journal_path, (sidenav_tab == 'ready_for_journal')
+  - if Settings.billing.show_create_journal
+    = tab t_create_model(Journal), new_facility_journal_path, (sidenav_tab == 'new_journal') if current_facility.single_facility?
   = tab t_manage_models(Journal), facility_journals_path, (sidenav_tab == 'journals')
 
   - if Account.config.statements_enabled?

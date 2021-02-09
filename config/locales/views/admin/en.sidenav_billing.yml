@@ -14,3 +14,4 @@ en:
           external_billing: External Billing
           statement_history: "!views.facility_statements.index.head!"
           reconcile: "!facility_accounts_reconciliation.index.head!"
+          orders_ready_for_journal: Orders ready for Journal

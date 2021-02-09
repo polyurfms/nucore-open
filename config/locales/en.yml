@@ -319,7 +319,8 @@ en:
     index:
       head:
         pending: Pending Journal
-        closed: Closed Journals
+        # closed: Closed Journals
+        closed: Journal History
       notice:
         no_pending: "There is no pending journal at this time"
         no_journals: No journals have been closed yet
@@ -382,6 +383,7 @@ en:
         account: "Payment Source"
         total: "Total"
         reconciled: "Reconciled?"
+        status: "Status"
       submit: "Reconcile Orders"
     history:
       head:
@@ -393,6 +395,10 @@ en:
         journal: "Journal Date"
         reference: "Reference"
         status: "Status"
+    order_for_journal:
+      head: 
+        h2: "Order for journal"
+
 
 
   facility_insufficient_fund:

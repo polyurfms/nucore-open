@@ -1,0 +1,36 @@
+- if @earliest_journal_date
+  = content_for :head_content do
+    :javascript
+      $(function(){
+        var today = "#{l(Time.zone.now.to_date, format: :usa)}";
+
+        $("#journal_date").val(today).datepicker({
+          "minDate": "#{l(@earliest_journal_date, format: :usa)}",
+          "maxDate": today
+        });
+      });
+
+      $(function(){
+        $("#journals_create_form").submit(function(e) {
+          $(e.target).find(":submit").attr("disabled", "true");
+        });
+      });
+
+= render "shared/transactions/headers"
+= content_for :h1 do
+  = current_facility
+= content_for :h2 do
+  %h2= t(".head.h2")
+
+= content_for :top_block do
+  = render "shared/transactions/top", tab: "ready_for_journal"
+
+-# - if @invalid_order_details.any?
+-#   = render "problem_transactions", order_details: @invalid_order_details
+- if @valid_order_details.any?
+  -# = render "shared/transactions/table", order_details: 
+  .row
+    .span12= render "shared/transactions/table_inside", order_details: @valid_order_details, is_insufficient_fund: true
+  = render "shared/reconcile_footnote"
+- if @order_details.none?
+  %p.alert.alert-info= t(".no_transactions")
