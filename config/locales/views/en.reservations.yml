@@ -4,11 +4,13 @@ en:
       acting_as_not_on_approval_list: The user you are ordering for is not on the authorized list for this instrument.
   views:
     reservations:
+      message: "If you wish to change your reservation period, please click \"Reservation Period\""
       list:
         none: "You have not made any reservations."
       my_table:
         actions: Actions
-        reservation: "Reservation (Edit/Extend)"
+        # reservation: "Reservation (Edit/Extend)"
+        reservation: "Reservation Period (Edit/Extend)"
         short_reservation: "Reservation"
         fix_reservation: Fix Usage
       reservation_fields:

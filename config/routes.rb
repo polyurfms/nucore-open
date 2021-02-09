@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   get "/users/sign_in.pdf" => redirect("/users/sign_in")
   devise_for :users
   mount SangerSequencing::Engine => "/" if defined?(SangerSequencing)
+  mount ExternalAccounts::Engine => "/" if defined?(ExternalAccounts)
 
   if SettingsHelper.feature_on?(:password_update)
     match "/users/password/edit_current", to: "user_password#edit_current", as: "edit_current_password", via: [:get, :post]
@@ -321,6 +322,7 @@ Rails.application.routes.draw do
 
     get "disputed_orders", to: "facilities#disputed_orders"
     get "notifications",       to: "facility_notifications#index"
+    get "insufficient_fund",       to: "facility_insufficient_fund#index"
     post "notifications/send", to: "facility_notifications#send_notifications", as: "send_notifications"
     get "transactions",        to: "facilities#transactions"
     get "in_review",           to: "facility_notifications#in_review",          as: "notifications_in_review"

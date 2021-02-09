@@ -12,6 +12,7 @@ class FacilityAccountsController < ApplicationController
   before_action :init_current_facility
   before_action :init_account, except: :search_results
   before_action :build_account, only: [:new, :create]
+  before_action :check_alert_threshold, only: [:update, :create]
 
   authorize_resource :account
   helper_method :is_allow_request
@@ -248,6 +249,36 @@ class FacilityAccountsController < ApplicationController
       owner_user: @owner_user,
       params: params,
     ).build
+  end
+
+  def check_alert_threshold
+
+    render_page = false
+    if(@account.type == "NufsAccount")
+      if(params[:nufs_account][:alert_threshold].nil? || params[:nufs_account][:alert_threshold] == "" || params[:nufs_account][:alert_threshold].to_f < 0)
+        flash[:error] = "Alert threshold must be equal to or larger than 0"
+        render_page = true
+      end
+      @account.alert_threshold = params[:nufs_account][:alert_threshold].to_f
+      free_balance = @account.free_balance
+      
+      if(params[:action].eql?('update'))
+        if(@account.alert_threshold > free_balance)
+          flash[:error] = "Free balance must be equal to or larger than alert threshold"
+          render_page = true
+        end
+      end
+      
+    end
+
+    if(render_page == true)
+      if(params[:action].eql?('update'))
+        render action: "edit"
+      else
+        render action: "new"
+      end
+       
+    end
   end
 
 end

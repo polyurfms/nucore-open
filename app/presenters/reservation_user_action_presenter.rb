@@ -29,7 +29,8 @@ class ReservationUserActionPresenter
       actions << move_link
     end
 
-    actions << report_an_issue_link
+    # This is Report an Issue function
+    # actions << report_an_issue_link
 
     actions << cancel_link if can_cancel?
 

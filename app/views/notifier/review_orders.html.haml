@@ -5,5 +5,13 @@
   %ul
     - accounts.each do |account|
       %li= account.to_s(with_facility: false)
+  
+  
+  %strong= html("insufficient_fund_msg")
+  %ul
+    - accounts.each do |account|
+      - if account.free_balance < 0
+        %li= account.to_s(with_facility: false)
 
 = html "outro", login_url: in_review_transactions_url
+

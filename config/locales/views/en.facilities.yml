@@ -3,13 +3,11 @@ en:
     facilities:
       index:
         welcome: |
-          Welcome to !app_name!, the centralized ordering system for shared !facilities_downcase!.
-          Please select the shared !facility_downcase! below to view and purchase services
-          and products offered by the !facility_downcase!.
+          Welcome to the <b>U</b>niversity <b>R</b>esearch <b>F</b>acility <b>M</b>anagement <b>S</b>ystem (!app_name!).  Please select the URFs below to view and reserve facilities offered by the URFs.
       recently_used_facilities:
         title: Recently Used !Facilities!
       recently_used_products:
-        title: Recently Purchased Products
+        title: Recently Purchased/Reserved Items
       facilities_list:
         all: All !Facilities!
         none: "No !facilities_downcase! are available at this time."

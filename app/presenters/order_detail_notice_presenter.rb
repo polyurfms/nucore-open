@@ -9,6 +9,7 @@ class OrderDetailNoticePresenter < DelegateClass(OrderDetail)
     return [] if canceled?
     statuses = []
 
+    statuses << Notice.new(:insufficient_fund) if !has_sufficient_fund?
     statuses << Notice.new(:in_review) if in_review?
     statuses << Notice.new(:in_dispute) if in_dispute?
     statuses << Notice.new(:can_reconcile) if can_reconcile_journaled?

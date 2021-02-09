@@ -4,7 +4,7 @@
 %table.table.table-striped.table-hover.dense.old-table
   %thead
     %tr
-      -if(!is_insufficient_fund)
+      - if(!is_insufficient_fund)
         -if @order_detail_action or @order_detail_link
           %th
       %th= Order.model_name.human
