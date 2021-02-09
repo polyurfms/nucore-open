@@ -221,6 +221,8 @@ class OrderDetail < ApplicationRecord
     order.user_id == user.id || account.owner_user.id == user.id || account.business_admins.any? { |au| au.user_id == user.id }
   end
 
+
+
   scope :need_statement, lambda { |facility|
     complete
       .for_facility(facility)
@@ -507,6 +509,12 @@ class OrderDetail < ApplicationRecord
 
   def customer_account_changeable?
     journal_id.blank? && statement_id.blank? && !canceled?
+  end
+
+  def get_fo_journal_status?
+    return "" if fo_journal_id.blank?
+    @status = FoJournal.where(id: id)
+    return @status[0].status || ""
   end
 
   def validate_for_purchase
