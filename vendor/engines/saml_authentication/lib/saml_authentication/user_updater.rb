@@ -17,7 +17,11 @@ module SamlAuthentication
       )
 
       if Settings.uat.email.present?
-        attributes['email'] = attributes['username']+Settings.uat.email
+        if user.email.present?
+          attributes['email'] = user.email
+        else
+          attributes['email'] = attributes['username']+Settings.uat.email
+        end
       end
 
       user.update!(attributes)
