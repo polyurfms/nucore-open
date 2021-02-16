@@ -8,4 +8,3 @@ INNER JOIN accounts a2 ON
     a2.id = aue.account_id
 GROUP BY
     aue.account_id
-    
