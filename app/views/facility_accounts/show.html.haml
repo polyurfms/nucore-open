@@ -18,6 +18,11 @@
     
   = f.input :expires_at, date_only: true, label: "Valid Until"
 
+  = f.input :committed_amt, label: text("account_allocations.new.committed_amt"), as: :readonly
+  = f.input :total_expense, label: text("account_allocations.new.total_expense"), as: :readonly
+  = f.input :free_balance, label: text("account_allocations.new.free_balance"), as: :readonly
+
+
   - if @account.suspended?
     = f.input :suspended_at, date_only: true
 
@@ -28,7 +33,8 @@
  
   - if @account.type == "NufsAccount"
     = f.input  :is_auto_top_up, label: text("account_allocations.new.is_auto_top_up"), as: :readonly
-    
+  
+
   -# TODO: use render_view_hook instead
   - if lookup_context.exists? "facility_accounts/#{@account.class.name.underscore}/show", [], true
     = render "facility_accounts/#{@account.class.name.underscore}/show", f: f
