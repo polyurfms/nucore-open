@@ -2,6 +2,9 @@
 = content_for :tabnav do
   = render "shared/tabnav_account", secondary_tab: "funding_requests"
 
+= content_for :h1 do
+  = t('.funding_requests_head')
+
 %header.account
   %h3= @account.account_number
   %p= @account.description_to_s

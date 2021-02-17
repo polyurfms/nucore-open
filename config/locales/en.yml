@@ -668,7 +668,8 @@ en:
       LOCK_FUND_REQUEST: "Top up"
       UNLOCK_FUND_REQUEST: "Release"
     index:
-      head: "Lock funds"
+      head: "Lock funds" 
+      funding_requests_head: "Funding Requests"
       committed_amt: "Committed Amount: %{committed_amt}"
       total_expense: "Total Expense Amount: %{total_expense}"
       free_balance: "Free balance: %{free_balance}"
@@ -1337,7 +1338,6 @@ en:
       save: Save
       committed_amt: "Committed amount"
       _amt: "Committed amount"
-      committed_amt: "Committed amount"
     member_allocation_table:
       th:
         # name: Name (username)
@@ -1349,6 +1349,7 @@ en:
 
   account_allocations:
     new:
+      head: "Allocations"
       committed_amt: "Committed Amount"
       total_expense: "Total Expense Amount"
       free_balance: "Free balance"

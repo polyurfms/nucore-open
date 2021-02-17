@@ -3,6 +3,9 @@
 = content_for :tabnav do
   = render partial: 'shared/tabnav_account', locals: { secondary_tab: "allocations" }
 
+= content_for :h1 do
+  = t('account_allocations.new.head')
+
 %header.account
   %h3= @account.account_number
   %p= @account.description_to_s
