@@ -609,7 +609,7 @@ en:
     order_details:
       shared_details:
         remove_from_journal: "Remove From Journal"
-
+        fo_status: "Status"
   product_access_groups:
     index:
       add_button: Add %{group}
