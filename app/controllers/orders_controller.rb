@@ -327,6 +327,7 @@ class OrdersController < ApplicationController
 
   # GET /orders/1/receipt
   def receipt
+    @active_tab = "reservations"
     @order = Order.find(params[:id])
     raise ActiveRecord::RecordNotFound unless @order.purchased?
 

@@ -633,6 +633,7 @@ en:
       end: "End Reservation"
     edit:
       link: Edit
+      submenu: "Ref. No.%{order_number}"
     delete:
       confirm: Are you sure you wish to cancel this reservation?
       confirm_with_fee: "Canceling this reservation will incur a %{fee} fee.  Are you sure you wish to cancel this reservation?"
@@ -654,7 +655,9 @@ en:
     account_field:
       prompt: "Please select a payment source"
       note_hint: Visible to facility staff only
-
+    show:
+      submenu: "Actual Usage"
+      
   funding_requests:
     status:
       PENDING_CHECK_FUND: "In Progress"
