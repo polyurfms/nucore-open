@@ -2,6 +2,8 @@
 
 class FacilityInsufficientFundController < ApplicationController
 
+  include SortableColumnController
+  
   admin_tab     :all
   before_action :authenticate_user!
   before_action :check_acting_as
@@ -28,7 +30,13 @@ class FacilityInsufficientFundController < ApplicationController
     @search_form = TransactionSearch::SearchForm.new(params[:search])
     @search = TransactionSearch::Searcher.billing_search(order_details, @search_form, include_facilities: current_facility.cross_facility?)
     @date_range_field = @search_form.date_params[:field]
-    @order_details = @search.order_details
+
+    if params[:sort].nil?
+      @order_details = @search.order_details
+    else 
+      @order_details = @search.order_details.reorder(sort_clause)
+    end
+    
 
     @order_details = @order_details.select{ |x| !x.has_sufficient_fund? }
     
@@ -105,6 +113,19 @@ class FacilityInsufficientFundController < ApplicationController
     else
       I18n.t("controllers.facility_notifications.send_notifications.success_html", accounts: sender.accounts_notified.map(&:account_list_item).join("<br/>")).html_safe
     end
+  end
+
+  def sort_lookup_hash
+    {      
+      "order_number" => "order_details.order_id",
+      "fulfilled_date" => "order_details.fulfilled_at",
+      "product_name" => "products.name",
+      "ordered_for" => ["#{User.table_name}.last_name", "#{User.table_name}.first_name"],
+      "payment_source" => "accounts.description",
+      "actual_subsidy" => "order_details.actual_cost", 
+      # "actual_subsidy" => "order_details.actual_subsidy",
+      "state" => "order_details.state",
+    }
   end
 
 end

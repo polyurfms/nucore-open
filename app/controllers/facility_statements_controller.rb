@@ -2,6 +2,8 @@
 
 class FacilityStatementsController < ApplicationController
 
+  include SortableColumnController
+
   admin_tab     :all
   before_action :authenticate_user!
   before_action :check_acting_as
@@ -30,7 +32,13 @@ class FacilityStatementsController < ApplicationController
     end_date_str = @search_form.date_range_end
     @search_form.date_range_start = @search_form.date_range_start unless @search_form.date_range_start.nil?
     @search_form.date_range_end = @search_form.date_range_end unless @search_form.date_range_end.nil?
-    @statements = @search_form.search.order(created_at: :desc)
+
+    if params[:sort].nil?
+      @statements = @search_form.search.order(created_at: :desc)
+    else 
+      @statements = @search_form.search.reorder(sort_clause)
+    end
+    
 
     @search_form.date_range_start = start_date_str
     @search_form.date_range_end = end_date_str 
@@ -63,7 +71,7 @@ class FacilityStatementsController < ApplicationController
 
     @search = TransactionSearch::Searcher.billing_search(order_details, @search_form, include_facilities: current_facility.cross_facility?)
     @date_range_field = @search_form.date_params[:field]
-    @order_details = @search.order_details
+    @order_details = @search.order_details.reorder(sort_clause)
   end
 
   # POST /facilities/:facility_id/statements
@@ -92,6 +100,19 @@ class FacilityStatementsController < ApplicationController
 
   def success_message
     SettingsHelper.feature_on?(:send_statement_emails) ? "success_with_email_html" : "success_html"
+  end  
+
+  def sort_lookup_hash
+    {      
+      "order_number" => "order_details.order_id",
+      "fulfilled_date" => "order_details.fulfilled_at",
+      "product_name" => "products.name",
+      "ordered_for" => ["#{User.table_name}.last_name", "#{User.table_name}.first_name"],
+      "payment_source" => "accounts.description",
+      "actual_subsidy" => "order_details.actual_cost", 
+      # "actual_subsidy" => "order_details.actual_subsidy",
+      "state" => "order_details.state",
+    }
   end
 
 end

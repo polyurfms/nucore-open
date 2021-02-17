@@ -2,6 +2,8 @@
 
 class FacilityJournalsController < ApplicationController
 
+  include SortableColumnController
+
   include DateHelper
   include CSVHelper
   include OrderDetailsCsvExport
@@ -72,7 +74,12 @@ end
 
     @search = TransactionSearch::Searcher.billing_search(order_details, @search_form, include_facilities: current_facility.cross_facility?)
     @date_range_field = @search_form.date_params[:field]
-    @order_details = @search.order_details
+
+    if params[:sort].nil?
+      @order_details = @search.order_details
+    else 
+      @order_details = @search.order_details.reorder(sort_clause)
+    end
 
     set_earliest_journal_date
 
@@ -228,6 +235,19 @@ end
     end
 
     flash[:error] = msg.html_safe if msg.present?
+  end  
+
+  def sort_lookup_hash
+    {      
+      "order_number" => "order_details.order_id",
+      "fulfilled_date" => "order_details.fulfilled_at",
+      "product_name" => "products.name",
+      "ordered_for" => ["#{User.table_name}.last_name", "#{User.table_name}.first_name"],
+      "payment_source" => "accounts.description",
+      # "actual_subsidy" => "order_details.actual_subsidy", 
+      "actual_subsidy" => "order_details.actual_cost", 
+      "state" => "order_details.state",
+    }
   end
 
 end

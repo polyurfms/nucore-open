@@ -2,6 +2,8 @@
 
 class TransactionsController < ApplicationController
 
+  include SortableColumnController
+
   customer_tab :all
   before_action :authenticate_user!
   before_action :check_acting_as
@@ -33,8 +35,13 @@ class TransactionsController < ApplicationController
                                               TransactionSearch::AccountOwnerSearcher,
                                               TransactionSearch::OrderedForSearcher).search(order_details, @search_form)
     @date_range_field = @search_form.date_params[:field]
-    @order_details = @search.order_details
 
+    if params[:sort].nil?
+      @order_details = @search.order_details
+    else
+      @order_details = @search.order_details.reorder(sort_clause)
+    end
+    
     respond_to do |format|
       format.html { @order_details = @order_details.paginate(page: params[:page]) }
       format.csv { handle_csv_search }
@@ -59,7 +66,7 @@ class TransactionsController < ApplicationController
                                               TransactionSearch::AccountOwnerSearcher,
                                               TransactionSearch::OrderedForSearcher).search(order_details, @search_form)
     @date_range_field = @search_form.date_params[:field]
-    @order_details = @search.order_details
+    @order_details = @search.order_details.reorder(sort_clause)
 
     @extra_date_column = :reviewed_at
     @order_detail_link = {
@@ -69,4 +76,16 @@ class TransactionsController < ApplicationController
     }
   end
 
+  def sort_lookup_hash
+    {      
+      "order_number" => "order_details.order_id",
+      "fulfilled_date" => "order_details.fulfilled_at",
+      "product_name" => "products.name",
+      "ordered_for" => ["#{User.table_name}.last_name", "#{User.table_name}.first_name"],
+      "payment_source" => "accounts.description",
+      "actual_subsidy" => "order_details.actual_cost", 
+      # "actual_subsidy" => "order_details.actual_subsidy",
+      "state" => "order_details.state",
+    }
+  end
 end
