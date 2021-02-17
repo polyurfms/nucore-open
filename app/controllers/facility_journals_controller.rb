@@ -138,6 +138,7 @@ end
     # (See Task #48311). This is just preventative.
     referer = response.headers["Referer"]
     response.headers["Referer"] = referer[0..referrer.index("?")] if referer.present?
+    
 
     if @journal.errors.blank? && @journal.save
       @journal.create_spreadsheet if Journals::JournalFormat.exists?(:xls)
@@ -194,7 +195,7 @@ end
   end
 
   def verify_journal_date_format
-    if params[:journal_date].present? && !usa_formatted_date?(params[:journal_date])
+    if params[:journal_date].present? && !ddmmmyyyy_formatted_date?(params[:journal_date])
       @journal.errors.add(:journal_date, :blank)
     end
   end

@@ -14,7 +14,12 @@
         - link_to date, statement_path(@order_detail.statement)
       = banner_date_label @order_detail, :journal_date
       = banner_label @order_detail, :journal_reference
-
+      - status = @order_detail.get_fo_journal_status?
+      - if !status.empty?
+        %dl.span2
+          %dt= t(".fo_status")
+          %dd= status
+        
       - if @order_detail.removable_from_journal?
         .row
           = link_to t(".remove_from_journal"),
