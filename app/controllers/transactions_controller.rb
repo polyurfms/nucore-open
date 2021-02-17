@@ -83,7 +83,8 @@ class TransactionsController < ApplicationController
       "product_name" => "products.name",
       "ordered_for" => ["#{User.table_name}.last_name", "#{User.table_name}.first_name"],
       "payment_source" => "accounts.description",
-      "actual_subsidy" => "order_details.actual_subsidy", 
+      "actual_subsidy" => "order_details.actual_cost", 
+      # "actual_subsidy" => "order_details.actual_subsidy",
       "state" => "order_details.state",
     }
   end
