@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_14_092639) do
+ActiveRecord::Schema.define(version: 2021_02_05_100509) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(version: 2021_01_14_092639) do
     t.decimal "committed_amt", precision: 10, scale: 2, default: "0.0"
     t.string "project_title", limit: 1000
     t.decimal "alert_threshold", precision: 10, scale: 2, default: "0.0"
+    t.boolean "is_auto_top_up", default: false, null: false
     t.index ["affiliate_id"], name: "index_accounts_on_affiliate_id"
   end
 
@@ -214,6 +215,7 @@ ActiveRecord::Schema.define(version: 2021_01_14_092639) do
   create_table "fo_journals", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "journal_id"
     t.string "status", limit: 25
+    t.string "type", limit: 1
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -374,6 +376,7 @@ ActiveRecord::Schema.define(version: 2021_01_14_092639) do
     t.timestamp "problem_resolved_at"
     t.integer "problem_resolved_by_id"
     t.string "reference_id"
+    t.integer "fo_journal_id"
     t.index ["account_id"], name: "fk_od_accounts"
     t.index ["assigned_user_id"], name: "index_order_details_on_assigned_user_id"
     t.index ["bundle_product_id"], name: "fk_bundle_prod_id"
@@ -1078,5 +1081,8 @@ ActiveRecord::Schema.define(version: 2021_01_14_092639) do
 
   create_view "account_user_expenses", sql_definition: <<-SQL
       select `au`.`id` AS `account_user_id`,`od`.`account_id` AS `account_id`,`o`.`user_id` AS `user_id`,sum((case when isnull(`od`.`actual_cost`) then `od`.`estimated_cost` else `od`.`actual_cost` end)) AS `expense_amt` from ((`order_details` `od` join `orders` `o` on((`o`.`id` = `od`.`order_id`))) join `account_users` `au` on(((`au`.`account_id` = `od`.`account_id`) and (`au`.`user_id` = `o`.`user_id`)))) where isnull(`od`.`canceled_at`) group by `au`.`id`,`od`.`account_id`,`o`.`user_id`
+  SQL
+  create_view "account_free_balances", sql_definition: <<-SQL
+      select `aue`.`account_id` AS `account_id`,`a2`.`committed_amt` AS `committed_amt`,sum(`aue`.`expense_amt`) AS `total_expense` from (`account_user_expenses` `aue` join `accounts` `a2` on((`a2`.`id` = `aue`.`account_id`))) group by `aue`.`account_id`
   SQL
 end
