@@ -628,6 +628,8 @@ en:
         upcoming: Upcoming
         upcoming_and_in_progress: "Upcoming & In Progress"
         all: All
+    end:
+      confirm: Are you sure you wish to end this reservation?
     switch:
       start: "Begin Reservation"
       end: "End Reservation"
