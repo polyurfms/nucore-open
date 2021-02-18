@@ -6,12 +6,3 @@
   label: "Valid Until"
 
 = f.input :description, required: true, hint: t('facility_accounts.account_fields.label.all_instruct'), hint_html: { class: 'help-inline' }
-:javascript
-  $(".datepicker").datepicker({ dateFormat: 'd M yy' });
-  Date.shortMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
- 
-  if($("#expiration_datepicker").val()){
-    var expiration_datepicker = new Date($("#expiration_datepicker").val());
-    $("#expiration_datepicker").val(expiration_datepicker.getDate() + " " + Date.shortMonths[expiration_datepicker.getMonth()] + " " + expiration_datepicker.getFullYear())
-  }
-  

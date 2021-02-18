@@ -16,8 +16,18 @@ $(function(){
   // ---------------------------------------------------------------------------
   // Date picker
   // ---------------------------------------------------------------------------
-  $(".datepicker").datepicker({minDate:+0, maxDate:"+3y", dateFormat: "mm/dd/yy"});
+  // $(".datepicker").datepicker({minDate:+0, maxDate:"+3y", dateFormat: "mm/dd/yy"});
+  $(".datepicker").datepicker({minDate:+0, maxDate:"+3y", dateFormat: "d M yy"});
 
+  
+  if($(".datepicker").val()){
+    Date.shortMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    var new_date = new Date($(".datepicker").val());
+    $(".datepicker").val(new_date.getDate() + " " + Date.shortMonths[new_date.getMonth()] + " " + new_date.getFullYear())
+  }
+
+  
   // ---------------------------------------------------------------------------
   // Autotab
   // ---------------------------------------------------------------------------

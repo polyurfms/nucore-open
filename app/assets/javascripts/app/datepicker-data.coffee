@@ -10,6 +10,7 @@ class window.DatePickerData
       $picker.datepicker(
         minDate: new Date($picker.data("min-date")) # will be unbounded if not provided
         maxDate: new Date($picker.data("max-date")) # will be unbounded if not provided
+        dateFormat: "d M yy"
       )
 
     new DatePickerValidate($pickers).activate()
