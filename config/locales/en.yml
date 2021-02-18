@@ -1353,6 +1353,7 @@ en:
       total_expense: "Total Expense Amount"
       free_balance: "Free balance"
       alert_threshold: "Alert threshold"
+      alert_threshold_input: "Alert threshold (input 0 for no alert)"
       is_auto_top_up: "Auto Top up"
       expires_at: "Valid Until"
     member_allocation_table:
