@@ -57,10 +57,13 @@
             - if journal_is_submittable
               %td= check_box_tag "order_detail[#{order_detail.id}][reconciled]", "1", order_detail.reconciled?, disabled: order_detail.reconciled?, class: (order_detail.reconciled? ? "" : "toggle")
             %td
-              = link_to order_detail, facility_order_path(order_detail.order.facility.url_name, order_detail.order_id)
-              - if order_detail.note?
-                %br
-                = order_detail.note
+              = link_to order_detail,
+                manage_order_detail_path(order_detail),
+                class: "manage-order-detail"
+              -# = link_to order_detail, facility_order_path(order_detail.order.facility.url_name, order_detail.order_id)
+              -# - if order_detail.note?
+              -#   %br
+              -#   = order_detail.note
             %td= format_usa_datetime(order_detail.fulfilled_at)
             %td= order_detail.account
             %td= number_to_currency(order_detail.total)
