@@ -49,6 +49,7 @@
           %th= t(".th.account")
           %th= t(".th.total")
           %th= t(".th.reconciled")
+          %th= t(".th.status")
       %tbody
         - @journal.order_details.each do |order_detail|
           - disable = order_detail.reconciled? || @journal.open?
@@ -64,6 +65,7 @@
             %td= order_detail.account
             %td= number_to_currency(order_detail.total)
             %td= order_detail.reconciled? ? t("boolean.true") : t("boolean.false")
+            %td= order_detail.get_fo_journal_status?
         - if journal_is_submittable
           %tr.borderless
             %td{colspan: 3}

@@ -132,10 +132,12 @@ class OrderDetail < ApplicationRecord
   scope :new_or_inprocess, -> { purchased.where(state: %w(new inprocess)) }
   scope :non_canceled, -> { where.not(state: "canceled") }
 
-  scope :new_states, -> { my_item.where(state: %w(new inprocess), order_status_id: %w(1)) }
-  scope :canceled_states, -> { purchased.where(state: %w(canceled)) }
-  scope :complete_states, -> { purchased.where(state: %w(complete)) }
-  scope :inprocess_states, -> { my_item.where(state: %w(new inprocess), order_status_id: %w(2)) }
+  scope :new_states, ->  { my_item.where("order_statuses.id = (select id from order_statuses where UPPER(name) = UPPER('New') limit 1) or order_statuses.`parent_id`= (select id from order_statuses where UPPER(name) = UPPER('New') limit 1)") }
+  scope :canceled_states, ->  { my_item.where("order_statuses.id = (select id from order_statuses where UPPER(name) = UPPER('Canceled') limit 1) or order_statuses.`parent_id`= (select id from order_statuses where UPPER(name) = UPPER('Canceled') limit 1)") }
+  scope :complete_states, ->  { my_item.where("order_statuses.id = (select id from order_statuses where UPPER(name) = UPPER('Complete') limit 1) or order_statuses.`parent_id`= (select id from order_statuses where UPPER(name) = UPPER('Complete') limit 1)") }
+  scope :inprocess_states, -> { my_item.where("order_statuses.id = (select id from order_statuses where UPPER(name) = UPPER('In Process') limit 1) or order_statuses.`parent_id`= (select id from order_statuses where UPPER(name) = UPPER('In Process') limit 1)") }
+  scope :reconciled_states, -> { my_item.where("order_statuses.id = (select id from order_statuses where UPPER(name) = UPPER('Reconciled') limit 1) or order_statuses.`parent_id`= (select id from order_statuses where UPPER(name) = UPPER('Reconciled') limit 1)") }
+
 
   def self.for_facility(facility)
     for_facility_id(facility.id)
@@ -227,6 +229,8 @@ class OrderDetail < ApplicationRecord
   def can_be_viewed_by?(user)
     order.user_id == user.id || account.owner_user.id == user.id || account.business_admins.any? { |au| au.user_id == user.id }
   end
+
+
 
   scope :need_statement, lambda { |facility|
     complete
@@ -514,6 +518,15 @@ class OrderDetail < ApplicationRecord
 
   def customer_account_changeable?
     journal_id.blank? && statement_id.blank? && !canceled?
+  end
+
+  def get_fo_journal_status?
+    return "" if fo_journal_id.blank?    
+    @status = FoJournal.where(id: fo_journal_id)
+    
+    return "" if @status.blank?    
+
+    return @status[0].status
   end
 
   def validate_for_purchase

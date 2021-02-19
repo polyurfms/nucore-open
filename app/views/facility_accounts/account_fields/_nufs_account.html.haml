@@ -5,6 +5,25 @@
 
 = render partial: 'facility_accounts/account_fields/affiliate', locals: { f: f }
 
+= f.label :facility_accounts, t("account_allocations.new.is_auto_top_up")
+= f.check_box :is_auto_top_up
+
+<br>
+
+<br>
+
+= f.input :committed_amt, label: text("account_allocations.new.committed_amt"), as: :readonly
+
+<br>
+
+= f.input :total_expense, label: text("account_allocations.new.total_expense"), as: :readonly
+
+<br>
+
+= f.input :free_balance, label: text("account_allocations.new.free_balance"), as: :readonly
+
+<br>
+
 = f.label :facility_accounts, t("facility_accounts.account_fields.label.allows_allocation")
 = f.check_box :allows_allocation
 

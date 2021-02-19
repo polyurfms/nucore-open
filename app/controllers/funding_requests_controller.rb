@@ -64,7 +64,7 @@ class FundingRequestsController < ApplicationController
     allow_request = true
     @account.funding_requests.each  do |at|
 
-      if at.status == "PENDING_CHECK_FUND" or at.status == "PENDING_LOCK_FUND"
+      if at.status == "PENDING_CHECK_FUND" or at.status == "PENDING_JOURNAL"
         allow_request = false
       end
 

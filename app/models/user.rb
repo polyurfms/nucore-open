@@ -71,7 +71,11 @@ class User < ApplicationRecord
   #
   # Returns true if this user uses Devise's authenticatable module
   def email_user?
-    username.casecmp(email.downcase).zero?
+    if !user_type.nil? && (!user_type.to_s.casecmp("Staff").zero? && !user_type.to_s.casecmp("Student").zero?)
+      return true
+    else
+      username.casecmp(email.downcase).zero?
+    end
   end
 
   def password_updatable?

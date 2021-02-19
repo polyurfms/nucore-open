@@ -8,8 +8,8 @@ class FundingRequest < ApplicationRecord
     }.with_indifferent_access
 
     validates_presence_of :request_type, allow_nil:false
-    validates :debit_amt, numericality: {greater_than_or_equal_to: 1, message: "Please input non zero positive value"}, allow_nil:true , label: false
-    validates :credit_amt, numericality: {greater_than_or_equal_to: 1, message: "Please input non zero positive value"}, allow_nil:true , label: false
+#    validates :debit_amt, numericality: {greater_than_or_equal_to: 1, message: "Please input non zero positive value"}, allow_nil:true , label: false
+#    validates :credit_amt, numericality: {greater_than_or_equal_to: 1, message: "Please input non zero positive value"}, allow_nil:true , label: false
     validates :request_amount, numericality: {greater_than_or_equal_to: 1, message: "Please input non zero positive value"}, allow_nil:false , label: false
 
     attr_accessor :request_amount

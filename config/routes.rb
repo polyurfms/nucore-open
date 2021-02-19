@@ -307,6 +307,8 @@ Rails.application.routes.draw do
       post "reconcile", to: "facility_journals#reconcile"
     end
 
+    get "/order_for_journal", to: "facility_journals#order_for_journal", as: "order_for_journal"
+    
     resources :price_groups do
       member do
         get "users"

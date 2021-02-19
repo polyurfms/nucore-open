@@ -16,7 +16,7 @@ en:
       usa: "%d %b %Y"
       # usa_filename_safe: "%d %b %Y"
       ymd: "%d %b %Y"
-      
+
       # journal_line_reference: "%Y%m%d"
       # timeline_navigation: "%a, %B %e, %Y"
       # usa: "%m/%d/%Y"
@@ -29,7 +29,7 @@ en:
       receipt: "%d %b %Y %-l:%M %p"
       timeonly: "%-l:%M %p"
       usa: "%d %b %Y %-l:%M %p"
-      
+
       # default: "%a, %m/%d/%Y %-l:%M %p"
       # receipt: "%b %e, %Y %-l:%M %p"
       # timeonly: "%-l:%M %p"
@@ -92,6 +92,7 @@ en:
     my_items: My Items
     notices: Notices
     support: Support
+    my_payment_sources : My payment Soures
 
   affiliates:
     add: Add Affiliate
@@ -318,7 +319,8 @@ en:
     index:
       head:
         pending: Pending Journal
-        closed: Closed Journals
+        # closed: Closed Journals
+        closed: Journal History
       notice:
         no_pending: "There is no pending journal at this time"
         no_journals: No journals have been closed yet
@@ -381,6 +383,7 @@ en:
         account: "Payment Source"
         total: "Total"
         reconciled: "Reconciled?"
+        status: "Status"
       submit: "Reconcile Orders"
     history:
       head:
@@ -392,6 +395,10 @@ en:
         journal: "Journal Date"
         reference: "Reference"
         status: "Status"
+    order_for_journal:
+      head: 
+        h2: "Order for journal"
+
 
 
   facility_insufficient_fund:
@@ -602,7 +609,7 @@ en:
     order_details:
       shared_details:
         remove_from_journal: "Remove From Journal"
-
+        fo_status: "Status"
   product_access_groups:
     index:
       add_button: Add %{group}
@@ -617,7 +624,7 @@ en:
       notify: Send Notification
     list:
       status:
-        pending: Pending 
+        pending: Pending
         upcoming: Upcoming
         upcoming_and_in_progress: "Upcoming & In Progress"
         all: All
@@ -1311,6 +1318,7 @@ en:
       save: Save
     show:
       head: Payment Source Details
+      submenu: "%{account_number}"
       save: Save
     member_table:
       add_access: Add Access
@@ -1345,6 +1353,7 @@ en:
       total_expense: "Total Expense Amount"
       free_balance: "Free balance"
       alert_threshold: "Alert threshold"
+      is_auto_top_up: "Auto Top up"
       expires_at: "Valid Until"
     member_allocation_table:
       th:
