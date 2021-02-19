@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_19_035843) do
+ActiveRecord::Schema.define(version: 2021_01_14_092639) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -57,7 +57,6 @@ ActiveRecord::Schema.define(version: 2021_02_19_035843) do
     t.decimal "committed_amt", precision: 10, scale: 2, default: "0.0"
     t.string "project_title", limit: 1000
     t.decimal "alert_threshold", precision: 10, scale: 2, default: "0.0"
-    t.boolean "is_auto_top_up", default: false, null: false
     t.index ["affiliate_id"], name: "index_accounts_on_affiliate_id"
   end
 
@@ -194,24 +193,29 @@ ActiveRecord::Schema.define(version: 2021_02_19_035843) do
   end
 
   create_table "fo_journal_rows", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "fo_journal_id", null: false
+    t.integer "fo_journal_id"
     t.string "source_name", limit: 25, null: false
     t.string "account_date", limit: 8, null: false
     t.string "currency_code", limit: 3, null: false
     t.string "actual_flag", limit: 1, null: false
     t.string "account_code", limit: 9, null: false
-    t.decimal "debit_amt", precision: 10, scale: 2, default: "0.0"
-    t.decimal "credit_amt", precision: 10, scale: 2, default: "0.0"
+    t.decimal "debit_amt", precision: 13, scale: 2
+    t.decimal "credit_amt", precision: 13, scale: 2
     t.string "system_code", limit: 2, null: false
     t.string "create_date_time", limit: 12, null: false
     t.string "ref_no", limit: 6, null: false
     t.string "description", limit: 240, null: false
-    t.string "ecumbrance_type", limit: 30, null: false
+    t.string "ecumbrance_type", limit: 3
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["fo_journal_id"], name: "index_fo_journal_rows_on_fo_journal_id"
   end
 
   create_table "fo_journals", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "journal_id"
-    t.string "status", limit: 25, null: false
+    t.string "status", limit: 25
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "funding_requests", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -370,7 +374,6 @@ ActiveRecord::Schema.define(version: 2021_02_19_035843) do
     t.timestamp "problem_resolved_at"
     t.integer "problem_resolved_by_id"
     t.string "reference_id"
-    t.integer "fo_journal_id"
     t.index ["account_id"], name: "fk_od_accounts"
     t.index ["assigned_user_id"], name: "index_order_details_on_assigned_user_id"
     t.index ["bundle_product_id"], name: "fk_bundle_prod_id"
@@ -505,7 +508,7 @@ ActiveRecord::Schema.define(version: 2021_02_19_035843) do
     t.datetime "start_date", null: false
     t.decimal "unit_cost", precision: 10, scale: 2
     t.decimal "unit_subsidy", precision: 10, scale: 2
-    t.decimal "usage_rate", precision: 12, scale: 6
+    t.decimal "usage_rate", precision: 12, scale: 4
     t.decimal "minimum_cost", precision: 10, scale: 2
     t.decimal "cancellation_cost", precision: 10, scale: 2
     t.decimal "usage_subsidy", precision: 12, scale: 4
@@ -993,6 +996,7 @@ ActiveRecord::Schema.define(version: 2021_02_19_035843) do
   add_foreign_key "bundle_products", "products", name: "fk_bundle_prod_bundle"
   add_foreign_key "email_events", "users"
   add_foreign_key "facility_accounts", "facilities", name: "fk_facilities"
+  add_foreign_key "fo_journal_rows", "fo_journals"
   add_foreign_key "instrument_statuses", "products", column: "instrument_id", name: "fk_int_stats_product"
   add_foreign_key "journal_rows", "accounts"
   add_foreign_key "journal_rows", "journals"
@@ -1074,8 +1078,5 @@ ActiveRecord::Schema.define(version: 2021_02_19_035843) do
 
   create_view "account_user_expenses", sql_definition: <<-SQL
       select `au`.`id` AS `account_user_id`,`od`.`account_id` AS `account_id`,`o`.`user_id` AS `user_id`,sum((case when isnull(`od`.`actual_cost`) then `od`.`estimated_cost` else `od`.`actual_cost` end)) AS `expense_amt` from ((`order_details` `od` join `orders` `o` on((`o`.`id` = `od`.`order_id`))) join `account_users` `au` on(((`au`.`account_id` = `od`.`account_id`) and (`au`.`user_id` = `o`.`user_id`)))) where isnull(`od`.`canceled_at`) group by `au`.`id`,`od`.`account_id`,`o`.`user_id`
-  SQL
-  create_view "account_free_balances", sql_definition: <<-SQL
-      select `aue`.`account_id` AS `account_id`,`a2`.`committed_amt` AS `committed_amt`,sum(`aue`.`expense_amt`) AS `total_expense` from (`account_user_expenses` `aue` join `accounts` `a2` on((`a2`.`id` = `aue`.`account_id`))) group by `aue`.`account_id`
   SQL
 end
