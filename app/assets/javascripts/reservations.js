@@ -10,7 +10,7 @@ $(document).ready(function() {
     if (typeof maxDaysFromNow == "undefined") {
       window['maxDaysFromNow'] = 365;
     }
-    $("#datepicker").datepicker({'minDate': minDaysFromNow, 'maxDate': maxDaysFromNow});
+    $("#datepicker").datepicker({'minDate': minDaysFromNow, 'maxDate': maxDaysFromNow, dateFormat: "d M yy"});
 
     $('.datepicker').each(function(){
       $(this).datepicker({'minDate': minDaysFromNow, 'maxDate': maxDaysFromNow})
