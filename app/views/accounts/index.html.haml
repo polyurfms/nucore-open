@@ -10,9 +10,11 @@
         %th= Account.model_name.human
         %th= Account.human_attribute_name(:description)
         %th= Account.human_attribute_name(:type)
+        %th= Account.human_attribute_name(:type)
         -# %th= Account.human_attribute_name(:expires_at)
         -# %th= "Valid Until"
         %th= text("account_allocations.new.expires_at")
+        %th= text("account_allocations.new.free_balance")
         %th= Facility.model_name.human
         %th.hidden
         %th.hidden
@@ -30,6 +32,8 @@
           %td= human_date(account.expires_at)
           -# %td= account.per_facility? ? account.facilities.alphabetized.join(", ") : html("all", inline: true)
           %td= account.per_facility? ? account.facilities.alphabetized[0].abbreviation : html("all", inline: true)
+          
+          %td= account.free_balance
           - if au.can_administer? || session_user.administrator?
             - show_th = true
             %td= link_to text("transactions"), transactions_path(search: { accounts: [account] })
