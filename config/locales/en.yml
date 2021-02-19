@@ -396,7 +396,7 @@ en:
         reference: "Reference"
         status: "Status"
     order_for_journal:
-      head: 
+      head:
         h2: "Order for journal"
 
 
@@ -658,8 +658,8 @@ en:
       prompt: "Please select a payment source"
       note_hint: Visible to facility staff only
     show:
-      submenu: "Actual Usage"
-      
+      submenu: "Reservation Period"
+
   funding_requests:
     status:
       PENDING_CHECK_FUND: "In Progress"

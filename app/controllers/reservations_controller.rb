@@ -74,7 +74,7 @@ class ReservationsController < ApplicationController
     #@order_status_all = OrderStatus.all.select("id , name , facility_id ,CASE WHEN parent_id IS NULL THEN id ELSE parent_id END as group_id").order(group_id: :asc , id: :asc )
 
 
-    #= form_tag(reservations_status_path, method: :get, enforce_utf8: false) do      
+    #= form_tag(reservations_status_path, method: :get, enforce_utf8: false) do
     #  %table.table.table-striped.table-hover.occupancies.old-table
     #    %td.action-form
     #      %select{ name: "order_status_id", class: "sync_select" , id: nil }
@@ -82,8 +82,8 @@ class ReservationsController < ApplicationController
     #        - @order_status_all.each do |order_status|
     #          = options_for_select([[order_status.name,order_status.id]],@current_type)
     #    %td= submit_tag "Filter", class: ["btn", "btn-primary"]
-    
-    
+
+
 
 
 
@@ -100,7 +100,7 @@ class ReservationsController < ApplicationController
     @available_statuses = [in_progress.blank? ? "upcoming" : "upcoming_and_in_progress", "all"]
 
 #   @available_statuses = %w(pending all)
-       
+
    case params[:status]
     when "upcoming"
       @status = @available_statuses.first
@@ -124,7 +124,7 @@ class ReservationsController < ApplicationController
           @current_type = "Complete"
         when "Reconciled" #Reconciled
           @order_details = @order_details.reconciled_states
-          @current_type = "Reconciled"   
+          @current_type = "Reconciled"
         else
           @order_details = @order_details.purchased
           @current_type = "All"
@@ -306,7 +306,7 @@ class ReservationsController < ApplicationController
       end
     rescue AASM::InvalidTransition => e
       flash[:error] = if e.failures.include?(:time_data_completeable?)
-                        text("switch_instrument.`prior_is_still_running`")
+                        text("switch_instrument.prior_is_still_running")
                       else
                         e.message
                       end
