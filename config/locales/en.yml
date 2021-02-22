@@ -56,7 +56,7 @@ en:
       tabnav_payment_method:
         details: Details
         # members: Members
-        members: Payment Source Members
+        members: Payment Source Users
         allocations : Allocations
         orders: Orders
         statements: Statements
@@ -915,7 +915,7 @@ en:
 
   account_users:
     index:
-      head: "Payment Source Members"
+      head: "Payment Source Users"
       submenu: "%{account_number}"
     new:
       head: "Add Payment Source Member"
