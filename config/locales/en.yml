@@ -396,7 +396,7 @@ en:
         reference: "Reference"
         status: "Status"
     order_for_journal:
-      head: 
+      head:
         h2: "Order for journal"
 
 
@@ -668,7 +668,8 @@ en:
       LOCK_FUND_REQUEST: "Top up"
       UNLOCK_FUND_REQUEST: "Release"
     index:
-      head: "Lock funds" 
+      head: "Lock funds"
+      submenu: "%{account_number}"
       funding_requests_head: "Funding Requests"
       committed_amt: "Committed Amount: %{committed_amt}"
       total_expense: "Total Expense Amount: %{total_expense}"
@@ -915,6 +916,7 @@ en:
   account_users:
     index:
       head: "Payment Source Members"
+      submenu: "%{account_number}"
     new:
       head: "Add Payment Source Member"
       label:
@@ -1350,6 +1352,7 @@ en:
   account_allocations:
     new:
       head: "Allocations"
+      submenu: "%{account_number}"
       committed_amt: "Committed Amount"
       total_expense: "Total Expense Amount"
       free_balance: "Free balance"
