@@ -29,7 +29,7 @@
   = f.input :allows_allocation
 
   - if @account.type == "NufsAccount"
-    = f.input  :alert_threshold, label: text("account_allocations.new.alert_threshold"), as: :readonly
+    = f.input  :alert_threshold, label: text("account_allocations.new.alert_threshold_input"), as: :readonly
  
   - if @account.type == "NufsAccount"
     = f.input  :is_auto_top_up, label: text("account_allocations.new.is_auto_top_up"), as: :readonly

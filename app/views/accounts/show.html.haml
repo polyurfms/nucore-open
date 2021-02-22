@@ -24,7 +24,7 @@
   = f.input :free_balance, label: text("account_allocations.new.free_balance"), as: :readonly
 
   - if @account.type == "NufsAccount"
-    = f.input :alert_threshold, label: text("account_allocations.new.alert_threshold")
+    = f.input :alert_threshold, label:  text("account_allocations.new.alert_threshold_input")
 
   - if @account.type == "NufsAccount"
     = f.label  :is_auto_top_up, label: text("account_allocations.new.is_auto_top_up")
