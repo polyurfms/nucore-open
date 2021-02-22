@@ -919,6 +919,7 @@ en:
       submenu: "%{account_number}"
     new:
       head: "Add Payment Source Member"
+      submenu: "%{account_number}"
       label:
         account: "Payment Source Number"
         type: "Type"
@@ -926,6 +927,7 @@ en:
         expiration: "Expiration"
     user_search:
       head: "Add Payment Source Member"
+      submenu: "%{account_number}"
       instruct: "Search for a user to add to the %{account_type}, (%{account})"
       label:
         search: "Search by name, NetID, or username"
