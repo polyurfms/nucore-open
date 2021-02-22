@@ -5,8 +5,5 @@
   = f.button :submit, t(".submit"), class: ["btn", "btn-primary"]
   = link_to t(".cancel"), journal_cutoff_dates_path
 
-  -# :javascript
-  -#   $(function () { $(".datepicker").datepicker(); });
-
 :javascript
   $(".datepicker").datepicker({ dateFormat: 'd M yy' });

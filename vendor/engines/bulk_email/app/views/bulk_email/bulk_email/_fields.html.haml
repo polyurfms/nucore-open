@@ -42,19 +42,4 @@
         = hidden_field_tag "return_path", params[:return_path]
 
   = hidden_field_tag :product_id, params[:product_id]
-
-:javascript
-  $(".datepicker__data").datepicker({ dateFormat: 'd M yy' });
-  Date.shortMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  
-  if($("#bulk_email_end_date").val()){
-    var end_date_str = new Date($("#bulk_email_end_date").val());
-    $("#bulk_email_end_date").val(end_date_str.getDate() + " " + Date.shortMonths[end_date_str.getMonth()] + " " + end_date_str.getFullYear())
-  }
-
-  if($("#bulk_email_start_date").val()){
-    var start_date_str = new Date($("#bulk_email_start_date").val());
-    $("#bulk_email_start_date").val(start_date_str.getDate() + " " + Date.shortMonths[start_date_str.getMonth()] + " " + start_date_str.getFullYear())
-  }
-  
   
