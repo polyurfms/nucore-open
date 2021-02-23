@@ -10,12 +10,11 @@
         %th= Account.model_name.human
         %th= Account.human_attribute_name(:description)
         %th= Account.human_attribute_name(:type)
-        %th= Account.human_attribute_name(:type)
         -# %th= Account.human_attribute_name(:expires_at)
         -# %th= "Valid Until"
         %th= text("account_allocations.new.expires_at")
-        %th= text("account_allocations.new.free_balance")
         %th= Facility.model_name.human
+        %th= text("account_allocations.new.free_balance")
         %th.hidden
         %th.hidden
     %tbody
@@ -32,12 +31,16 @@
           %td= human_date(account.expires_at)
           -# %td= account.per_facility? ? account.facilities.alphabetized.join(", ") : html("all", inline: true)
           %td= account.per_facility? ? account.facilities.alphabetized[0].abbreviation : html("all", inline: true)
-          
-          %td= account.free_balance
+
+
           - if au.can_administer? || session_user.administrator?
             - show_th = true
+            %td= account.free_balance
             %td= link_to text("transactions"), transactions_path(search: { accounts: [account] })
             %td= link_to "Payment Source Users", account_account_users_path(account)
-
+          - else
+            %td
+            %td
+            %td
     - if show_th
       = javascript_tag "$(function(){ $('th.hidden').show(); });"
