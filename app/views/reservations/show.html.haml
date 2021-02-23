@@ -1,3 +1,12 @@
+= content_for :breadcrumb do
+  %ul.breadcrumb
+    %li= order_reservation_breadcrumb
+    %li &raquo; 
+    %li= order_detail_breadcrumb
+    %li &raquo;
+    %li= t(".submenu")
+    
+
 = content_for :h1 do
   = @reservation.product.facility
 
