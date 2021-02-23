@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_05_100509) do
+ActiveRecord::Schema.define(version: 2021_02_19_035843) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -215,7 +215,7 @@ ActiveRecord::Schema.define(version: 2021_02_05_100509) do
   create_table "fo_journals", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "journal_id"
     t.string "status", limit: 25
-    t.string "type", limit: 1
+    t.string "journal_type", limit: 1
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
