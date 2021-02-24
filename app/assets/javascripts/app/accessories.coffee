@@ -85,10 +85,16 @@ class AccessoryPickerDialog
 
 
 $ ->
-  $('body').on 'click', '.has_accessories', (evt) ->
+  $('body').on 'click', '.end_reservation', (evt) ->
     evt.preventDefault()
     answer = confirm('Are you sure you wish to end this reservation?')
     if (answer)
       picker = new AccessoryPickerDialog($(this))
+
+  new AccessoryPicker($('.not-in-modal #accessory-form'))
+
+  $('body').on 'click', '.has_accessories', (evt) ->
+    evt.preventDefault()
+    picker = new AccessoryPickerDialog($(this))
 
   new AccessoryPicker($('.not-in-modal #accessory-form'))
