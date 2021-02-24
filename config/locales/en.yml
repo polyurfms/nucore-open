@@ -1363,6 +1363,7 @@ en:
       committed_amt: "Committed Amount"
       total_expense: "Total Expense Amount"
       free_balance: "Free balance"
+      allows_allocation: "Allows allocation"
       alert_threshold: "Alert threshold"
       alert_threshold_input: "Alert threshold (input 0 for no alert)"
       is_auto_top_up: "Auto Top up"
