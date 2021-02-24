@@ -113,6 +113,6 @@ class AccountUser < ApplicationRecord
   end
 
   def quota_balance
-    return allocation_amt = allocation_amt.to_f - expense.to_f
+    return allocation_amt.to_f - expense.to_f
   end
 end
