@@ -27,7 +27,7 @@ class AccountUser < ApplicationRecord
   end
 
   def self.admin_user_roles
-    [ACCOUNT_OWNER]
+    [ACCOUNT_OWNER, ACCOUNT_ADMINISTRATOR]
   end
 
   scope :active, -> { where(deleted_at: nil) }
@@ -43,6 +43,10 @@ class AccountUser < ApplicationRecord
     admin_user_roles + read_only_user_roles
   end
 
+  def self.default_roles
+    read_only_user_roles
+  end
+
   #
   # Provides an +Array+ of roles that can be assigned
   # to a user. Optionally filters the set by the given
@@ -56,7 +60,7 @@ class AccountUser < ApplicationRecord
   def self.selectable_user_roles(granting_user = nil, facility = nil)
     case
     when granting_user.blank? || facility.blank?
-      user_roles - [ACCOUNT_OWNER]
+      default_roles
     when granting_user.account_manager? || granting_user.manager_of?(facility)
       user_roles
     else
