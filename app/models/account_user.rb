@@ -27,7 +27,7 @@ class AccountUser < ApplicationRecord
   end
 
   def self.admin_user_roles
-    [ACCOUNT_OWNER, ACCOUNT_ADMINISTRATOR]
+    [ACCOUNT_OWNER]
   end
 
   scope :active, -> { where(deleted_at: nil) }
