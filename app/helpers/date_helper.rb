@@ -27,12 +27,19 @@ module DateHelper
     date = format_usa_date(Date.parse(date)) if date =~ /\A\d{4}-\d{2}-\d{2}/
 
     date = human_date(Date.strptime(date, "%m/%d/%Y"))  if date =~ /\A\d{4}-\d{2}-\d{2}/
-    
+
     # return unless usa_formatted_date?(date)
     # date_string = Date.strptime(date, "%m/%d/%Y").to_s
 
-    return unless ddmmmyyyy_formatted_date?(date)
-    date_string = Date.strptime(date, "%d %b %Y").to_s
+    # return unless ddmmmyyyy_formatted_date?(date)
+    # date_string = Date.strptime(date, "%d %b %Y").to_s
+    if(ddmmmyyyy_formatted_date?(date))
+      date_string = Date.strptime(date, "%d %b %Y").to_s
+    elsif (usa_formatted_date?(date))
+      date_string = Date.strptime(date, "%m/%d/%Y").to_s
+    else
+      return
+    end
 
     date_string += " #{time_string}" if time_string
 
@@ -140,7 +147,6 @@ module DateHelper
 
   def parse_ddmmmyyyy_in_current_zone!(date_string)
     date_string.to_date.strftime("%m/%d/%Y")
-  end  
-
+  end
 
 end
