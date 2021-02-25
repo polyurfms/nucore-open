@@ -6,8 +6,7 @@ module C2po
 
     def valid?
       return false if account.is_a?(PurchaseOrderAccount) && !facility.accepts_po?
-      return false if account.is_a?(CreditCardAccount) && !facility.accepts_cc?
-      return false if account.is_a?(ChequeOrOtherAccount) && !facility.accepts_cc?
+      return false if account.is_a?(CreditCardAccount) && !facility.accepts_cc?      
       true
     end
 
