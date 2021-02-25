@@ -239,6 +239,7 @@ en:
         role: Role
         allocation_amt: Quota
         expense_amt: Expense
+        quota_balance: Quota balance
       save: Save
     allocation:
       save: Save
