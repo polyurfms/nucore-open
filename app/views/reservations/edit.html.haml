@@ -4,11 +4,11 @@
   = render partial: 'js_variables'
 
 
-= content_for :breadcrumb do
-  %ul.breadcrumb
-    %li= link_to "Upcoming & in progress", public_send("#{@active_tab}_path")
-    %li &raquo;
-    %li= t(".submenu", order_number: @order_detail.order_number)
+-#= content_for :breadcrumb do
+-#  %ul.breadcrumb
+-#    %li= link_to "Upcoming & in progress", public_send("#{@active_tab}_path")
+-#    %li &raquo;
+-#    %li= t(".submenu", order_number: @order_detail.order_number)
 
 - unless @order.purchased?
   = content_for :breadcrumb do
