@@ -76,7 +76,7 @@ class OrdersController < ApplicationController
         flash[:error] = "You are not authorized to place an order on behalf of another user for the facility #{current_facility.try(:name)}."
         redirect_to(order_path(@order)) && return
       end
-    else 
+    else
       unless facility_ability.cannot?(:act_as, first_product.facility)
         flash[:error] = "You are not authorized to place an order on behalf of another user for the facility #{current_facility.try(:name)}."
         redirect_to(order_path(@order)) && return
@@ -240,21 +240,21 @@ class OrdersController < ApplicationController
     @is_delegated = has_delegated
     not_enough = false
 
-    if(session_user.administrator? != true)      
+    if(session_user.administrator? != true)
       @account = Account.find(@order.account_id.to_i)
       if(@account.allows_allocation == true)
         @account_user = AccountUser.find_by(account_id: @order.account_id.to_i, deleted_at: nil, user_id: session_user.id)
 
         if(@account_user.user_role != "Owner")
           if(@account_user.quota_balance < @order.estimated_total)
-            flash.now[:error] = I18n.t("orders.insufficient_fund.error").html_safe
+            flash.now[:error] = I18n.t("orders.purchase.error", message: "Insufficient fund.").html_safe
             not_enough = true;
           end
         end
       end
 
       if(@account.free_balance < @order.estimated_total)
-        flash.now[:error] = I18n.t("orders.insufficient_fund.error").html_safe
+        flash.now[:error] = I18n.t("orders.purchase.error", message: "Insufficient fund.").html_safe
         not_enough = true;
       end
     end
@@ -265,10 +265,10 @@ class OrdersController < ApplicationController
       else
         purchase
       end
-    else 
+    else
       render :show
     end
-    
+
   end
 
   # PUT /orders/:id/update
@@ -373,7 +373,7 @@ class OrdersController < ApplicationController
           @current_type = "Complete"
         when "Reconciled" #Reconciled
           @order_details = @order_details.reconciled_states
-          @current_type = "Reconciled"   
+          @current_type = "Reconciled"
         else
           @order_details = @order_details.purchased
           @current_type = "All"
