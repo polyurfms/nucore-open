@@ -126,6 +126,7 @@ en:
         success: "The reservation was successfully created."
         admin_hold_warning: "Warning: You have scheduled over an administrative hold."
         expires_at: "Payment source expired "
+        null_payment_source: "Please select a payment source"
       order_detail_removed: |
         The instrument order has been removed from your cart.
         Please add it again to make a reservation.
