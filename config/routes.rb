@@ -441,7 +441,7 @@ Rails.application.routes.draw do
   #post  "create_account_transactions" , to: "account_transaction#create_account_transactions"
   namespace :admin do
     namespace :services do
-      post "process_one_minute_tasks"
+      # post "process_one_minute_tasks"
       post "process_five_minute_tasks"
     end
   end
