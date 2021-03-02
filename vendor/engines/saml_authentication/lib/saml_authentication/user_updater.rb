@@ -19,12 +19,18 @@ module SamlAuthentication
       if Settings.uat.email.present?
         if user.email.present?
           attributes['email'] = user.email
-        else
-          attributes['email'] = attributes['username']+Settings.uat.email
         end
       end
 
       user.update!(attributes)
+
+      if user.current_sign_in_at = user.created_at
+        if is_new_user and user.user_type = 'Staff'
+          user.update_to_internal_price_group!
+        end
+      end
+
+
     end
 
   end
