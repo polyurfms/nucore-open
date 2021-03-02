@@ -318,7 +318,7 @@ en:
       order_detail:
         account: Payment Source
         actual_cost: Price
-        actual_subsidy: Adjustment
+        actual_subsidy: Subsidy
         actual_max_cost: Maximum Cost/Day
         actual_total: Total
         assigned_user: Assigned Staff
