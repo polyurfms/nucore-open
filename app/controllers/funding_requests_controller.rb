@@ -89,7 +89,8 @@ class FundingRequestsController < ApplicationController
 
       creator = FundingRequestCreator.new(@account, session_user.id, params)
       if creator.save()
-        redirect_to account_funding_requests_path(account_id)
+        flash.now[:notice] = "Funding request submitted." #text("update.success")
+        render :show
       else
         flash.now[:error] = creator.error.html_safe
         @funding_request = creator.funding_request

@@ -1,0 +1,50 @@
+= content_for :breadcrumb do
+  %ul.breadcrumb
+    %li= order_reservation_breadcrumb
+    %li &raquo;
+    %li= t(".submenu", account_number: @account.account_number)
+
+= content_for :tabnav do
+  = render "shared/tabnav_account", secondary_tab: "funding_requests"
+
+= content_for :h1 do
+  = t('.funding_requests_head')
+
+%header.account
+  %h3= @account.account_number
+  %p= @account.description_to_s
+  <br>
+  = readonly_form_for :account do |f|
+    = f.input :committed_amt, label: text("account_allocations.new.committed_amt")
+    = f.input :total_expense, label: text("account_allocations.new.total_expense")
+    = f.input :free_balance, label: text("account_allocations.new.free_balance")
+
+-if Settings.fip_url.present?
+  Click <a href="#{Settings.fip_url}" target="_blank">here</a> to access Financial Information Platform (FIP) of the Finance Office
+
+
+<br>
+<br>
+
+<div class="notice">
+%h4= t(".message.in_progress")
+</div>
+<br>
+<br>
+
+<h3>Transaction History </h3>
+%table.table.table-striped.table-hover
+  %thead
+    %tr
+      -# %th= t(".table.date")
+      %th= t(".table.transaction_date")
+      %th= t(".table.type")
+      %th= t(".table.status")
+      %th= t(".table.Amount")
+  %tbody
+    - @funding_requests.each  do |at|
+      %tr
+        %td= format_usa_datetime(at.created_at)
+        %td= t("funding_requests.request_type.#{at.request_type}")
+        %td= t("funding_requests.status.#{at.status}")
+        %td= at.request_amount

@@ -10,6 +10,7 @@
         %th= t(".th.role")
         %th= t(".th.allocation_amt")
         %th= t(".th.expense_amt")
+        %th= t(".th.quota_balance")
     %tbody
     - @account_users.each do |od|
       = f.simple_fields_for od.id.to_s, od do |p|
@@ -19,5 +20,6 @@
             %td= AccountUserPresenter.new(od).localized_role
             %td= p.input :allocation_amt, label: false
             %td= od.expense
+            %td= od.quota_balance
             = p.hidden_field :id ,  value: AccountUserPresenter.new(od).id.to_s
   = f.button :submit, t(".save"), class: "btn btn-primary"

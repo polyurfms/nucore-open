@@ -20,7 +20,7 @@ module ReservationsHelper
   end
 
   def end_reservation_class(reservation)
-    reservation.order_detail.accessories? ? :end_reservation : nil
+    reservation.order_detail.accessories? ? :end_reservation : :confirm_end_reservation
   end
 
   def reservation_actions(reservation)

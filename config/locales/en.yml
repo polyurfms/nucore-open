@@ -67,7 +67,7 @@ en:
     use: Use
     admin_billing: Billing
     admin_facility: Admin
-    admin_orders: Orders
+    admin_orders: Items
     admin_products: Products
     admin_reports: Reports
     admin_reservations: Reservations
@@ -239,6 +239,7 @@ en:
         role: Role
         allocation_amt: Quota
         expense_amt: Expense
+        quota_balance: Quota balance
       save: Save
     allocation:
       save: Save
@@ -672,6 +673,38 @@ en:
     request_type:
       LOCK_FUND_REQUEST: "Top up"
       UNLOCK_FUND_REQUEST: "Release"
+    show:
+      head: "Lock funds"
+      submenu: "%{account_number}"
+      funding_requests_head: "Funding Requests"
+      committed_amt: "Committed Amount: %{committed_amt}"
+      total_expense: "Total Expense Amount: %{total_expense}"
+      free_balance: "Free balance: %{free_balance}"
+      amount : "Amount"
+      save: "save"
+      new_request : "New Request"
+      type: "Type"
+      request_tpe:
+        lock_fund : "Top up"
+        lock_fund_code : "LOCK_FUND_REQUEST"
+        unlock_fund : "Release"
+        unlock_fund_code : "UNLOCK_FUND_REQUEST"
+      status:
+        processing_code : "PROCESSING"
+        processing_string : "In Progress"
+        success_code : "COMPLETED"
+        success_string : "Completed"
+        failded_code : "FAILED"
+        failded_string : "Failed"
+      table:
+        date : "Date"
+        transaction_date: Transaction Date
+        type : "Top Up / Release"
+        status : "Status"
+        # Amount : "Amount"
+        Amount : "Amount (HKD)"
+      message:
+        in_progress : "You cannot make new requests when the funding request is in progress."
     index:
       head: "Lock funds"
       submenu: "%{account_number}"
