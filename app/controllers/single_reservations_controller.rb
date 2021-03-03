@@ -39,7 +39,7 @@ class SingleReservationsController < ApplicationController
         render "reservations/new"
       end
     else 
-      flash.now[:error] = I18n.t("controllers.reservations.create.expires_at")
+      flash.now[:error] = I18n.t("controllers.reservations.create.null_payment_source")
       set_windows
       render "reservations/new"
     end
