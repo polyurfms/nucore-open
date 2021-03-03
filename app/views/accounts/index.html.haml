@@ -23,7 +23,10 @@
         - account = au.account
         %tr
           - if au.can_administer? || session_user.administrator?
-            %td= link_to account.account_number_to_s, account_path(account), title: account.project_title
+            - if @is_delegated == true && au.user_role == "Purchaser"
+              %td= account.account_number_to_s
+            - else   
+              %td= link_to account.account_number_to_s, account_path(account), title: account.project_title
           - else
             %td= account.account_number_to_s
           %td= account.description_to_s
