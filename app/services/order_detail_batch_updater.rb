@@ -153,8 +153,17 @@ class OrderDetailBatchUpdater
       order_detail.notify_purchaser_of_order_status
     end
   rescue => e
-    msg_hash[:error] =
-      "There was an error updating the selected #{msg_type}. #{e.message}"
+
+
+    msg_hash[:error] = ""
+    if "#{e.message}".include? "time_data_completeable"
+      msg_hash[:error] = "You are not allow to update the selected reservation(s). Reservation(s) not start yet or still in process"
+    else
+      msg_hash[:error] = "There was an error updating the selected #{msg_type}. #{e.message}"
+    end
+
+
+   
     raise ActiveRecord::Rollback
   end
 
