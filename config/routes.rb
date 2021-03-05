@@ -308,7 +308,7 @@ Rails.application.routes.draw do
     end
 
     get "/order_for_journal", to: "facility_journals#order_for_journal", as: "order_for_journal"
-    
+
     resources :price_groups do
       member do
         get "users"
@@ -407,7 +407,11 @@ Rails.application.routes.draw do
   end
 
   resources :transactions, only: [:index] do
-    get :in_review, on: :collection
+    collection do
+      get :in_review
+      post :mark_as_reviewed
+    end
+
   end
 
   # reservations
