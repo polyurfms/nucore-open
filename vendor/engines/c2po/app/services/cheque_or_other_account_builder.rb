@@ -14,7 +14,8 @@ class ChequeOrOtherAccountBuilder < AccountBuilder
       :account_number,
       :description,
       :formatted_expires_at,
-      :name_on_card
+      :name_on_card,
+      :remittance_information,
     ]
   end
 
@@ -22,7 +23,8 @@ class ChequeOrOtherAccountBuilder < AccountBuilder
   def account_params_for_update
     [
       :description,
-      :formatted_expires_at
+      :formatted_expires_at,
+      :remittance_information
     ]
   end
   # Hooks into superclass's `build` method.

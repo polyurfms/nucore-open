@@ -3,7 +3,7 @@
 class ChequeOrOtherAccount < Account
 
 #  include AffiliateAccount
-#  include ReconcilableAccount
+  include ReconcilableAccount
 
 #  attr_readonly :account_number
 #  before_validation :setup_false_credit_card_number

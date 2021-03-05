@@ -1,8 +1,9 @@
 = f.input :account_number, label: t('facility_accounts.account_fields.label.co_number'), required: true
 = f.input :name_on_card, label: t('facility_accounts.account_fields.label.co_name'), required: true
 
-=f.input :formatted_expires_at, required: true, 
-  input_html: { class: "datepicker" }, 
+=f.input :formatted_expires_at, required: true,
+  input_html: { class: "datepicker" },
   label: "Valid Until"
 
 = f.input :description, required: true, hint: t('facility_accounts.account_fields.label.all_instruct'), hint_html: { class: 'help-inline' }
+= render partial: 'facility_accounts/account_fields/remittance_information', locals: { f: f }
