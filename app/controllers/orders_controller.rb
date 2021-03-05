@@ -275,6 +275,7 @@ class OrdersController < ApplicationController
   def update
     params[:order_datetime] = build_order_date if acting_as?
     @order.transaction do
+      
       @order.assign_attributes(order_params)
 
       if OrderDetailUpdater.new(@order, order_update_params).update
@@ -293,12 +294,15 @@ class OrdersController < ApplicationController
   def purchase
     puts params[:send_notification]
     @order.being_purchased_by_admin = facility_ability.can?(:act_as, @order.facility)
-
+    
+    @order.dept_abbrev =  @order.user.dept_abbrev
     order_purchaser.backdate_to = build_order_date if ordering_on_behalf_with_date_params?
 
     @order.transaction do
       @order.assign_attributes(order_params)
       order_purchaser.purchase!
+      
+      
     end
 
     if order_purchaser.success?
