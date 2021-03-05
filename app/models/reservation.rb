@@ -5,6 +5,7 @@ require "date"
 class Reservation < ApplicationRecord
 
   acts_as_paranoid # soft deletes
+  has_paper_trail
 
   include DateHelper
   include Reservations::DateSupport
@@ -320,7 +321,7 @@ class Reservation < ApplicationRecord
   end
 
   def has_actuals?
-    actual_start_at.present? && actual_end_at.present?
+    actual_start_at.present? && actual_end_at.present? && actual_end_at > actual_start_at
   end
 
   def started?
