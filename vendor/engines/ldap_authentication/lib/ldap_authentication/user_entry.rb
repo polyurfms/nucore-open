@@ -50,7 +50,8 @@ module LdapAuthentication
 
     def dept_abbrev
       #UAT
-      @ldap_entry.polyuStaffMainDept.first
+      #@ldap_entry.polyuStaffMainDept.first
+      @ldap_entry.department.first
       #polyuStaffMainDept
       #DEV
       #@ldap_entry.departmentNumber.first
