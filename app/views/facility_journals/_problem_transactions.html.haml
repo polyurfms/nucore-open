@@ -9,8 +9,10 @@
     %table.table.table-striped.table-hover.dense.old-table
       %thead
         %tr
-          %th= Order.model_name.human
-          %th= OrderDetail.model_name.human
+          -# %th= Order.model_name.human
+          -# %th= OrderDetail.model_name.human
+          %th= t("shared.order_id")
+          %th= t("shared.order_detail_id")  
           %th.nowrap= OrderDetail.human_attribute_name(@date_range_field)
           - if current_facility.blank? || cross_facility?
             %th= Facility.model_name.human

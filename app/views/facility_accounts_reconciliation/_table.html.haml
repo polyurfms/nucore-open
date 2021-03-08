@@ -4,7 +4,8 @@
       %th
       %th= Statement.human_attribute_name(:invoice_number)
       %th= Account.model_name.human
-      %th= Order.model_name.human
+      -# %th= Order.model_name.human
+      %th= t("shared.order_id")
       %th= Statement.human_attribute_name(:total_cost)
       %th= Statement.human_attribute_name(:reconcile_note)
   %tbody

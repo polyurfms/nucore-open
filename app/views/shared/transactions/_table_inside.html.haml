@@ -7,8 +7,10 @@
       - if(!is_insufficient_fund)
         -if @order_detail_action or @order_detail_link
           %th
-      %th= sortable "order_number", Order.model_name.human
-      %th= OrderDetail.model_name.human
+      -# %th= sortable "order_number", Order.model_name.human
+      -# %th= OrderDetail.model_name.human
+      %th= sortable "order_number", t("shared.order_id")
+      %th= t("shared.order_detail_id")
       %th.nowrap= sortable "fulfilled_date", OrderDetail.human_attribute_name(@date_range_field)
       - if @extra_date_column
         %th.nowrap= OrderDetail.human_attribute_name(@extra_date_column_header || @extra_date_column)
