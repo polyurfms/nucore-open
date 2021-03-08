@@ -13,7 +13,7 @@ class PricePolicy < ApplicationRecord
   validates :price_group_id, :type, presence: true
   validate :start_date_is_unique, if: :start_date?
 
-  validate :maximum_cost_validation
+  #validate :maximum_cost_validation
 
   validate :subsidy_less_than_rate, unless: :restrict_purchase?
 
