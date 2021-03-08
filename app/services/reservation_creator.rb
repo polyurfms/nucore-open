@@ -18,10 +18,14 @@ class ReservationCreator
       return false
     end
 
+    
+
     Reservation.transaction do
       begin
         update_order_account
-
+        
+        @order.dept_abbrev = session_user.dept_abbrev
+        
         # merge state can change after call to #save! due to OrderDetailObserver#before_save
         to_be_merged = @order_detail.order.to_be_merged?
 
@@ -77,6 +81,8 @@ class ReservationCreator
         raise ActiveRecord::Rollback
       end
     end
+
+    
   end
 
   def reservation

@@ -70,6 +70,7 @@
       %th= t(".table.type")
       %th= t(".table.status")
       %th= t(".table.Amount")
+      %th= t(".table.remark")
   %tbody
     - @funding_requests.each  do |at|
       %tr
@@ -77,3 +78,4 @@
         %td= t("funding_requests.request_type.#{at.request_type}")
         %td= t("funding_requests.status.#{at.status}")
         %td= at.request_amount
+        %td= at.remarks

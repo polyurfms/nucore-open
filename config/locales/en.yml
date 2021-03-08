@@ -256,6 +256,7 @@ en:
         status: Status
         # amount: Amount
         amount: Amount (HKD)
+        remark : Remark
       total_locked_amount: Total committed amount
       new_request : "New Request"
   facility_accounts_reconciliation:
@@ -703,6 +704,7 @@ en:
         status : "Status"
         # Amount : "Amount"
         Amount : "Amount (HKD)"
+        remark : Remark
       message:
         in_progress : "You cannot make new requests when the funding request is in progress."
     index:
@@ -735,6 +737,7 @@ en:
         status : "Status"
         # Amount : "Amount"
         Amount : "Amount (HKD)"
+        remark : Remark
       message:
         # in_progress : "Cannot submit new request until existing request executed."
         in_progress : "You cannot make new requests when the fund locking is in progress."
@@ -984,6 +987,8 @@ en:
         name: Name (Net ID)
         email: Email
         role: Role
+        dept: Dept. Abbrev.
+        user_type: User Type
     member_allocation_table:
       add_access: Add Access
       remove_access: Remove Access
@@ -1371,6 +1376,8 @@ en:
         name: Name (Net ID)
         email: Email
         role: Role
+        dept: Dept. Abbrev.
+        user_type: User Type
     role:
       owner: Owner
       # purchaser: Member

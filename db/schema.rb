@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_19_035843) do
+ActiveRecord::Schema.define(version: 2021_03_01_033733) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -434,6 +434,7 @@ ActiveRecord::Schema.define(version: 2021_02_19_035843) do
     t.string "state", limit: 50
     t.integer "merge_with_order_id"
     t.integer "order_import_id"
+    t.string "dept_abbrev", limit: 10
     t.index ["account_id"], name: "fk_rails_144e25bef6"
     t.index ["facility_id"], name: "index_orders_on_facility_id"
     t.index ["merge_with_order_id"], name: "index_orders_on_merge_with_order_id"

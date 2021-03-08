@@ -12,6 +12,8 @@
       - if can_edit_accounts
         %th
       %th= t(".th.name")
+      %th= t(".th.dept")
+      %th= t(".th.user_type")
       %th= t(".th.email")
       %th= t(".th.role")
       = render_view_hook("member_table_headers")
@@ -28,6 +30,8 @@
                 method: :delete
 
         %td= Users::NamePresenter.new(au.user, username_label: true).full_name
+        %td= au.user.dept_abbrev
+        %td= au.user.user_type
         %td= au.user.email
 
         - role = ""
