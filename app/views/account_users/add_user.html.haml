@@ -1,0 +1,24 @@
+- if @user.nil? && params[:has_netid] == "yes"
+  %p.alert.alert-info= t(".netid_not_found")
+- elsif @user.nil?
+  %p.alert.alert-info= t(".email_not_found")
+  -# %p= t(".main_html", link: new_external_facility_users_path(current_facility, email: params[:username_lookup]))
+- elsif @user.persisted?
+  %p.alert.alert-info= text(".user_already_exists", username: @user.username)
+- else
+  %p.notice= t(".found")
+  %table.table.table-striped.table-hover
+    %thead
+      %tr
+        %th
+        %th Username
+        %th Last Name
+        %th First Name
+        %th Email
+    %tbody
+      %tr
+        %td= link_to "Add User", insert_user_account_account_users_path(username: @user.username), method: :post
+        %td= @user.username
+        %td= @user.last_name
+        %td= @user.first_name
+        %td= @user.email
