@@ -13,8 +13,8 @@
       - if is_show_insuddicient_header == false 
         - is_show_insuddicient_header = true 
         %strong= html("insufficient_fund_msg")
-        %ul
-      %li= account.to_s(with_facility: false)
+      %ul
+        %li= account.to_s(with_facility: false)
 
 = html "outro", login_url: in_review_transactions_url
 
