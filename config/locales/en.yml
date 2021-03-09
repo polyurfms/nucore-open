@@ -930,6 +930,7 @@ en:
     create_new_user:
       prompt: Can't find the user you're looking for?
       link: Create a new user
+      link_for_assign: Assign to a new user
     user_search_results:
       blank_term: Please enter a search term
       more_users_alert:

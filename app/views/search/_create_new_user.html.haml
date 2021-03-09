@@ -4,7 +4,7 @@
     - if SettingsHelper.feature_on?(:lookup_netids)
       -# = link_to t(".link"), new_facility_user_path(@facility)
       - if params[:is_payment_source] == "true" 
-        = link_to t(".link"), create_user_account_account_users_path(params[:account_id])
+        = link_to t(".link_for_assign"), create_user_account_account_users_path(params[:account_id])
       -else 
         = link_to t(".link"), new_facility_user_path(@facility)
     - else
