@@ -208,7 +208,7 @@ class PricePolicy < ApplicationRecord
   def maximum_cost_validation
     unless (minimum_cost.nil?)
       if (!maximum_cost.nil? && maximum_cost > 0)
-          errors.add get_maximum_cost, ' must be greater than or equal to minimum cost' unless ((minimum_cost < maximum_cost)) 
+          errors.add get_maximum_cost, ' must be greater than or equal to minimum cost' unless ((minimum_cost <= maximum_cost)) 
       end
     end
     # return unless defined?(get_maximum_cost)
