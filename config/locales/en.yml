@@ -139,6 +139,9 @@ en:
       copyright_html: "&copy; Copyright 2020&ndash;%{to_date} The Hong Kong Polytechnic University"
       logo_alt: "PolyU Logo"
       logo_file: "logo-header.png"
+    
+    order_id: "Order ID" 
+    order_detail_id: "Detail ID" 
 
     problem_order_details:
       assign_price_policies: Assign Price Policies

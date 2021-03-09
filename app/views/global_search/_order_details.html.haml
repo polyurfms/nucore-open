@@ -3,7 +3,8 @@
 %table.table.table-striped.table-hover.js--responsive_table
   %thead
     %tr
-      %th= "#{Order.model_name.human} #"
+      -# %th= "#{Order.model_name.human} #"
+      %th= "#{t("shared.order_id")} #"
       %th= OrderDetail.human_attribute_name(:ordered_at)
       %th= Facility.model_name.human
       %th= OrderDetail.human_attribute_name("description")

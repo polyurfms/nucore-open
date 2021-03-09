@@ -8,8 +8,10 @@
             method: :post,
             class: %w(btn btn-primary)
     %tr
-      %th= Order.model_name.human
-      %th= OrderDetail.model_name.human
+      -# %th= Order.model_name.human
+      -# %th= OrderDetail.model_name.human
+      %th= t("shared.order_id")
+      %th= t("shared.order_detail_id")
       %th= problem_order_date_header(local_assigns[:show_reservation_start_at])
       %th= Order.human_attribute_name(:user)
       %th{ colspan: 2 }= t(".th.quantity_and_product")

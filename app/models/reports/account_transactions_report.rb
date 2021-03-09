@@ -49,8 +49,10 @@ class Reports::AccountTransactionsReport
 
   def headers
     [
-      Order.model_name.human,
-      OrderDetail.model_name.human,
+      # Order.model_name.human,
+      # OrderDetail.model_name.human,
+      text("shared.order_id"),
+      text("shared.order_detail_id"),
       OrderDetail.human_attribute_name(@date_range_field),
       Facility.model_name.human,
       OrderDetail.human_attribute_name(:description),
