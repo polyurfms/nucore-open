@@ -136,7 +136,7 @@ class Journal < ApplicationRecord
     elsif is_successful? == false
       "Failed"
     else
-      reconciled? ? "Successful, reconciled" : "Successful, not reconciled"
+      reconciled? ? "Successful, reconciled" : "Successful, partial reconciled"
     end
   end
 
