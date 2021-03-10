@@ -25,6 +25,7 @@ class Account < ApplicationRecord
   has_many :funding_requests
   has_one :owner, -> { where(user_role: AccountUser::ACCOUNT_OWNER, deleted_at: nil) }, class_name: "AccountUser"
   has_one :owner_user, through: :owner, source: :user
+  has_one :account_free_balance
   has_many :business_admins, -> { where(user_role: AccountUser::ACCOUNT_ADMINISTRATOR, deleted_at: nil) }, class_name: "AccountUser"
 
   has_many :notify_user_roles, -> { where(user_role: AccountUser.admin_user_roles, deleted_at: nil) }, class_name: "AccountUser"
@@ -281,7 +282,8 @@ class Account < ApplicationRecord
 
 
   def total_expense
-    AccountUserExpense.where(account_id: id).sum("expense_amt")
+    account_free_balance.total_expense
+    #AccountFreeBalance.where(account_id: id).first.total_expense
   end
 
   def free_balance
