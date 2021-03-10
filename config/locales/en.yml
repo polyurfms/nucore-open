@@ -358,6 +358,7 @@ en:
       account:
         suspended: "Account is suspended"
         expired: "Account is expired"
+      journal_id: "Journal ID" 
     show:
       head:
         h2: "Journal #%{journal} Details"
