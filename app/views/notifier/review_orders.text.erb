@@ -6,10 +6,14 @@
   - <%= account.to_s(with_facility: false) %>
 <% end %>
 
-<%= text("insufficient_fund_msg") %>
+<%is_show_insuddicient_header = false %>
 <% accounts.each do |account| %>
   <%if account.free_balance.to_f < 0 %>
-      - <%= account.to_s(with_facility: false) %>
+    <%if is_show_insuddicient_header == false %>
+      <%= text("insufficient_fund_msg") %>
+      <%is_show_insuddicient_header = true %>
+      <% end %>
+    - <%= account.to_s(with_facility: false) %>
   <% end %>
 <% end %>
 <% end %>
