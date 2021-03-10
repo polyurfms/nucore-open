@@ -176,6 +176,19 @@ class OrderDetail < ApplicationRecord
       .where(problem: false)
   }
 
+  scope :with_insufficient_fund, lambda {
+    joins(:product)
+      .where(state: "complete")
+      .with_price_policy
+      .account_insuffifient_fund
+      .not_disputed
+      .where(problem: false)
+  }
+
+  scope :account_insuffifient_fund, lambda {
+    joins("INNER JOIN account_free_balances ON account_free_balances.account_id = order_details.account_id and account_free_balances.total_expense > account_free_balances.committed_amt")
+  }
+
   def self.all_movable
     ordered_at
       .unreconciled
@@ -521,10 +534,10 @@ class OrderDetail < ApplicationRecord
   end
 
   def get_fo_journal_status?
-    return "" if fo_journal_id.blank?    
+    return "" if fo_journal_id.blank?
     @status = FoJournal.where(id: fo_journal_id)
-    
-    return "" if @status.blank?    
+
+    return "" if @status.blank?
 
     return @status[0].status
   end
