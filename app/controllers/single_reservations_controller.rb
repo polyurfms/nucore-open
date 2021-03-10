@@ -34,7 +34,8 @@ class SingleReservationsController < ApplicationController
         redirect_to purchase_order_path(@order, params.permit(:send_notification))
       else
         # @reservation = creator.reservation
-        flash.now[:error] = creator.error.html_safe
+        @error = "Validation failed: "
+        flash.now[:error] = creator.error.html_safe unless creator.error == @error
         set_windows
         render "reservations/new"
       end
