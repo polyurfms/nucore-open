@@ -936,6 +936,7 @@ en:
     create_new_user:
       prompt: Can't find the user you're looking for?
       link: Create a new user
+      link_for_assign: Assign to a new user
     user_search_results:
       blank_term: Please enter a search term
       more_users_alert:
@@ -975,7 +976,28 @@ en:
       instruct: "Search for a user to add to the %{account_type}, (%{account})"
       label:
         search: "Search by name, NetID, or username"
-
+    add_user:
+      email_not_found: "No user information was found in the university databases."
+      main_html: "You may add a new external user by clicking <a href=\"%{link}\">Add a new external user</a>."
+      netid_not_found: "The user could not be located in the university database.  Please make sure you typed the NetID correctly."
+      email_not_found: "No user information was found in the university databases."
+      found: "The following user was found.  Click \"Add User\" to allow this user access to system."
+      user_already_exists: "The user %{username} already exists in system"
+      
+    create_user:
+      submenu: "%{account_number}"
+      head: "Add Payment Source Member"
+      subhead: "Look up"
+      lookup: "Look up NetID"
+      instruct: "Enter the user's NetID"
+      intro: "Some information about this user may already exist in university databases.  Please choose whether the user you wish to add has a NetID and enter the requested information.  If the user exists already, you will be able to add her with a single click."
+      js:
+        id: "NetID"
+        email: "Email Address"
+        error: "An error was encountered while looking up the NetID"
+      label:
+        id: "NetID"
+      
   accounts:
     role:
         owner: Owner

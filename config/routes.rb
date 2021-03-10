@@ -67,6 +67,10 @@ Rails.application.routes.draw do
     resources :account_users, only: [:new, :destroy, :create, :index] do
       collection do
         get "user_search"
+        get "create_user"
+        get "new_external"
+        post "add_user"
+        post "insert_user"
       end
     end
 
