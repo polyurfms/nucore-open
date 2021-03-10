@@ -244,6 +244,19 @@ class ReservationsController < ApplicationController
 
     Reservation.transaction do
       begin
+        @account = Account.find(@order_detail.order.account_id.to_i)
+        if(@account.expires_at < Time.zone.now)
+          flash[:error] = "Payment source expired"
+          raise ActiveRecord::Rollback
+        end
+
+        @account_user = AccountUser.find_by(account_id: @order_detail.account_id, deleted_at: nil, user_id: session_user.id)
+        if(@account_user.quota_balance < @order_detail.estimated_cost)
+          flash[:error] = "Payment source insufficient fund"
+          raise ActiveRecord::Rollback
+        end
+        
+
         # merge state can change after call to #save! due to OrderDetailObserver#before_save
         mergeable = @order_detail.order.to_be_merged?
 
