@@ -25,7 +25,7 @@ module SamlAuthentication
       user.update!(attributes)
 
       if user.current_sign_in_at = user.created_at
-        if is_new_user and user.user_type = 'Staff'
+        if user.user_type = 'Staff'
           user.update_to_internal_price_group!
         end
       end
