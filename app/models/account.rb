@@ -282,7 +282,11 @@ class Account < ApplicationRecord
 
 
   def total_expense
-    account_free_balance.total_expense
+    if account_free_balance.present?
+      account_free_balance.total_expense
+    else
+      0
+    end
     #AccountFreeBalance.where(account_id: id).first.total_expense
   end
 
