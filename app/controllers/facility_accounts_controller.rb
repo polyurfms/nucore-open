@@ -263,10 +263,10 @@ class FacilityAccountsController < ApplicationController
       free_balance = @account.free_balance
       
       if(params[:action].eql?('update'))
-        if(@account.alert_threshold > free_balance)
-          flash[:error] = "Free balance must be equal to or larger than alert threshold"
-          render_page = true
-        end
+        # if(@account.alert_threshold > free_balance)
+        #   flash[:error] = "Free balance must be equal to or larger than alert threshold"
+        #   render_page = true
+        # end
       end
       
     end
