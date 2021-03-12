@@ -67,49 +67,47 @@ class UserDelegationsController < ApplicationController
   end
 
   def create
-
-
-
     @delegate_info = user_delegation_params
-#    delegatee = User.find_by(username: @delegate_info["delegatee"].strip)
-    delegatee = service_username_lookup(@delegate_info["delegatee"].strip)
-
+    
+    # delegatee = service_username_lookup(@delegate_info["delegatee"].strip)
+    delegatee= User.find_by(username: @delegate_info["delegatee"].strip)
     delegator = User.find(session_user[:id])
 
+    has_error = true
 
-    if (delegatee.nil?)
-      flash[:error] = text("#{@delegate_info["delegatee"].strip} cannot be found")
-    else
+    if (delegatee.nil? || delegator.nil?)
+      flash[:error] = text("#{@delegate_info["delegatee"].strip} cannot be found") if delegatee.nil?
+    elsif (delegatee.username.eql?(delegator.username))
+      flash[:error] = text("delegator cannot be delegatee")
+    else 
+      @user_delegation_list ||= UserDelegation.where(delegatee: delegatee.username, delegator: delegator.id, deleted_at: nil).count
 
-      if (!delegatee.user_type.eql?("Staff"))
+      if (@user_delegation_list > 0)
+        flash[:error] = text("#{delegatee.username} has been delegated")
+      elsif (!delegatee.user_type.eql?("Staff"))
         flash[:error] = "Invalid user"
       else
-
-        if (delegatee.username.eql?(delegator.username))
-          flash[:error] = text("#{delegatee.username} can not delegated")
+        @user_delegation = UserDelegation.create(@delegate_info)
+        if @user_delegation.save
+          LogEvent.log(@user_delegation, :create, delegator)
+          UserDelegationMailer.notify(delegatee.full_name, delegatee.email, delegator: delegator).deliver_later
+          flash[:notice] = text("#{@user_delegation.delegatee} delegated")
+          has_error = false
+          redirect_to action: :index
         else
-          @assigned_list ||= UserDelegation.where(delegatee: delegatee.username, delegator: delegator.id, deleted_at: nil).count
-
-          if (@assigned_list > 0)
-            flash[:error] = text("#{delegatee.username} has been delegated")
-          else
-            unless (delegator.nil?)
-              @user_delegation = UserDelegation.create(@delegate_info)
-              if @user_delegation.save
-                LogEvent.log(@user_delegation, :create, delegator)
-                #UserDelegationMailer.notify(delegatee: delegatee, delegator: delegator).deliver_later
-                UserDelegationMailer.notify(delegatee.full_name, delegatee.email, delegator: delegator).deliver_later
-                flash[:notice] = text("#{@user_delegation.delegatee} delegated")
-              else
-                flash[:error] = text("#{@user_delegation.delegatee} could not be delegated")
-              end
-            end
-          end
+          flash[:error] = text("#{@user_delegation.delegatee} could not be delegated")
         end
       end
     end
 
-    redirect_to action: :index
+    if has_error
+      @assigned_list ||= UserDelegation.where(delegator: session_user[:id], deleted_at: nil)
+      @user_id = session_user[:id]
+      @is_assigned ||= true if @assigned_list.count > 0
+      @user_delegation = UserDelegation.new
+      @user_delegation.delegatee = @delegate_info["delegatee"].strip
+      render action: :index
+    end
   end
 
   def service_username_lookup(username)
