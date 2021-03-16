@@ -14,11 +14,6 @@
   = f.input :type_string, as: :readonly
   = f.input :description, as: :readonly
 
-  - if @account.affiliate
-    = f.input :affiliate_id, as: :hidden
-    = f.input :affiliate_other, as: :hidden
-    = f.input :affiliate, input_html: { value: @account.affiliate_to_s }, as: :readonly
-
   = f.input :expires_at, label: text("account_allocations.new.expires_at"), as: :readonly, date_only: true
   - if @account.suspended?
     = f.input :suspended_at, as: :readonly, date_only: true
@@ -35,14 +30,17 @@
   - if @account.type == "NufsAccount"
     = f.input :alert_threshold, label:  text("account_allocations.new.alert_threshold_input")
 
-  - if @account.type == "NufsAccount"
-    = f.label  :is_auto_top_up, label: text("account_allocations.new.is_auto_top_up")
-    = f.check_box :is_auto_top_up
+  -# - if @account.type == "NufsAccount"
+  -#   = f.label  :is_auto_top_up, label: text("account_allocations.new.is_auto_top_up")
+  -#   = f.check_box :is_auto_top_up
 
-  <br>
-  <br>
 
   = f.input :type, as: :hidden, input_html: { value: @account.type, name: "type" }
+
+  - if @account.affiliate
+    = f.input :affiliate_id, as: :hidden
+    = f.input :affiliate_other, as: :hidden
+    = f.input :affiliate, input_html: { value: @account.affiliate_to_s }, as: :readonly
 
   <br>
   <br>
