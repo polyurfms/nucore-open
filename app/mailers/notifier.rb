@@ -50,7 +50,8 @@ class Notifier < ActionMailer::Base
     @account = args[:account]
     @statement = args[:statement]
     attach_statement_pdf
-    send_nucore_mail args[:user].email, text("views.notifier.statement.subject", facility: @facility)
+    #send_nucore_mail args[:user].email, text("views.notifier.statement.subject", facility: @facility)
+    send_nucore_mail Settings.email.from, text("views.notifier.statement.subject", facility: @facility)
   end
 
   def order_detail_status_changed(order_detail)
