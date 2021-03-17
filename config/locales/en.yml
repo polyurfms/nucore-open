@@ -835,6 +835,7 @@ en:
   order_details:
     edit:
       failure: This order is not currently editable.
+      conflict : Reservation already started, cancel failed
     show:
       head:
         # h1: "Order #%{order_number}"

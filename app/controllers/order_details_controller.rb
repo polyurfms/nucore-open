@@ -47,7 +47,9 @@ class OrderDetailsController < ApplicationController
       end
       redirect_to(reservations_path)
     else
-      raise ActiveRecord::RecordNotFound
+      # raise ActiveRecord::RecordNotFound
+      flash[:error] = I18n.t("order_details.edit.conflict")
+      redirect_to(reservations_path)
     end
   end
 
