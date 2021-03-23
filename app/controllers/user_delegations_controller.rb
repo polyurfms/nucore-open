@@ -41,6 +41,7 @@ class UserDelegationsController < ApplicationController
       unless session_user.id.to_i == params[:user_delegation_id].to_i
         session[:acting_user_id] = params[:user_delegation_id]
         session[:acting_ref_url] = "/facilities"
+        session[:facility_agreement_list]= nil
       end
 
       session[:is_selected_user] = true

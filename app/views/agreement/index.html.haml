@@ -6,9 +6,16 @@
 </br>
 </br>
 
+-# %div
+-#   %input{:id => "is_agree", :type => "checkbox", :style => "margin-top: -0.25em;"}
+-#   %span I agree to the terms and conditions
+
+-# </br>
+-# </br>
+
 %div
-  %input{:id => "is_agree", :type => "checkbox", :style => "margin-top: -0.25em;"}
-  %span I agree to the terms and conditions
+  %span Mobile no. 
+  %input{:id => "phone", :type => "number", :style => "margin-top: -0.25em;"}
 
 </br>
 </br>
@@ -22,18 +29,20 @@
 
 :javascript
   function agree(){
+    
+    var phone = document.getElementById("phone").value;
 
-    var is_agreed = document.getElementById("is_agree");
-    if (is_agreed.checked != true)
+    if(phone === "")
     {
-      alert("Please indicate that you have read and agree to the Terms and Conditions.");
+      alert("Please input mobile no.");
       return;
     }
     //modal.style.display = "block";
-    
+    var data0 = {phone: phone};
     $.ajax({
       url: "agree_terms",
-      method: "POST",
+      method: "POST", 
+      data: data0,
       success: function(data) {
         // modal.style.display = "none";
           // $(location).attr('href', '/facilities')
