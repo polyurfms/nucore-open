@@ -13,6 +13,11 @@ Rails.application.routes.draw do
     match "/users/password/reset", to: "user_password#reset", as: "reset_password", via: [:get, :post]
   end
 
+ 
+  if SettingsHelper.feature_on?(:profile_update)
+    match "/users/profile", to: "user_profile#edit_current", as: "edit_current_profile", via: [:get, :post]
+    match "/users/profile/update_mobile", to: "user_profile#update_mobile", as: "update_mobile", via: [:post]
+  end
   # root route
   root to: "public#index"
 

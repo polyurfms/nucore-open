@@ -1,0 +1,10 @@
+= readonly_form_for :user do |f|
+  = f.input :full_name
+  = f.input :username
+  = f.input :email
+  = f.input :last_sign_in_at, default_value: "none"
+
+= simple_form_for :user, :url => update_mobile_path do |f|
+  .form-inputs
+    = f.input :phone
+    = f.button :submit, t("user_profile.edit.update")
