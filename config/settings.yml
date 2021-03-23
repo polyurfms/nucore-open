@@ -32,7 +32,13 @@ converters:
 statement_pdf:
   class_name: ExampleStatementPdf
   font_name: Roboto
-
+  header_logo: pdf_logo.jpg
+  stamp_image: stamp.jpg
+  invoice_no_start: "ULS "
+  email: "stella-sw@plotu.edu.hk"
+  phone: "3400 3623"
+  html_element: "<p>Our facility has provided access to the following equipment or service to members of your team in January according to our booking record. Please arrange the payment via one of the methods listed below within two weeks from the invoice date. Kindly note that failure to return this invoice by the said date could lead to suspension of all associated online booking accounts.</p>"
+  
 validator:
   class_name: ValidatorDefault
   test:
@@ -167,3 +173,5 @@ research_project_affiliate_id: 3
 
 uat:
   email: ~
+
+
