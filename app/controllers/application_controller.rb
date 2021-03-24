@@ -140,6 +140,7 @@ class ApplicationController < ActionController::Base
       if (session_user.administrator?)
         unless request.env['PATH_INFO'].last(7).eql?('/manage') || request.env['PATH_INFO'].last(5).eql?('/edit')
           is_agree = session[:facility_agreement_list].include?(@facility.id) 
+        end
       else 
         is_agree = session[:facility_agreement_list].include?(@facility.id)
       end
@@ -147,14 +148,14 @@ class ApplicationController < ActionController::Base
 
     if(is_agree)
       @current_facility ||=
-      case
-      when facility_id.blank?
-        nil # TODO: consider a refactoring to use a null object
-      when facility_id == Facility.cross_facility.url_name
-        Facility.cross_facility
-      else
-        Facility.find_by(url_name: facility_id)
-      end
+        case
+        when facility_id.blank?
+          nil # TODO: consider a refactoring to use a null object
+        when facility_id == Facility.cross_facility.url_name
+          Facility.cross_facility
+        else
+          Facility.find_by(url_name: facility_id)
+        end
     else
       session[:facility_url_name] = params[:facility_id] 
       session[:product_url_name] = params[:id]
