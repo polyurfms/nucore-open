@@ -139,9 +139,9 @@ en:
       copyright_html: "&copy; Copyright 2020&ndash;%{to_date} The Hong Kong Polytechnic University"
       logo_alt: "PolyU Logo"
       logo_file: "logo-header.png"
-    
-    order_id: "Order ID" 
-    order_detail_id: "Detail ID" 
+
+    order_id: "Ref. No."
+    order_detail_id: "Detail ID"
 
     problem_order_details:
       assign_price_policies: Assign Price Policies
@@ -358,7 +358,7 @@ en:
       account:
         suspended: "Account is suspended"
         expired: "Account is expired"
-      journal_id: "Journal ID" 
+      journal_id: "Journal ID"
     show:
       head:
         h2: "Journal #%{journal} Details"
@@ -984,7 +984,7 @@ en:
       email_not_found: "No user information was found in the university databases."
       found: "The following user was found.  Click \"Add User\" to allow this user access to system."
       user_already_exists: "The user %{username} already exists in system"
-      
+
     create_user:
       submenu: "%{account_number}"
       head: "Add Payment Source Member"
@@ -998,7 +998,7 @@ en:
         error: "An error was encountered while looking up the NetID"
       label:
         id: "NetID"
-      
+
   accounts:
     role:
         owner: Owner
