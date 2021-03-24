@@ -3,6 +3,7 @@ class AgreementController <  ApplicationController
  
   # GET /agreement
   def index
+    @is_admin = session_user.administrator? ? true : false 
   end
 
   def show 

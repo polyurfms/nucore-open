@@ -18,10 +18,12 @@ class UserAgreementsController < ApplicationController
 
     # GET /agree_terms
     def agree
-        phone = agreement_params
+        unless (session_user.administrator?)
+            phone = agreement_params
         
-        @user = User.find(session_user.id)
-        @user.update(phone: phone)
+            @user = User.find(session_user.id)
+            @user.update(phone: phone)
+        end
         
         if UserAgreement.where(user_id:session_user).count == 0
             userAgreement = UserAgreement.create(user_id:session_user.id,accept:true ,created_at:Time.zone.now , updated_at:Time.zone.now )
@@ -31,11 +33,9 @@ class UserAgreementsController < ApplicationController
             userAgreement.save
         end
 
-
         session[:user_agreement_record] = 1
         session[:accept] = true
                     
-
         render json: true
     end
   
