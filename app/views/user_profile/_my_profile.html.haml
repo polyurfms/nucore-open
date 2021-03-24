@@ -3,6 +3,7 @@
   = f.input :username
   = f.input :email
   = f.input :last_sign_in_at, default_value: "none"
+  = f.input :supervisor
 
 = simple_form_for :user, :url => update_mobile_path do |f|
   .form-inputs
