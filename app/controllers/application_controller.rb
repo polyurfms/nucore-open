@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
   helper_method :current_facility, :session_user, :manageable_facilities, :operable_facilities, :acting_user, :acting_as?, :check_acting_as, :current_cart, :backend?, :has_delegated?
   helper_method :open_or_facility_path
 
-  before_action :set_paper_trail_whodunnit ,:check_agreement
+  before_action :set_paper_trail_whodunnit,:check_supervisor, :check_agreement
   before_action :check_delegations
   
   # Navigation tabs configuration
@@ -45,15 +45,18 @@ class ApplicationController < ActionController::Base
 
   def check_delegations
     # Avoid fake delegations
-    if(!session[:is_selected_user] == true && !session[:acting_user_id].nil? && !session[:acting_user_id].eql?(""))
-      redirect_to "/" if !has_delegated
-    end
+    
+    unless session[:had_supervisor] == 0
+      if(!session[:is_selected_user] == true && !session[:acting_user_id].nil? && !session[:acting_user_id].eql?(""))
+        redirect_to "/" if !has_delegated
+      end
 
-    # Detect is first login action and redirect to account selection
-    # if(!request.env['PATH_INFO'].eql?('/agreement') && !request.env['PATH_INFO'].include?('/user_delegations/') && !request.env['PATH_INFO'].eql?('/users/sign_in') && !request.env['PATH_INFO'].eql?('/users/sign_out') && session[:is_selected_user].nil?)
-    if (!session_user.nil? && !request.env['PATH_INFO'].eql?('/agree_terms') && !request.env['PATH_INFO'].eql?('/agreement') && !request.env['PATH_INFO'].include?('/user_delegations/') && !request.env['PATH_INFO'].eql?('/users/sign_in') && !request.env['PATH_INFO'].eql?('/users/sign_out') )
-      unless session[:is_selected_user] == true
-        redirect_to '/user_delegations/switch'
+      # Detect is first login action and redirect to account selection
+      # if(!request.env['PATH_INFO'].eql?('/agreement') && !request.env['PATH_INFO'].include?('/user_delegations/') && !request.env['PATH_INFO'].eql?('/users/sign_in') && !request.env['PATH_INFO'].eql?('/users/sign_out') && session[:is_selected_user].nil?)
+      if (!session_user.nil? && !request.env['PATH_INFO'].eql?('/agree_terms') && !request.env['PATH_INFO'].eql?('/agreement') && !request.env['PATH_INFO'].include?('/user_delegations/') && !request.env['PATH_INFO'].eql?('/users/sign_in') && !request.env['PATH_INFO'].eql?('/users/sign_out') )
+        unless session[:is_selected_user] == true
+          redirect_to '/user_delegations/switch'
+        end
       end
     end
   end
@@ -61,41 +64,60 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
     '/orders/pending'
   end
-    
-  def check_agreement
-    #only user login can visit agreement
-    if  request.env['PATH_INFO'].eql?('/agreement') && session_user.blank? 
-      redirect_to '/facilities'
-    end
 
-    # when user login and page is not agreement or agreement api
-      if !session_user.blank? && !request.env['PATH_INFO'].eql?('/agreement') && !request.env['PATH_INFO'].eql?('/agree_terms') && !request.env['PATH_INFO'].eql?('/users/sign_out')
-        
-        # get rocord from db when frist time store data in session 
-        if session[:user_agreement_record] == nil
-          #puts "[check_agreement][get record][user_agreement_record]"
-          session[:user_agreement_record] = UserAgreement.where(user_id:session_user).count
-        end
-
-        # get rocord from db when frist time store data in session 
-        if session[:user_agreement_record] > 0 
-          if session[:accept] == nil
-            #puts "[check_agreement][get record][accept]"
-            session[:accept] = UserAgreement.where(user_id:session_user).first.accept
-          end 
-        end
-
-        #puts "[check_agreement]session[:accept]" + (session[:accept] ? "true" : "false")
-        #puts "[check_agreement]session[:user_agreement_record]" +session[:user_agreement_record].to_s
-
-        if session[:accept] == 0
-          redirect_to '/agreement'
-        else
-          if !session[:accept]
-            redirect_to '/agreement' 
-          end
+  def check_supervisor
+    if !session_user.blank? && !request.env['PATH_INFO'].eql?('/users/sign_out') && !request.env['PATH_INFO'].eql?('/users/sign_in') && !session_user.administrator?
+      session[:had_supervisor] = session_user.supervisor.blank? ? 0 : 1
+      if session[:had_supervisor] == 0
+        #Check role
+        if (session_user.is_academic == true)
+          @user = User.find(session_user[:id]) 
+          @user.update_attributes(supervisor: @user.username)
+          session[:had_supervisor] = 1
+          redirect_to '/facilities'
+        else 
+          redirect_to '/no_supervisor' unless request.env['PATH_INFO'].eql?('/no_supervisor')
         end
       end
+    end
+  end
+    
+  def check_agreement  
+    unless session[:had_supervisor] == 0
+      #only user login can visit agreement
+      if  request.env['PATH_INFO'].eql?('/agreement') && session_user.blank? 
+        redirect_to '/facilities'
+      end
+
+      # when user login and page is not agreement or agreement api
+        if !session_user.blank? && !request.env['PATH_INFO'].eql?('/agreement') && !request.env['PATH_INFO'].eql?('/agree_terms') && !request.env['PATH_INFO'].eql?('/users/sign_out')
+          
+          # get rocord from db when frist time store data in session 
+          if session[:user_agreement_record] == nil
+            #puts "[check_agreement][get record][user_agreement_record]"
+            session[:user_agreement_record] = UserAgreement.where(user_id:session_user).count
+          end
+
+          # get rocord from db when frist time store data in session 
+          if session[:user_agreement_record] > 0 
+            if session[:accept] == nil
+              #puts "[check_agreement][get record][accept]"
+              session[:accept] = UserAgreement.where(user_id:session_user).first.accept
+            end 
+          end
+
+          #puts "[check_agreement]session[:accept]" + (session[:accept] ? "true" : "false")
+          #puts "[check_agreement]session[:user_agreement_record]" +session[:user_agreement_record].to_s
+
+          if session[:accept] == 0
+            redirect_to '/agreement'
+          else
+            if !session[:accept]
+              redirect_to '/agreement' 
+            end
+          end
+        end
+    end
   end
      
     # after login redirect user to agreement page
