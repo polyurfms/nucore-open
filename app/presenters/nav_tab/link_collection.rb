@@ -9,7 +9,7 @@ class NavTab::LinkCollection
 
   delegate :single_facility?, to: :facility
 
-  def initialize(facility, ability, user, acting_id)
+  def initialize(facility, ability, user, acting_id = 0)
     @facility = facility || Facility.cross_facility
     @ability = ability
     @user = user
@@ -99,11 +99,9 @@ class NavTab::LinkCollection
     count = 0
     @curr_user = User.find(@acting_id) unless @acting_id == 0
     unless @acting_id == 0
-        puts "xxxxxxxxxxxxxxxxxxxxxxxxxxx"
         # @curr_user = User.find(@acting_id)
         count = user.administered_order_details(@curr_user).in_review.count
       else 
-        puts "ccccccccccccccccccccccccc"
         count = user.administered_order_details(@user).in_review.count
     end
     # count = user.administered_order_details.in_review.count
