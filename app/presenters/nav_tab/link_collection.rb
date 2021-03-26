@@ -5,7 +5,7 @@ class NavTab::LinkCollection
   include Rails.application.routes.url_helpers
   include TranslationHelper
 
-  attr_reader :ability, :facility, :user
+  attr_reader :ability, :facility, :user, :curr_user
 
   delegate :single_facility?, to: :facility
 
@@ -14,6 +14,7 @@ class NavTab::LinkCollection
     @ability = ability
     @user = user
     @acting_id = acting_id
+    find_curr_user(@acting_id) unless @acting_id == 0
   end
 
   def self.tab_methods
@@ -26,6 +27,10 @@ class NavTab::LinkCollection
       admin_reports
       admin_facility
     )
+  end
+
+  def find_curr_user(acting_id)
+    @curr_user = User.find(@acting_id)
   end
 
   def admin
@@ -43,7 +48,7 @@ class NavTab::LinkCollection
   end
 
   def delegate_tab
-    menu_array = [  payment_sources, reservations,orders]
+    menu_array = [payment_sources, reservations, orders]
     if @user.administrator?
         menu_array.push(user_delegations)
       end
@@ -65,7 +70,7 @@ class NavTab::LinkCollection
   def payment_sources
     is_show = false
     unless @acting_id == 0 
-      @curr_user = User.find(@acting_id)
+      # @curr_user = User.find(@acting_id)
       is_show = @curr_user.payment_source_owner?
     else 
       is_show = @user.payment_source_owner?
@@ -97,7 +102,7 @@ class NavTab::LinkCollection
 
   def transactions_in_review
     count = 0
-    @curr_user = User.find(@acting_id) unless @acting_id == 0
+    # @curr_user = User.find(@acting_id) unless @acting_id == 0
     unless @acting_id == 0
         # @curr_user = User.find(@acting_id)
         count = user.administered_order_details(@curr_user).in_review.count
