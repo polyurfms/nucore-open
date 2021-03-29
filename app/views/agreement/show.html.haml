@@ -1,0 +1,28 @@
+= content_for :h1 do
+  =  @template.name
+
+.wysiwyg= sanitize @template.description
+
+%input{:id => "is_agree", :type => "checkbox", :style => "margin-top: -0.25em;"}
+%span I agree to the terms and conditions
+</br>
+</br>
+
+
+= form_tag(agree_facility_terms_path(), id: "agree_facility_terms", method: :post, enforce_utf8: false) do   
+  = hidden_field_tag :facility, @facility.id
+  = submit_tag "Agree", class: ["btn", "btn-primary"], id: "from_submit"
+ 
+  = link_to "Cancel", facilities_path(current_facility)
+
+:javascript
+  $( "#agree_facility_terms" ).submit(function( event ) {
+    var is_agreed = document.getElementById("is_agree");
+    if (is_agreed.checked != true)
+    {
+      alert("Please indicate that you have read and agree to the Terms and Conditions.");
+      
+      $("#from_submit").prop('disabled',false); 
+      return false;
+    }
+  });

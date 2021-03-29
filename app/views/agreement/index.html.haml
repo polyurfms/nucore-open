@@ -6,12 +6,18 @@
 </br>
 </br>
 
-%div
-  %input{:id => "is_agree", :type => "checkbox", :style => "margin-top: -0.25em;"}
-  %span I agree to the terms and conditions
+-# %div
+-#   %input{:id => "is_agree", :type => "checkbox", :style => "margin-top: -0.25em;"}
+-#   %span I agree to the terms and conditions
 
-</br>
-</br>
+-# </br>
+-# </br>
+- unless @is_admin
+  %div
+    %span Mobile no. 
+    %input{:id => "phone", :type => "number", :style => "margin-top: -0.25em;"}
+  </br>
+  </br>
 
 %button{:onclick => "agree()", :type => "button"} Agree
 #myModal{:style => "display: none;position: fixed; z-index: 1; padding-top: 100px; left: 0;\n  top: 0;\n  width: 100%; \n  height: 100%;\n  overflow: auto; /\n  background-color: rgb(0,0,0); \n  background-color: rgba(0,0,0,0.4);"}
@@ -22,18 +28,25 @@
 
 :javascript
   function agree(){
-
-    var is_agreed = document.getElementById("is_agree");
-    if (is_agreed.checked != true)
-    {
-      alert("Please indicate that you have read and agree to the Terms and Conditions.");
-      return;
-    }
-    //modal.style.display = "block";
     
+    var data0;
+    if ($('#phone').length > 0) {
+      var phone = document.getElementById("phone").value;
+
+      if(phone === "")
+      {
+        alert("Please input mobile no.");
+        return;
+      }
+
+      data0 = {phone: phone};
+    }
+
+    //modal.style.display = "block";
     $.ajax({
       url: "agree_terms",
-      method: "POST",
+      method: "POST", 
+      data: data0,
       success: function(data) {
         // modal.style.display = "none";
           // $(location).attr('href', '/facilities')

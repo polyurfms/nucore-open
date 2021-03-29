@@ -8,6 +8,7 @@ class PublicController < ApplicationController
   end
 
   def switch_back
+    session[:facility_agreement_list] = nil
     session[:acting_user_id] = nil
     ref_url = session[:acting_ref_url] || facilities_url
     session[:acting_ref_url] = nil

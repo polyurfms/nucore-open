@@ -13,11 +13,20 @@ Rails.application.routes.draw do
     match "/users/password/reset", to: "user_password#reset", as: "reset_password", via: [:get, :post]
   end
 
+ 
+  if SettingsHelper.feature_on?(:profile_update)
+    match "/users/profile", to: "user_profile#edit_current", as: "edit_current_profile", via: [:get, :post]
+    match "/users/profile/update_mobile", to: "user_profile#update_mobile", as: "update_mobile", via: [:post]
+  end
   # root route
   root to: "public#index"
 
+  
+  get "/no_supervisor", to: "no_supervisors#index"
+
   post "agree_terms" , to: "user_agreements#agree"
   post "get_is_agree_terms" , to: "user_agreements#get_is_agree_terms"
+  post "agree_facility_terms" , to: "agreement#agree"
 
   resources :agreement, controller: "agreement", only: [:index, :update, :show] do
   end
