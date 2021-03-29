@@ -141,7 +141,7 @@ en:
       logo_alt: "PolyU Logo"
       logo_file: "logo-header.png"
 
-    order_id: "Order ID"
+    order_id: "Ref. No."
     order_detail_id: "Detail ID"
 
     problem_order_details:

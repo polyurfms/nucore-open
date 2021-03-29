@@ -37,6 +37,8 @@ statement_pdf:
   phone: "0000 0000"
   bank_account: 000-000-000000-000
   html_element: "<p>Our facility has provided access to the following equipment or service to members of your team according to our booking record. Please arrange the payment via one of the methods listed below within two weeks from the invoice date. Kindly note that failure to return this invoice by the said date could lead to suspension of all associated online booking accounts.</p>"
+  email_to: 'test@example.com'
+  email_cc: [ '111@example.com', '222@example.com' ]
 
 validator:
   class_name: ValidatorDefault
