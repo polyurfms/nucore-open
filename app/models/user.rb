@@ -145,8 +145,11 @@ class User < ApplicationRecord
     acts
   end
 
-  def administered_order_details
-    OrderDetail.where(account_id: Account.administered_by(self))
+  
+  def administered_order_details(curr_user = self) 
+    OrderDetail.where(account_id: Account.administered_by(curr_user))
+  # def administered_order_details
+  #   OrderDetail.where(account_id: Account.administered_by(self))
   end
 
   def full_name(suspended_label: true)

@@ -52,11 +52,12 @@ class UserDelegationsController < ApplicationController
 
   def index
     @user_delegation = UserDelegation.new
-    @user_id = session_user[:id]
-    
+    @user_id = session[:acting_user_id] || session_user[:id]
+#    @user_id = session_user[:id]    
     @current_type = "my_delegation"
+    
     # @assigned_list = UserDelegation.find_by ("delegator = #{session_user[:id]} AND deleted_at IS NULL " )
-    @assigned_list ||= UserDelegation.where(delegator: session_user[:id], deleted_at: nil)
+    @assigned_list ||= UserDelegation.where(delegator: session[:acting_user_id] || session_user[:id], deleted_at: nil)
 
     @is_assigned = false
     @is_assigned = true if @assigned_list.count > 0
@@ -77,7 +78,8 @@ class UserDelegationsController < ApplicationController
     
     # delegatee = service_username_lookup(@delegate_info["delegatee"].strip)
     delegatee= User.find_by(username: @delegate_info["delegatee"].strip)
-    delegator = User.find(session_user[:id])
+    # delegator = User.find(session_user[:id])
+    delegator = User.find( session[:acting_user_id] || session_user[:id])
 
     has_error = true
 
@@ -108,8 +110,8 @@ class UserDelegationsController < ApplicationController
     end
 
     if has_error
-      @assigned_list ||= UserDelegation.where(delegator: session_user[:id], deleted_at: nil)
-      @user_id = session_user[:id]
+      @assigned_list ||= UserDelegation.where(delegator:  session[:acting_user_id] || session_user[:id], deleted_at: nil)
+      @user_id =  session[:acting_user_id] || session_user[:id]
       @is_assigned ||= true if @assigned_list.count > 0
       @user_delegation = UserDelegation.new
       @user_delegation.delegatee = @delegate_info["delegatee"].strip
@@ -123,14 +125,14 @@ class UserDelegationsController < ApplicationController
 
   def destroy
      begin
-      user_delegation = UserDelegation.find_by delegator: session_user[:id], id: params[:id].to_i
-      delegator = User.find(session_user[:id])
+      user_delegation = UserDelegation.find_by delegator:  session[:acting_user_id] || session_user[:id], id: params[:id].to_i
+      delegator = User.find( session[:acting_user_id] || session_user[:id])
     rescue ActiveRecord::RecordNotFound
       flash[:error] = "User not found!"
     else
       unless (user_delegation.delegator.nil?)
         user_delegation.deleted_at = Time.zone.now
-        user_delegation.deleted_by = session_user[:id]
+        user_delegation.deleted_by =  session[:acting_user_id] || session_user[:id]
         if user_delegation.save
           LogEvent.log(user_delegation, :delete, delegator)
           flash[:notice] = "Delegatee #{user_delegation.delegatee} removed"

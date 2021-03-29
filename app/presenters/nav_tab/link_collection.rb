@@ -5,14 +5,16 @@ class NavTab::LinkCollection
   include Rails.application.routes.url_helpers
   include TranslationHelper
 
-  attr_reader :ability, :facility, :user
+  attr_reader :ability, :facility, :user, :curr_user
 
   delegate :single_facility?, to: :facility
 
-  def initialize(facility, ability, user)
+  def initialize(facility, ability, user, acting_id = 0)
     @facility = facility || Facility.cross_facility
     @ability = ability
     @user = user
+    @acting_id = acting_id
+    find_curr_user(@acting_id) unless @acting_id == 0
   end
 
   def self.tab_methods
@@ -25,6 +27,10 @@ class NavTab::LinkCollection
       admin_reports
       admin_facility
     )
+  end
+
+  def find_curr_user(acting_id)
+    @curr_user = User.find(@acting_id)
   end
 
   def admin
@@ -42,7 +48,12 @@ class NavTab::LinkCollection
   end
 
   def delegate_tab
-    [orders, reservations, payment_sources]
+    menu_array = [payment_sources, reservations, orders]
+    if @user.administrator?
+        menu_array.push(user_delegations)
+      end
+    return menu_array
+    # [orders, reservations, payment_sources]
   end
 
   def home_button
@@ -61,8 +72,15 @@ class NavTab::LinkCollection
   end
 
   def payment_sources
-
-    if @user.payment_source_owner?
+    is_show = false
+    unless @acting_id == 0 
+      # @curr_user = User.find(@acting_id)
+      is_show = @curr_user.payment_source_owner?
+    else 
+      is_show = @user.payment_source_owner?
+    end
+    
+    if is_show
       NavTab::Link.new(
         tab: :payment_sources,
         text: t_my(Account),
@@ -87,8 +105,19 @@ class NavTab::LinkCollection
   end
 
   def transactions_in_review
-    count = user.administered_order_details.in_review.count
+    count = 0
+    # @curr_user = User.find(@acting_id) unless @acting_id == 0
+    unless @acting_id == 0
+        # @curr_user = User.find(@acting_id)
+        count = user.administered_order_details(@curr_user).in_review.count
+      else 
+        count = user.administered_order_details(@user).in_review.count
+    end
+    # count = user.administered_order_details.in_review.count
     NavTab::Link.new(tab: :transactions_in_review, text: I18n.t("pages.transactions_in_review", count: count), url: in_review_transactions_path)
+  
+    # count = user.administered_order_details.in_review.count
+    # NavTab::Link.new(tab: :transactions_in_review, text: I18n.t("pages.transactions_in_review", count: count), url: in_review_transactions_path)
   end
 
   def files

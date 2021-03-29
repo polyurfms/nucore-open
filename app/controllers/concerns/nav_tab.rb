@@ -71,7 +71,7 @@ module NavTab
   end
 
   def link_collection
-    @link_collection ||= LinkCollection.new(current_facility, current_ability, current_user)
+    @link_collection ||= LinkCollection.new(current_facility, current_ability, current_user, session[:acting_user_id] || 0)
   end
 
 end
