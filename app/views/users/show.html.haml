@@ -19,6 +19,9 @@
   = f.input :suspension_note if f.object.suspended? && current_user.administrator?
   = f.input :expired_at if f.object.expired?
   = f.input :expired_note if f.object.expired? && current_user.administrator?
+  
+  = f.input :phone
+  = f.input :supervisor
 
   = render_view_hook "additional_user_fields", f: f
 

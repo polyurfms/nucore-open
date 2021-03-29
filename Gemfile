@@ -68,6 +68,7 @@ gem "rubyzip"
 
 ## PDF generation
 gem "prawn-rails"
+gem 'prawn-markup'
 
 ## other
 gem "delayed_job_active_record"
