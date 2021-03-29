@@ -33,11 +33,11 @@ class NavTab::LinkCollection
 
   def customer
     # [orders, reservations, payment_sources, user_delegations]
-    count = User.check_academic_user_and_payment_source(@user.id).count
-    menu_array = [payment_sources, reservations, orders]
-    if(count > 0)
-      menu_array.push(user_delegations)
-    end
+    # count = User.check_academic_user_and_payment_source(@user.id).count
+    menu_array = [payment_sources, reservations, orders, user_profile]
+    # if(count > 0)
+    #   menu_array.push(user_delegations)
+    # end
     return menu_array
   end
 
@@ -55,6 +55,10 @@ class NavTab::LinkCollection
   end
 
   private
+
+  def user_profile
+    NavTab::Link.new(tab: :user_profile, text: I18n.t("pages.user_profile"), url: edit_current_profile_path)
+  end
 
   def payment_sources
 

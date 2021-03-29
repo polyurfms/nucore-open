@@ -94,7 +94,8 @@ feature:
   lookup_netids: true
   limit_short_description: true
   order_assignment_notifications: true
-  password_update: true
+  password_update: false
+  profile_update: true
   expense_accounts: true
   edit_accounts: true
   suspend_accounts: true

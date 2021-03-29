@@ -1,0 +1,11 @@
+= content_for :h1 do
+  = t("user_profile.edit.head")
+= error_messages_for :user
+
+= content_for :tabnav do
+  %ul.nav.nav-tabs
+    = tab "My Profile", edit_current_profile_path, (@current_type == "my_profile")
+    - if @count > 0
+      = tab "My Delegation", user_delegations_path, (@current_type == "my_delegation")
+
+= render "my_profile", users: @user

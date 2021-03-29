@@ -7,7 +7,7 @@ class UserDelegationsController < ApplicationController
   before_action :check_acting_as
   # authorize_resource class: NUCore
 
-  before_action { @active_tab = "user_delegations" }
+  before_action { @active_tab = "user_profile" }
 
   # def initialize
   #   @active_tab = "user_delegations"
@@ -53,21 +53,26 @@ class UserDelegationsController < ApplicationController
   def index
     @user_delegation = UserDelegation.new
     @user_id = session_user[:id]
+    
+    @current_type = "my_delegation"
     # @assigned_list = UserDelegation.find_by ("delegator = #{session_user[:id]} AND deleted_at IS NULL " )
     @assigned_list ||= UserDelegation.where(delegator: session_user[:id], deleted_at: nil)
 
     @is_assigned = false
     @is_assigned = true if @assigned_list.count > 0
 
-    count = User.check_academic_user_and_payment_source(@user_id).count
+    @count = User.check_academic_user_and_payment_source(@user_id).count
 
-    unless(count > 0)
+    unless(@count > 0)
       redirect_to '/'
     end
-
   end
 
   def create
+    @user_id = session_user[:id]
+    @count ||= User.check_academic_user_and_payment_source(@user_id).count
+    @current_type = "my_delegation"
+    
     @delegate_info = user_delegation_params
     
     # delegatee = service_username_lookup(@delegate_info["delegatee"].strip)
@@ -77,7 +82,8 @@ class UserDelegationsController < ApplicationController
     has_error = true
 
     if (delegatee.nil? || delegator.nil?)
-      flash[:error] = text("#{@delegate_info["delegatee"].strip} cannot be found") if delegatee.nil?
+      # flash[:error] = text("#{@delegate_info["delegatee"].strip} cannot be found") if delegatee.nil?
+      flash[:error] = text("User cannot found") if delegatee.nil?
     elsif (delegatee.username.eql?(delegator.username))
       flash[:error] = text("delegator cannot be delegatee")
     else 
