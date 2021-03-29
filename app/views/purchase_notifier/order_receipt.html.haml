@@ -22,7 +22,7 @@
 
 %hr
 
-%table.table.table-striped.table-hover
+%table.table.table-striped.table-hover.show_border
   %thead
     %tr
       %th= OrderDetail.human_attribute_name(:id)
@@ -61,3 +61,10 @@
 
 - if @order.any_details_estimated?
   %p= text(".outro")
+
+:css
+  .show_border {background: #000; border-spacing: 1px;}
+
+  .show_border thead{background: #FFF;}
+
+  .show_border tbody {background: #FFF;}

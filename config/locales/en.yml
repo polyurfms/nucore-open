@@ -89,6 +89,7 @@ en:
     payment_source_requests: Request Payment Source
     transactions_in_review: My Transactions In Review (%{count})
     user_delegations: My Delegation
+    user_profile: My Profile
     my_items: My Items
     notices: Notices
     support: Support
@@ -835,6 +836,7 @@ en:
   order_details:
     edit:
       failure: This order is not currently editable.
+      conflict: Reservation already started, cancel failed.
     show:
       head:
         # h1: "Order #%{order_number}"
@@ -934,6 +936,8 @@ en:
       name: Name
       username: Username # or NetID
       email: Email
+      dept_abbrev: Dept. Abbrev.
+      user_type: User Type
     create_new_user:
       prompt: Can't find the user you're looking for?
       link: Create a new user
@@ -1127,7 +1131,10 @@ en:
         file: File
         created_at: Date Uploaded
         created_by: Uploaded by
-
+  user_profile:
+    edit:
+      head: My Profile
+      update: Update
   user_password:
     edit:
       head: Change Password

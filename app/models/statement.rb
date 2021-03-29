@@ -82,6 +82,10 @@ class Statement < ApplicationRecord
     statement_rows.where(order_detail_id: order_detail.id)
   end
 
+  def ref_no
+    facility.abbreviation + " " + invoice_number
+  end
+
   def to_log_s
     "Statement: #{invoice_number}"
   end

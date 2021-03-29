@@ -150,7 +150,7 @@ class UsersController < ApplicationController
   end
 
   def edit_user_params
-    @user_form.admin_editable? ? params.require(:user).except(:internal).permit(:email, :first_name, :last_name, :username) : empty_params
+    @user_form.admin_editable? ? params.require(:user).except(:internal).permit(:email, :first_name, :last_name, :username, :phone, :supervisor) : empty_params
   end
 
   def price_group_params

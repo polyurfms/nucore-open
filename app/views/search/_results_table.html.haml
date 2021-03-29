@@ -9,6 +9,8 @@
         %th
       %th= t(".name")
       %th= t(".username")
+      %th= t(".dept_abbrev")
+      %th= t(".user_type")
       %th= t(".email")
       = render_view_hook "extra_headers"
   %tbody
@@ -22,5 +24,7 @@
         %td
           = render "search/#{search_type}_link", user: UserPresenter.new(user)
         %td= user.username
+        %td= user.dept_abbrev
+        %td= user.user_type
         %td= user.email
         = render_view_hook "extra_columns", user: user

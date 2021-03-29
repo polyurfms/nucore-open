@@ -1,4 +1,16 @@
-<h1> #{t("views.user_delegation.header")} </h1>
+
+= content_for :h1 do
+  = t("views.user_delegation.header")
+= error_messages_for :user
+
+= content_for :tabnav do
+  %ul.nav.nav-tabs
+    = tab "My Profile", edit_current_profile_path, (@current_type == "my_profile")
+    - if @count > 0
+      = tab "My Delegation", user_delegations_path, (@current_type == "my_delegation")
+
+
+-# <h1> #{t("views.user_delegation.header")} </h1>
 
 -# - unless @is_assigned == true
 -#   = simple_form_for(@user_delegation) do |f|

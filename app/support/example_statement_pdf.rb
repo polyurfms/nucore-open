@@ -3,10 +3,18 @@
 class ExampleStatementPdf < StatementPdf
 
   def generate(pdf)
+    #@invoice_number = @facility.abbreviation + " " + @statement.invoice_number
+    @invoice_number = @statement.ref_no
+    @contact_name = Settings.statement_pdf.contact_name
+    @email = Settings.statement_pdf.email
+    @phone = Settings.statement_pdf.phone
+    @bank_account = Settings.statement_pdf.bank_account
+
     generate_document_header(pdf)
-    generate_contact_info(pdf) if @facility.has_contact_info?
-    generate_remittance_information(pdf) if @account.remittance_information.present?
+    # generate_contact_info(pdf) if @facility.has_contact_info?
+    # generate_remittance_information(pdf) if @account.remittance_information.present?
     generate_order_detail_rows(pdf)
+    generate_document_payment(pdf)
     generate_document_footer(pdf)
   end
 
@@ -23,18 +31,80 @@ class ExampleStatementPdf < StatementPdf
     end
   end
 
+  def generate_document_payment(pdf)
+    pdf.move_down(40)
+    pdf.markup("<p><u><b>Payment Methods:<b><u></p>")
+    pdf.move_down(10)
+
+    pdf.indent(20) do
+      pdf.markup("<p><strong> 1. By Cheque</strong></p>")
+    end
+
+    pdf.move_down(20)
+
+    pdf.indent(40) do
+      pdf.markup("<p>Send a crossed cheque made payable to &ldquo;The Hong Kong Polytechnic University&rdquo; to the following address and write the invoice no. <strong>"+@invoice_number+"</strong> at the back of the cheque.</p>")
+      pdf.move_down(20)
+      pdf.markup("<p>Address:</p>")
+      pdf.markup("<p>Research Office</p>")
+      pdf.markup("<p>Room Z404, 4/F, Block Z</p>")
+      pdf.markup("<p>The Hong Kong Polytechnic University, Hung Hom, Kowloon</p>")
+      pdf.markup("<p>Attn: "+@contact_name+"</p>")
+    end
+
+    pdf.move_down(20)
+
+    pdf.indent(20) do
+      pdf.markup("<p><strong> 2. By Bank Transfer</strong></p>")
+    end
+
+    pdf.indent(40) do
+      pdf.markup("<p>Transfer payment to the following bank account with the payee name &ldquo;The Hong Kong Polytechnic University&rdquo;</p>")
+      pdf.markup("<p>Bank Name: Hang Seng Bank Limited</p>")
+      pdf.markup("<p>Bank Account No.: "+@bank_account+"</p>")
+      pdf.markup("<p>Details of Payment: Please indicate the invoice no. <strong>"+@invoice_number+"</strong> for our reference.</p>")
+      pdf.move_down(20)
+      pdf.markup("<p>After the payment, please send us a copy of the bank advice by email at <a href='mailto:"+@email+"' style='color:#0563c1; text-decoration:underline'>"+@email+"</a> for follow-up action.&nbsp;</p>")
+    end
+    pdf.move_down(10)
+    pdf.markup("<p>For enquiries, please contact Miss Stella Wong by email at "+@email+" or by phone at "+@phone+".</p>")
+  end
+
   def generate_document_footer(pdf)
-    pdf.number_pages "Page <page> of <total>", at: [0, -15]
+    #pdf.stroke_horizontal_rule
+    pdf.number_pages "Page <page> of <total>", at: [0, -15], align: :right
   end
 
   def generate_document_header(pdf)
+
+    date = Time.zone.now.strftime("%Y-%m-%d")
     pdf.font_size = 10.5
 
-    pdf.text @facility.to_s, size: 20, font_style: :bold
-    pdf.text "Invoice ##{@statement.invoice_number}"
-    pdf.text "Account: #{@account}"
-    pdf.text "Owner: #{@account.owner.user.full_name(suspended_label: false)}"
+    pdf.image "#{Rails.root}/app/assets/images/statement-logo.jpg", :at => [0,700], :width => 200
+
     pdf.move_down(10)
+    pdf.stroke_color '000000'
+    pdf.stroke_horizontal_rule
+    pdf.move_down(15)
+    pdf.text "INVOICE", size: 13, font_style: :bold, align: :center
+    pdf.move_down(5)
+
+    table_data = [["From:  " + @facility.name , ""],
+                  ["To:  " + @account.remittance_information , "Invoice No.: " + @invoice_number],
+                  ["Attn: " + "#{@account.owner.user.full_name(suspended_label: false)}", "Date: " + "#{date}"]]
+
+    pdf.table(table_data, :width => 500, :cell_style => { :inline_format => true }) do
+      style(rows(0..-1), :padding => [0, 0, 0, 0], :borders => [])
+    end
+    pdf.move_down(15)
+    pdf.text "Dear #{@account.owner.user.full_name(suspended_label: false)}"
+    pdf.move_down(5)
+    # pdf.text "Our facility has provided access to the following equipment or service to members of your team in January according to our booking record. Please arrange the payment via one of the methods listed below within two weeks from the invoice date. Kindly note that failure to return this invoice by the said date could lead to suspension of all associated online booking accounts."
+    pdf.markup(Settings.statement_pdf.html_element)
+    # pdf.text @facility.to_s, size: 20, font_style: :bold
+    # pdf.text "Invoice ##{@statement.invoice_number}"
+    # pdf.text "Account: #{@account}"
+    # pdf.text "Owner: #{@account.owner.user.full_name(suspended_label: false)}"
   end
 
   def generate_order_detail_rows(pdf)
@@ -47,6 +117,9 @@ class ExampleStatementPdf < StatementPdf
       column(2).style(align: :right)
       column(3).style(align: :right)
     end
+    pdf.move_down(10)
+    pdf.text "Total: HKD "+number_to_currency(@statement.total_cost), align: :right
+
   end
 
   def generate_remittance_information(pdf)
@@ -57,6 +130,7 @@ class ExampleStatementPdf < StatementPdf
 
   def order_detail_headers
     ["Fulfillment Date", "Order", "Quantity", "Amount"]
+    # ["Item", "Booking ID", "User", "Description", "Date", "Subtotal (HKD)"]
   end
 
   def order_detail_rows
