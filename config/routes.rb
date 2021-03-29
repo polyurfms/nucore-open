@@ -18,6 +18,7 @@ Rails.application.routes.draw do
 
   post "agree_terms" , to: "user_agreements#agree"
   post "get_is_agree_terms" , to: "user_agreements#get_is_agree_terms"
+  post "agree_facility_terms" , to: "agreement#agree"
 
   resources :agreement, controller: "agreement", only: [:index, :update, :show] do
   end

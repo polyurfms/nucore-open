@@ -18,6 +18,8 @@ class ApplicationController < ActionController::Base
   before_action :set_paper_trail_whodunnit ,:check_agreement
   before_action :check_delegations
   
+  before_action :get_facility_agreement_list
+  
   # Navigation tabs configuration
   attr_accessor :active_tab
   include NavTab
@@ -25,6 +27,22 @@ class ApplicationController < ActionController::Base
   # return whatever facility is indicated by the :facility_id or :id url parameter
   # UNLESS that url parameter has the value of 'all'
   # in which case, return the all facility
+
+  def get_facility_agreement_list 
+    if (!session_user.nil? && session[:facility_agreement_list].nil?)
+      facility_agreement_list = []
+      facility_agreement_list.push(0)
+      @user = session[:acting_user_id] || session_user.id
+      @user_agreement = UserAgreement.where(user_id: @user)
+      
+      @user_agreement.each do |u|
+        if (!u.facility_id.nil?)
+          facility_agreement_list.push(u.facility_id)
+        end
+      end
+      session[:facility_agreement_list] = facility_agreement_list
+    end
+  end
 
   def has_delegated 
     if(!session[:acting_user_id].nil? && !session[:acting_user_id].blank?)
@@ -114,17 +132,36 @@ class ApplicationController < ActionController::Base
 
 
   def current_facility
+    is_agree = true
+      
     facility_id = params[:facility_id] || params[:id]
-
-    @current_facility ||=
-      case
-      when facility_id.blank?
-        nil # TODO: consider a refactoring to use a null object
-      when facility_id == Facility.cross_facility.url_name
-        Facility.cross_facility
-      else
-        Facility.find_by(url_name: facility_id)
+    @facility = Facility.find_by(url_name: facility_id)
+    if(!params[:facility_id].nil? && !params[:id].nil? && !session[:facility_agreement_list].nil?)
+      if (session_user.administrator?)
+        unless request.env['PATH_INFO'].last(7).eql?('/manage') || request.env['PATH_INFO'].last(5).eql?('/edit')
+          is_agree = session[:facility_agreement_list].include?(@facility.id) 
+        end
+      else 
+        is_agree = session[:facility_agreement_list].include?(@facility.id)
       end
+    end
+
+    if(is_agree)
+      @current_facility ||=
+        case
+        when facility_id.blank?
+          nil # TODO: consider a refactoring to use a null object
+        when facility_id == Facility.cross_facility.url_name
+          Facility.cross_facility
+        else
+          Facility.find_by(url_name: facility_id)
+        end
+    else
+      session[:facility_url_name] = params[:facility_id] 
+      session[:product_url_name] = params[:id]
+      redirect_to agreement_path(@facility.id)
+    end
+   
   end
 
   def cross_facility? # TODO: try to use current_facility.cross_facility? but note current_facility may be nil
