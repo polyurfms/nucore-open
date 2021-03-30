@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_01_033733) do
+ActiveRecord::Schema.define(version: 2021_03_23_093425) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -66,6 +66,17 @@ ActiveRecord::Schema.define(version: 2021_03_01_033733) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "subaffiliates_enabled", default: false, null: false
+  end
+
+  create_table "agreement_templates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "facility_id"
+    t.string "name", limit: 50, null: false
+    t.string "description", limit: 5000, null: false
+    t.datetime "deleted_at"
+    t.integer "deleted_by"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["facility_id"], name: "fk_agreement_templates_facilities"
   end
 
   create_table "budgeted_chart_strings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -879,10 +890,12 @@ ActiveRecord::Schema.define(version: 2021_03_01_033733) do
   end
 
   create_table "user_agreements", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "facility_id"
     t.integer "user_id"
     t.boolean "accept", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["facility_id"], name: "fk_user_agreements_facilities"
   end
 
   create_table "user_certificates", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -950,6 +963,9 @@ ActiveRecord::Schema.define(version: 2021_03_01_033733) do
     t.string "expired_note"
     t.string "user_type", limit: 20
     t.string "dept_abbrev", limit: 10
+    t.string "phone", limit: 20
+    t.string "supervisor", limit: 100
+    t.boolean "is_academic", default: false
     t.index ["card_number"], name: "index_users_on_card_number"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["expired_at"], name: "index_users_on_expired_at"
@@ -995,6 +1011,7 @@ ActiveRecord::Schema.define(version: 2021_03_01_033733) do
   add_foreign_key "account_facility_joins", "facilities"
   add_foreign_key "account_users", "accounts", name: "fk_accounts"
   add_foreign_key "account_users", "users"
+  add_foreign_key "agreement_templates", "facilities", name: "fk_agreement_templates_facilities"
   add_foreign_key "bulk_email_jobs", "facilities"
   add_foreign_key "bulk_email_jobs", "users"
   add_foreign_key "bundle_products", "products", column: "bundle_product_id", name: "fk_bundle_prod_prod"
@@ -1074,6 +1091,7 @@ ActiveRecord::Schema.define(version: 2021_03_01_033733) do
   add_foreign_key "statements", "facilities", name: "fk_statement_facilities"
   add_foreign_key "stored_files", "order_details", name: "fk_files_od"
   add_foreign_key "stored_files", "products", name: "fk_files_product"
+  add_foreign_key "user_agreements", "facilities", name: "fk_user_agreements_facilities"
   add_foreign_key "user_certificates", "nu_safety_certificates"
   add_foreign_key "user_certificates", "users"
   add_foreign_key "user_delegations", "users", column: "delegator"
@@ -1081,10 +1099,10 @@ ActiveRecord::Schema.define(version: 2021_03_01_033733) do
   add_foreign_key "user_roles", "facilities"
   add_foreign_key "user_roles", "users"
 
+  create_view "account_free_balances", sql_definition: <<-SQL
+      select `a`.`id` AS `account_id`,`a`.`committed_amt` AS `committed_amt`,coalesce(sum((case when isnull(`od`.`actual_cost`) then `od`.`estimated_cost` else `od`.`actual_cost` end)),0) AS `total_expense` from (`accounts` `a` left join `order_details` `od` on(((`od`.`account_id` = `a`.`id`) and (`od`.`state` <> 'validated') and isnull(`od`.`canceled_at`)))) group by `a`.`id`,`a`.`committed_amt`
+  SQL
   create_view "account_user_expenses", sql_definition: <<-SQL
       select `au`.`id` AS `account_user_id`,`od`.`account_id` AS `account_id`,`o`.`user_id` AS `user_id`,sum((case when isnull(`od`.`actual_cost`) then `od`.`estimated_cost` else `od`.`actual_cost` end)) AS `expense_amt` from ((`order_details` `od` join `orders` `o` on(((`o`.`id` = `od`.`order_id`) and (`o`.`state` <> 'validated')))) join `account_users` `au` on(((`au`.`account_id` = `od`.`account_id`) and (`au`.`user_id` = `o`.`user_id`)))) where isnull(`od`.`canceled_at`) group by `au`.`id`,`od`.`account_id`,`o`.`user_id`
-  SQL
-  create_view "account_free_balances", sql_definition: <<-SQL
-      select `aue`.`account_id` AS `account_id`,`a2`.`committed_amt` AS `committed_amt`,sum(`aue`.`expense_amt`) AS `total_expense` from (`account_user_expenses` `aue` join `accounts` `a2` on((`a2`.`id` = `aue`.`account_id`))) group by `aue`.`account_id`
   SQL
 end
