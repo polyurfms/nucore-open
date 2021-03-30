@@ -254,6 +254,8 @@ en:
         suspension_note: Suspension Note
         suspended: SUSPENDED
         expired: EXPIRED
+        phone: Telephone Number
+        supervisor: Supervisor
       facility:
         banner_notice: Banner Notice
         fax_number: Fax Number

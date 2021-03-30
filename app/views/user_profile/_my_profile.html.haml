@@ -4,8 +4,7 @@
   = f.input :email
   = f.input :last_sign_in_at, default_value: "none"
   = f.input :supervisor
-
 = simple_form_for :user, :url => update_mobile_path do |f|
   .form-inputs
-    = f.input :phone
+    = f.input :phone, maxlength: 20, label:text("users.profile.phone_input")
     = f.button :submit, t("user_profile.edit.update")

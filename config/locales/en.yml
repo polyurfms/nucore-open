@@ -1171,6 +1171,8 @@ en:
       body: Your export is ready. Please see the attached file.
 
   users:
+    profile:
+      phone_input: Telephone Number
     new_user:
       success: You just created a new user
       new_payment_source: Create a new payment source for this user
