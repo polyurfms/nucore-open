@@ -16,6 +16,17 @@ module SamlAuthentication
         password_salt: nil,
       )
 
+      @member_of = saml_response.raw_response.attributes.to_h.fetch('memberof')
+
+      if @member_of.include?('polyu_staff_04AA') ||
+        @member_of.include?('polyu_staff_04ACA') ||
+        @member_of.include?('polyu_staff_ACA')
+        attributes = attributes.merge(is_academic: true)
+      else
+        attributes = attributes.merge(is_academic: false)
+      end
+
+      #for UAT, do not overwrite user email when login
       if Settings.uat.email.present?
         if user.email.present?
           attributes['email'] = user.email
