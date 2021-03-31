@@ -16,7 +16,7 @@ class AccountUser < ApplicationRecord
   validates :user_id, uniqueness: { scope: [:account_id, :deleted_at] }, unless: :deleted_at?
   validates :user_role, uniqueness: { scope: [:account_id, :deleted_at] }, if: -> { owner? && !deleted_at? }
   validate :validate_account_has_owner
-  validates :allocation_amt, numericality: {greater_than_or_equal_to: 0, message: "Quota must be equal to or larger than 0."}, allow_nil:true
+  validates :allocation_amt, numericality: {greater_than_or_equal_to: 0, message: "Quota must be equal to or larger than 0."}, allow_nil:false
 
   ACCOUNT_PURCHASER = "Purchaser"
   ACCOUNT_OWNER = "Owner"
