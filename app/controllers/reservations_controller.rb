@@ -250,28 +250,32 @@ class ReservationsController < ApplicationController
           raise ActiveRecord::Rollback
         end
 
+        @old_order_detail_estimated_cost = @order_detail.estimated_cost
+
         @account_user = AccountUser.find_by(account_id: @order_detail.account_id, deleted_at: nil, user_id: session_user.id)
+
+        # merge state can change after call to #save! due to OrderDetailObserver#before_save
+        mergeable = @order_detail.order.to_be_merged?
+
+        save_reservation_and_order_detail
 
         if(@account.allows_allocation == true)
           @account_user = AccountUser.find_by(account_id: @order_detail.account_id, deleted_at: nil, user_id: session_user.id)
 
           if(@account_user.user_role != "Owner")
-            if(@account_user.quota_balance < @order_detail.estimated_cost)
+            if(@account_user.quota_balance + @old_order_detail_estimated_cost < @order_detail.estimated_cost)
               flash[:error] = "Payment source insufficient fund"
               raise ActiveRecord::Rollback
             end
           end
         end
 
-        if(@account.free_balance < @order_detail.estimated_cost)
+
+
+        if(@account.free_balance + @old_order_detail_estimated_cost < @order_detail.estimated_cost)
           flash[:error] = "Payment source insufficient fund"
           raise ActiveRecord::Rollback
         end
-
-        # merge state can change after call to #save! due to OrderDetailObserver#before_save
-        mergeable = @order_detail.order.to_be_merged?
-
-        save_reservation_and_order_detail
 
         flash[:notice] = "The reservation was successfully updated."
         if mergeable
