@@ -17,9 +17,9 @@ class ApplicationController < ActionController::Base
 
   before_action :set_paper_trail_whodunnit,:check_supervisor, :check_agreement
   before_action :check_delegations
-  
+
   before_action :get_facility_agreement_list
-  
+
   # Navigation tabs configuration
   attr_accessor :active_tab
   include NavTab
@@ -28,13 +28,13 @@ class ApplicationController < ActionController::Base
   # UNLESS that url parameter has the value of 'all'
   # in which case, return the all facility
 
-  def get_facility_agreement_list 
+  def get_facility_agreement_list
     if (!session_user.nil? && session[:facility_agreement_list].nil?)
       facility_agreement_list = []
       facility_agreement_list.push(0)
       @user = session[:acting_user_id] || session_user.id
       @user_agreement = UserAgreement.where(user_id: @user)
-      
+
       @user_agreement.each do |u|
         if (!u.facility_id.nil?)
           facility_agreement_list.push(u.facility_id)
@@ -44,15 +44,15 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def has_delegated 
+  def has_delegated
     if(!session[:acting_user_id].nil? && !session[:acting_user_id].blank?)
       # @user  = User.find_by(username: session_user[:username])
       @user  = User.find(session_user[:id])
       unless @user.nil? && @user.username.blank?
         @delegate_list = User.joins("LEFT JOIN user_delegations ON user_delegations.delegator = users.id WHERE user_delegations.delegatee LIKE '#{@user.username}' and user_delegations.delegator = #{session[:acting_user_id]}")
-        if @delegate_list.size() > 0    
+        if @delegate_list.size() > 0
           return true
-        end      
+        end
       end
 
       return true if session_user.administrator?
@@ -63,7 +63,7 @@ class ApplicationController < ActionController::Base
 
   def check_delegations
     # Avoid fake delegations
-    
+
     unless session[:had_supervisor] == 0
       if(!session[:is_selected_user] == true && !session[:acting_user_id].nil? && !session[:acting_user_id].eql?(""))
         redirect_to "/" if !has_delegated
@@ -79,67 +79,86 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def after_sign_in_path_for(resource)
-    '/orders/pending'
-  end
+#  def after_sign_in_path_for(resource)
+#    puts "after_sign_in_path_for 1"
+#    '/orders/pending'
+#  end
 
   def check_supervisor
+
     if !session_user.blank? && !request.env['PATH_INFO'].eql?('/users/sign_out') && !request.env['PATH_INFO'].eql?('/users/sign_in') && !session_user.administrator?
       session[:had_supervisor] = session_user.supervisor.blank? ? 0 : 1
+
       if session[:had_supervisor] == 0
         #Check role
         if (session_user.is_academic == true)
-          @user = User.find(session_user[:id]) 
+          @user = User.find(session_user[:id])
           @user.update_attributes(supervisor: @user.username)
           session[:had_supervisor] = 1
           redirect_to '/facilities'
-        else 
+        else
           redirect_to '/no_supervisor' unless request.env['PATH_INFO'].eql?('/no_supervisor')
         end
       end
     end
   end
-    
-  def check_agreement  
-    unless session[:had_supervisor] == 0
-      #only user login can visit agreement
-      if  request.env['PATH_INFO'].eql?('/agreement') && session_user.blank? 
-        redirect_to '/facilities'
-      end
 
-      # when user login and page is not agreement or agreement api
-        if !session_user.blank? && !request.env['PATH_INFO'].eql?('/agreement') && !request.env['PATH_INFO'].eql?('/agree_terms') && !request.env['PATH_INFO'].eql?('/users/sign_out')
-          
-          # get rocord from db when frist time store data in session 
-          if session[:user_agreement_record] == nil
-            #puts "[check_agreement][get record][user_agreement_record]"
-            session[:user_agreement_record] = UserAgreement.where(user_id:session_user).count
+  def check_agreement
+
+    if (!session_user.nil? )
+
+      #skip welcome page if admin
+      unless session_user.administrator?
+        unless session[:had_supervisor] == 0
+          #only user login can visit agreement
+          if  request.env['PATH_INFO'].eql?('/agreement') && session_user.blank?
+            redirect_to '/facilities'
           end
 
-          # get rocord from db when frist time store data in session 
-          if session[:user_agreement_record] > 0 
-            if session[:accept] == nil
-              #puts "[check_agreement][get record][accept]"
-              session[:accept] = UserAgreement.where(user_id:session_user).first.accept
-            end 
-          end
+          # when user login and page is not agreement or agreement api
+          if !session_user.blank? &&
+             !request.env['PATH_INFO'].eql?('/agreement') &&
+             !request.env['PATH_INFO'].eql?('/agree_terms') &&
+             !request.env['PATH_INFO'].eql?('/users/sign_out')
 
-          #puts "[check_agreement]session[:accept]" + (session[:accept] ? "true" : "false")
-          #puts "[check_agreement]session[:user_agreement_record]" +session[:user_agreement_record].to_s
-
-          if session[:accept] == 0
-            redirect_to '/agreement'
-          else
-            if !session[:accept]
-              redirect_to '/agreement' 
+            # get rocord from db when frist time store data in session
+            if session[:user_agreement_record] == nil
+              #puts "[check_agreement][get record][user_agreement_record]"
+              session[:user_agreement_record] = UserAgreement.where(user_id:session_user).count
             end
+
+            # get rocord from db when frist time store data in session
+            if session[:user_agreement_record] > 0
+              if session[:accept] == nil
+                #puts "[check_agreement][get record][accept]"
+                session[:accept] = UserAgreement.where(user_id:session_user).first.accept
+              end
+            end
+
+            #puts "[check_agreement]session[:accept]" + (session[:accept] ? "true" : "false")
+            #puts "[check_agreement]session[:user_agreement_record]" +session[:user_agreement_record].to_s
+
+            if session[:accept] == 0
+              redirect_to '/agreement'
+            else
+              if !session[:accept]
+                redirect_to '/agreement'
+              end
+            end
+
           end
         end
+      end
     end
   end
-     
+
     # after login redirect user to agreement page
+=begin
       def after_sign_in_path_for(resource)
+          puts "***********************"
+        puts "after_sign_in_path_for 2"
+        puts "***********************"
+
         if UserAgreement.where(user_id:session_user).count == 0
           '/agreement'
         else
@@ -151,19 +170,20 @@ class ApplicationController < ActionController::Base
           end
         end
       end
-
+=end
 
   def current_facility
     is_agree = true
-      
+
     facility_id = params[:facility_id] || params[:id]
     @facility = Facility.find_by(url_name: facility_id)
     if(!params[:facility_id].nil? && !params[:id].nil? && !session[:facility_agreement_list].nil?)
       if (session_user.administrator?)
-        unless request.env['PATH_INFO'].last(7).eql?('/manage') || request.env['PATH_INFO'].last(5).eql?('/edit')
-          is_agree = session[:facility_agreement_list].include?(@facility.id) 
-        end
-      else 
+        #unless request.env['PATH_INFO'].last(7).eql?('/manage') || request.env['PATH_INFO'].last(5).eql?('/edit')
+        #  is_agree = session[:facility_agreement_list].include?(@facility.id)
+        #end
+        is_agree = true
+      else
         is_agree = session[:facility_agreement_list].include?(@facility.id)
       end
     end
@@ -179,11 +199,11 @@ class ApplicationController < ActionController::Base
           Facility.find_by(url_name: facility_id)
         end
     else
-      session[:facility_url_name] = params[:facility_id] 
+      session[:facility_url_name] = params[:facility_id]
       session[:product_url_name] = params[:id]
       redirect_to agreement_path(@facility.id)
     end
-   
+
   end
 
   def cross_facility? # TODO: try to use current_facility.cross_facility? but note current_facility may be nil
@@ -331,13 +351,13 @@ class ApplicationController < ActionController::Base
     store_location_for(:user, request.fullpath) unless current_user
   end
 
-  def current_ability   
+  def current_ability
     if has_delegated
       @current_ability ||= Ability.new(acting_user, ability_resource, self)
     else
       @current_ability ||= Ability.new(current_user, ability_resource, self)
     end
-    
+
   end
 
   private
