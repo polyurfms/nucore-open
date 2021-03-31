@@ -162,6 +162,7 @@ paperclip:
 #     "User.LastName": "last_name"
 #   # user_updating:
 #   #  skip_attributes: email
+#   academic_member: []
 
 price_policy_note_options: ~
 order_detail_price_change_reason_options: ~
