@@ -37,6 +37,7 @@
   %thead
     %tr
       -# %th= t(".table.date")
+      %th= t(".table.ref_no")
       %th= t(".table.transaction_date")
       %th= t(".table.type")
       %th= t(".table.status")
@@ -45,6 +46,7 @@
   %tbody
     - @funding_requests.each  do |at|
       %tr
+        %td= at.id
         %td= format_usa_datetime(at.created_at)
         %td= t("funding_requests.request_type.#{at.request_type}")
         %td= t("funding_requests.status.#{at.status}")
