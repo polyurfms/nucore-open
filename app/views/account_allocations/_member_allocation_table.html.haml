@@ -19,7 +19,7 @@
               %td= Users::NamePresenter.new(od.user, username_label: true).full_name
               %td= AccountUserPresenter.new(od).localized_role
               %td= p.input :allocation_amt, label: false
-              %td= od.expense
-              %td= od.quota_balance
+              %td= od.expense.to_s(:delimited)
+              %td= od.quota_balance.to_s(:delimited)
               = p.hidden_field :id ,  value: AccountUserPresenter.new(od).id.to_s
   = f.button :submit, t(".save"), class: "btn btn-primary"

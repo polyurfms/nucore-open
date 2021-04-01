@@ -39,7 +39,7 @@
           - if au.can_administer? || session_user.administrator?
           
             - show_th = true
-            %td= account.free_balance
+            %td= account.free_balance.to_s(:delimited)
             - if !(@is_delegated == true && au.user_role == "Purchaser")
               %td= link_to text("transactions"), transactions_path(search: { accounts: [account] })
               %td= link_to "Payment Source Users", account_account_users_path(account)
