@@ -3,6 +3,11 @@
   = t("views.user_delegation.header")
 = error_messages_for :user
 
+<h3>Please note that when you assign a delegatee, he/she can : </h3>
+<h5>(1) Sign the facilities Terms and Conditions on behalf of you</h5>
+<h5>(2) Make item purchase / instrument reservation on behalf of you</h5>
+<h5>(3) Manage your payment source, e.g. assign payment source member, make funding request</h5>
+<br>
 = content_for :tabnav do
   %ul.nav.nav-tabs
     = tab "My Profile", edit_current_profile_path, (@current_type == "my_profile")
