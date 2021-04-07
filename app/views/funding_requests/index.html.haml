@@ -77,5 +77,5 @@
         %td= format_usa_datetime(at.created_at)
         %td= t("funding_requests.request_type.#{at.request_type}")
         %td= t("funding_requests.status.#{at.status}")
-        %td= at.request_amount.to_s(:delimited)
+        %td= number_to_currency(at.request_amount)
         %td= at.remarks
