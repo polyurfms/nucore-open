@@ -254,6 +254,7 @@ en:
       save: Save
       committed_amt: "Committed Amount: %{committed_amt}"
       table:
+        ref_no: Ref. No.
         date: Date
         transaction_date: Transaction Date
         type: Type
@@ -737,6 +738,7 @@ en:
         failded_string : "Failed"
       table:
         date : "Date"
+        ref_no: "Ref. No."
         transaction_date: Transaction Date
         type : "Top Up / Release"
         status : "Status"
