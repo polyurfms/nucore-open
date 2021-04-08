@@ -1,3 +1,5 @@
 %ul.nav.nav-tabs
   = tab Facility.model_name.human(count: 2), facilities_path
   = tab Instrument.model_name.human(count: 2), list_facility_instruments_path(Facility.cross_facility)
+  - if SettingsHelper.feature_on?(:new_user_registration)
+    = tab "New User Registration", user_registration_path(Facility.cross_facility)

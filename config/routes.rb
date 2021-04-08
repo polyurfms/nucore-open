@@ -427,6 +427,9 @@ Rails.application.routes.draw do
 
   end
 
+  resources :user_registration, controller: "user_registration", only: [:index, :update, :show] do
+  end
+
   # reservations
   get "reservations", to: "reservations#list", as: "reservations"
   get "reservations(/:status)", to: "reservations#list", as: "reservations_status"
