@@ -18,8 +18,8 @@
   <br>
 
   = readonly_form_for :account do |f|
-    = f.input :committed_amt, label: text("account_allocations.new.committed_amt")
-    = f.input :total_expense, label: text("account_allocations.new.total_expense")
-    = f.input :free_balance, label: text("account_allocations.new.free_balance")
+    = f.input :committed_amt, label: text("account_allocations.new.committed_amt"),input_html: {value: number_to_currency(@account.committed_amt.to_s(:delimited))}
+    = f.input :total_expense, label: text("account_allocations.new.total_expense"),input_html: {value: number_to_currency(@account.total_expense.to_s(:delimited))}
+    = f.input :free_balance, label: text("account_allocations.new.free_balance"),input_html: {value: number_to_currency(@account.free_balance.to_s(:delimited))}
 
 = render "member_allocation_table"
