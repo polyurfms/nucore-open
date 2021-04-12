@@ -21,11 +21,11 @@
   = f.input :total_expense, label: text("account_allocations.new.total_expense"), as: :readonly
   = f.input :free_balance, label: text("account_allocations.new.free_balance"), as: :readonly
 
-  - if @account.type == "NufsAccount"
-    = f.label :facility_accounts, t("account_allocations.new.allows_allocation")
-    = f.check_box :allows_allocation
-  <br>
-  <br>
+  -# - if @account.type == "NufsAccount"
+  -#   = f.label :facility_accounts, t("account_allocations.new.allows_allocation")
+  -#   = f.check_box :allows_allocation
+  -# <br>
+  -# <br>
 
   - if @account.type == "NufsAccount"
     = f.input :alert_threshold, label:  text("account_allocations.new.alert_threshold_input")

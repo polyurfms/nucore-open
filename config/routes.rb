@@ -50,6 +50,7 @@ Rails.application.routes.draw do
     resources :statements, only: [:show, :index]
     member do
       get "user_search"
+      post "is_allocation", to: "accounts#is_allocation"
     end
 
     if SettingsHelper.feature_on? :suspend_accounts

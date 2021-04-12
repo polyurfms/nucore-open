@@ -31,37 +31,38 @@ class AccountAllocationsController < ApplicationController
 
     @account_users ||= AccountUser.where(account_id: @account.id, deleted_at: nil).where.not(user_role: "Owner")
 
-    if @account.can_allocate?
-      render :new
-    else
-      redirect_to account_path(@account)
-    end
-
-
+    # if @account.can_allocate?
+    #   render :new
+    # else
+    #   redirect_to account_path(@account)
+    # end
+    
+    render :new
   end
 
   def update_allocation
     puts "update allocation"
-
-    au = params[:account_user]
-    auv = au.values
-    @id = params[:account_id]
-
+    
     #load account info before update attribute
     @account = session_user.accounts.find(params[:account_id])
 
-    #load form field to model
-    @account.assign_attributes(account_users_attributes: auv)
-    if @account.save
-      flash.now[:notice] = "Save success" #text("update.success")
-    else
-      flash.now[:error] = text("errors")
-
+    if (!@account.allows_allocation.nil? && @account.allows_allocation == true)
+      au = params[:account_user]
+      auv = au.values
+      @id = params[:account_id]
+  
+  
+      #load form field to model
+      @account.assign_attributes(account_users_attributes: auv)
+      if @account.save
+        flash.now[:notice] = "Save success" #text("update.success")
+      else
+        flash.now[:error] = text("errors")
+      end
     end
-
+    
     #load model for form display
     @account_users = @account.account_users
-
 
     render :new
   end

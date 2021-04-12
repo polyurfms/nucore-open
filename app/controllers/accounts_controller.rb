@@ -49,6 +49,21 @@ class AccountsController < ApplicationController
     #@account = Account.find(params[:id] || params[:account_id])
   end
 
+  def is_allocation
+    is_allocation = params.permit(:is_show)["is_show"]
+    account_id = params.permit(:id)["id"]
+
+    @account = Account.find(account_id);
+
+    unless(account_id.nil?)
+      unless(@account.nil?)
+        @account.update_attributes(allows_allocation: is_allocation)
+      end
+    end
+
+    render json: true
+  end
+
   # PUT /accounts/:account_id/
   def update
     id = params[:id]
