@@ -18,8 +18,46 @@
   <br>
 
   = readonly_form_for :account do |f|
-    = f.input :committed_amt, label: text("account_allocations.new.committed_amt"),input_html: {value: number_to_currency(@account.committed_amt.to_s(:delimited))}
-    = f.input :total_expense, label: text("account_allocations.new.total_expense"),input_html: {value: number_to_currency(@account.total_expense.to_s(:delimited))}
-    = f.input :free_balance, label: text("account_allocations.new.free_balance"),input_html: {value: number_to_currency(@account.free_balance.to_s(:delimited))}
+    = f.input :committed_amt, label: text("account_allocations.new.committed_amt")
+    = f.input :total_expense, label: text("account_allocations.new.total_expense")
+    = f.input :free_balance, label: text("account_allocations.new.free_balance")
+    = f.label :facility_accounts, t("account_allocations.new.allows_allocation")
+    = f.check_box :allows_allocation
 
 = render "member_allocation_table"
+
+
+:javascript
+
+  $("#account_allows_allocation").attr("checked") ? $("#new_account_user").show() : $("#new_account_user").hide();
+
+  $(document).on('change', '#account_allows_allocation', function() {
+    
+    var b = $(this).is(':checked');
+
+    var msg = "";
+
+    $("#account_allows_allocation").attr("checked") ? msg = "Are you sure you want to disable allocations?" :msg ="Are you sure you want to enable allocations?" ;
+
+    var confirmBox = confirm(msg);
+    
+    
+    
+
+    if (confirmBox == true) {
+      let data0 = {is_show: b};
+      let path = "/accounts/"+ #{@account.id} + "/account_allocations";
+      let ajx_path = "/accounts/"+ #{@account.id} + "/is_allocation";
+    
+      $.ajax({
+        url: ajx_path,
+        method: "POST",
+        data: data0,
+        success: function(data) {          
+          $(location).attr('href', path)
+        },dataType: 'json'
+      });
+    } else {
+        $("#account_allows_allocation").prop('checked', !b);
+    };
+  });
