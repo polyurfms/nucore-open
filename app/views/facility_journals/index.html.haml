@@ -54,7 +54,7 @@
         %th= Journal.human_attribute_name(:reference)
         %th= Journal.human_attribute_name(:description)
         %th= Journal.human_attribute_name(:journal_status)
-        %th= Journal.human_attribute_name(:amount)
+        %th= Journal.human_attribute_name(:amount) + " (HKD)"
     %tbody
       - @journals.each do |j|
         %tr

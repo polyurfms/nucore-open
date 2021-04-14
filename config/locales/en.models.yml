@@ -331,9 +331,9 @@ en:
         dispute_reason: Dispute Reason
         dispute_resolved_at: Dispute Resolved At
         dispute_resolved_reason: Resolution Notes
-        estimated_cost: Estimated Price
+        estimated_cost: Estimated Price (HKD)
         estimated_subsidy: Estimated Adjustment
-        estimated_total: Estimated Total
+        estimated_total: Estimated Total (HKD)
         fulfilled_at: Fulfilled Date
         # id: "Order #"
         id: "Ref. No."
