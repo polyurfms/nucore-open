@@ -6,7 +6,7 @@ class User < ApplicationRecord
   include Nucore::Database::WhereIdsIn
 
   # ldap_authenticatable is included via a to_prepare hook if ldap is enabled
-  devise :database_authenticatable, :encryptable, :trackable, :recoverable
+  devise :database_authenticatable, :encryptable, :trackable, :recoverable, :timeoutable
 
   has_many :account_users, -> { where(deleted_at: nil) }
   has_many :accounts, through: :account_users
@@ -145,8 +145,8 @@ class User < ApplicationRecord
     acts
   end
 
-  
-  def administered_order_details(curr_user = self) 
+
+  def administered_order_details(curr_user = self)
     OrderDetail.where(account_id: Account.administered_by(curr_user))
   # def administered_order_details
   #   OrderDetail.where(account_id: Account.administered_by(self))
