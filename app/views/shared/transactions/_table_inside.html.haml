@@ -21,7 +21,7 @@
       - unless @account
         %th= sortable "payment_source", Account.model_name.human
         %th= Account.human_attribute_name("owner")
-      %th.currency= OrderDetail.human_attribute_name("cost")
+      %th.currency= OrderDetail.human_attribute_name("cost")+"(HKD)"
       %th= sortable "status",OrderDetail.human_attribute_name("order_status")
       - if local_assigns[:show_statements]
         %th= Statement.model_name.human

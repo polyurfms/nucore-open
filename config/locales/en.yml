@@ -803,7 +803,7 @@ en:
         all: "All prices are estimates. Actual cost is assigned when the order is complete."
         instrument: "* Instrument pricing is estimated; the final price may vary based on actual time used."
       td:
-        total: Estimated Totals
+        total: Estimated Totals (HKD)
     receipt:
       crumbs:
         orders: "My Orders"
@@ -861,7 +861,7 @@ en:
       th:
         cost: "Cost"
         adjust: "Adjustment"
-        total: "Total"
+        total: "Total (HKD)"
         # total: Amount (HKD)
       unassigned: "Unassigned"
     notices:
@@ -1437,9 +1437,9 @@ en:
     new:
       head: "Allocations"
       submenu: "%{account_number}"
-      committed_amt: "Committed Amount"
-      total_expense: "Total Expense Amount"
-      free_balance: "Free balance"
+      committed_amt: "Committed Amount (HKD)"
+      total_expense: "Total Expense Amount (HKD)"
+      free_balance: "Free balance (HKD)"
       allows_allocation: "Allows allocation"
       alert_threshold: "Alert threshold"
       alert_threshold_input: "Alert threshold (input 0 for no alert)"

@@ -28,7 +28,7 @@
             %th.nowrap.order-note= sortable "product_name", OrderDetail.human_attribute_name(:product)
             %th.nowrap= sortable "assigned_to", OrderDetail.human_attribute_name(:assigned_user)
             %th.nowrap= sortable "status"
-            %th.nowrap.currency= OrderDetail.human_attribute_name(:actual_cost)
+            %th.nowrap.currency= OrderDetail.human_attribute_name(:actual_cost)+" (HKD)"
         %tbody
           - @order_details.each do |od|
             %tr

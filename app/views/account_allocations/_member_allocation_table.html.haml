@@ -8,9 +8,9 @@
       %tr
         %th= t(".th.name")
         %th= t(".th.role")
-        %th= t(".th.allocation_amt")
-        %th= t(".th.expense_amt")
-        %th= t(".th.quota_balance")
+        %th= t(".th.allocation_amt") + " (HKD)"
+        %th= t(".th.expense_amt") + " (HKD)"
+        %th= t(".th.quota_balance") + " (HKD)"
     %tbody
       - @account_users.each do |od|
         = f.simple_fields_for od.id.to_s, od do |p|
@@ -19,7 +19,7 @@
               %td= Users::NamePresenter.new(od.user, username_label: true).full_name
               %td= AccountUserPresenter.new(od).localized_role
               %td= p.input :allocation_amt, label: false
-              %td= od.expense
-              %td= od.quota_balance
+              %td= number_to_currency(od.expense.to_s(:delimited))
+              %td= number_to_currency(od.quota_balance.to_s(:delimited))
               = p.hidden_field :id ,  value: AccountUserPresenter.new(od).id.to_s
   = f.button :submit, t(".save"), class: "btn btn-primary"

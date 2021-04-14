@@ -17,9 +17,9 @@
   = f.input :expires_at, label: text("account_allocations.new.expires_at"), as: :readonly, date_only: true
   - if @account.suspended?
     = f.input :suspended_at, as: :readonly, date_only: true
-  = f.input :committed_amt, label: text("account_allocations.new.committed_amt"), as: :readonly
-  = f.input :total_expense, label: text("account_allocations.new.total_expense"), as: :readonly
-  = f.input :free_balance, label: text("account_allocations.new.free_balance"), as: :readonly
+  = f.input :committed_amt, label: text("account_allocations.new.committed_amt")
+  = f.input :total_expense, label: text("account_allocations.new.total_expense")
+  = f.input :free_balance, label: text("account_allocations.new.free_balance")
 
   -# - if @account.type == "NufsAccount"
   -#   = f.label :facility_accounts, t("account_allocations.new.allows_allocation")
