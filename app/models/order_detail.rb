@@ -533,14 +533,16 @@ class OrderDetail < ApplicationRecord
     journal_id.blank? && statement_id.blank? && !canceled?
   end
 
-  def get_fo_journal_status?
+  def get_fo_journal?
     return "" if fo_journal_id.blank?
     @status = FoJournal.where(id: fo_journal_id)
 
-    return "" if @status.blank?
+    return "" if @status.nil?
 
-    return @status[0].status
-  end
+    return @status[0]
+
+    # return @status[0].status
+  end  
 
   def validate_for_purchase
     # can purchase product
