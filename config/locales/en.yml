@@ -618,7 +618,6 @@ en:
       shared_details:
         remove_from_journal: "Remove From Journal"
         fo_status: "Status"
-        fo_journal_id: "FO Journal ID"
   product_access_groups:
     index:
       add_button: Add %{group}
