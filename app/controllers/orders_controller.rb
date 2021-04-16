@@ -237,38 +237,36 @@ class OrdersController < ApplicationController
 
     # define send notifcation - delegate order
     params[:send_notification] = 1 if has_delegated
-    @is_delegated = has_delegated
+
     not_enough = false
 
-    if(session_user.administrator? != true)
-      @account = Account.find(@order.account_id.to_i)
-      if(@account.allows_allocation == true)
-        @account_user = AccountUser.find_by(account_id: @order.account_id.to_i, deleted_at: nil, user_id: session_user.id)
+    if params[:commit] == "Update"
+      update
+    else
+      if(session_user.administrator? != true)
+        @account = Account.find(@order.account_id.to_i)
+        if(@account.allows_allocation == true)
+          @account_user = AccountUser.find_by(account_id: @order.account_id.to_i, deleted_at: nil, user_id: session_user.id)
 
-        if(@account_user.user_role != "Owner")
-          if(@account_user.quota_balance < @order.estimated_total)
-            flash.now[:error] = I18n.t("orders.purchase.error", message: "Insufficient fund.").html_safe
-            not_enough = true;
+          if(@account_user.user_role != "Owner")
+            if (@account_user.quota_balance < 0)
+              not_enough = true;
+            end
           end
+        end
+  
+        if(@account.free_balance < @order.estimated_total)
+          not_enough = true;
         end
       end
 
-      if(@account.free_balance < @order.estimated_total)
-        flash.now[:error] = I18n.t("orders.purchase.error", message: "Insufficient fund.").html_safe
-        not_enough = true;
-      end
-    end
-
-    if(not_enough == false)
-      if params[:commit] == "Update"
-        update
-      else
+      if(not_enough == false)
         purchase
+      else
+        flash.now[:error] = I18n.t("orders.purchase.error", message: "Insufficient fund.").html_safe  
+        render :show
       end
-    else
-      render :show
     end
-
   end
 
   # PUT /orders/:id/update

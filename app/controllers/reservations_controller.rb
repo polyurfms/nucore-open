@@ -263,7 +263,7 @@ class ReservationsController < ApplicationController
           @account_user = AccountUser.find_by(account_id: @order_detail.account_id, deleted_at: nil, user_id: session_user.id)
 
           if(@account_user.user_role != "Owner")
-            if(@account_user.quota_balance + @old_order_detail_estimated_cost < @order_detail.estimated_cost)
+            if(@account_user.quota_balance < 0)
               flash[:error] = "Payment source insufficient fund"
               raise ActiveRecord::Rollback
             end
@@ -272,7 +272,7 @@ class ReservationsController < ApplicationController
 
 
 
-        if(@account.free_balance + @old_order_detail_estimated_cost < @order_detail.estimated_cost)
+        if(@account.free_balance < 0)
           flash[:error] = "Payment source insufficient fund"
           raise ActiveRecord::Rollback
         end
