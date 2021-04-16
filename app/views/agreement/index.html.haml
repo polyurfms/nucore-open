@@ -1,27 +1,18 @@
+= render "welcome_message"
+</br>
 
-
-<p>Welcome to URFMS!</p>
-<p>In this system, you can make booking for use of equipment/services available in the central research facilities at PolyU.
-Please provide your contact telephone number here.  In case of emergency, the responsible staff of research facilities may contact you by phone.</p>
 - unless @is_admin
+  %p
+    Please provide your contact telephone number here.  In case of emergency, the responsible staff of research facilities may contact you by phone.
+
   %div
     %span Telephone Number:
     %input{:id => "phone", :type => "string", :style => "margin-top: -0.25em;", :maxlength => 20}
 </br>
 </br>
 
-<p>
-By clicking the “Submit” button below, you acknowledge that you have read and understood the
-<a target="new" href="https://www2.polyu.edu.hk/hro/updates/doc/pics.pdf">“Personal Information Collection Statement (PICS)” </a>
-of PolyU and agree to the treatment of your personal data in accordance with the above-mentioned document.
-</p>
+= render "footer"
 
--# %div
--#   %input{:id => "is_agree", :type => "checkbox", :style => "margin-top: -0.25em;"}
--#   %span I agree to the terms and conditions
-
--# </br>
--# </br>
 
 %button{:onclick => "agree()", :type => "button"} Submit
 #myModal{:style => "display: none;position: fixed; z-index: 1; padding-top: 100px; left: 0;\n  top: 0;\n  width: 100%; \n  height: 100%;\n  overflow: auto; /\n  background-color: rgb(0,0,0); \n  background-color: rgba(0,0,0,0.4);"}
