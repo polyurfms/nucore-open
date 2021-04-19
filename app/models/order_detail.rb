@@ -48,6 +48,7 @@ class OrderDetail < ApplicationRecord
   belongs_to :price_policy
   belongs_to :statement, inverse_of: :order_details
   belongs_to :journal
+  belongs_to :fo_journal
   belongs_to :order, inverse_of: :order_details, required: true
   belongs_to :assigned_user, class_name: "User", foreign_key: "assigned_user_id"
   belongs_to :created_by_user, class_name: "User", foreign_key: :created_by
@@ -533,13 +534,20 @@ class OrderDetail < ApplicationRecord
     journal_id.blank? && statement_id.blank? && !canceled?
   end
 
-  def get_fo_journal_status?
-    return "" if fo_journal_id.blank?
-    @status = FoJournal.where(id: fo_journal_id)
+  def fo_journal_status
+    if fo_journal.present?
+      fo_journal.status
+    else
+      nil
+    end
+  end
 
-    return "" if @status.blank?
-
-    return @status[0].status
+  def fo_journal_id
+    if fo_journal.present?
+      fo_journal.id
+    else
+      nil
+    end
   end
 
   def validate_for_purchase

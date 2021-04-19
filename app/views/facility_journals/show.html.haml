@@ -68,7 +68,7 @@
             %td= order_detail.account
             %td= number_to_currency(order_detail.total)
             %td= order_detail.reconciled? ? t("boolean.true") : t("boolean.false")
-            %td= order_detail.get_fo_journal_status?
+            %td= order_detail.fo_journal_status
         - if journal_is_submittable
           %tr.borderless
             %td{colspan: 3}
