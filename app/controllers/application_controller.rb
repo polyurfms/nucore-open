@@ -124,7 +124,8 @@ class ApplicationController < ActionController::Base
             # get rocord from db when frist time store data in session
             if session[:user_agreement_record] == nil
               #puts "[check_agreement][get record][user_agreement_record]"
-              session[:user_agreement_record] = UserAgreement.where(user_id:session_user).count
+              # session[:user_agreement_record] = UserAgreement.where(user_id:session_user).count
+              session[:user_agreement_record] = UserAgreement.where(user_id:session_user, facility_id: nil).count
             end
 
             # get rocord from db when frist time store data in session
