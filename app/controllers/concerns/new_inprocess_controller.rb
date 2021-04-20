@@ -18,7 +18,6 @@ module NewInprocessController
       @order_details = @search.order_details.includes(:order_status).joins_assigned_users.reorder(sort_clause)
     end                                     
     
-
     respond_to do |format|
       format.html { @order_details = @order_details.paginate(page: params[:page]) }
       format.csv { handle_csv_search }
@@ -33,7 +32,7 @@ module NewInprocessController
 
   def sort_lookup_hash
     {
-      "order_number" => ["order_details.id"],
+      "order_number" => ["order_details.order_id"],
       "assigned_to" => ["assigned_users.last_name", "assigned_users.first_name", "order_statuses.name", "order_details.ordered_at"],
       "ordered_at" => "order_details.ordered_at",
       "ordered_for" => ["#{User.table_name}.last_name", "#{User.table_name}.first_name"],

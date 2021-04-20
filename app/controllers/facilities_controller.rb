@@ -289,7 +289,7 @@ class FacilitiesController < ApplicationController
 
   def sort_lookup_hash
     {      
-      "order_number" => ["order_details.id"],
+      "order_number" => ["order_details.order_id"],
       "fulfilled_date" => "order_details.fulfilled_at",
       "product_name" => "products.name",
       "ordered_for" => ["#{User.table_name}.last_name", "#{User.table_name}.first_name"],
