@@ -264,7 +264,7 @@ class ReservationsController < ApplicationController
 
           if(@account_user.user_role != "Owner")
             if(@account_user.quota_balance < 0)
-              flash[:error] = "Payment source insufficient fund"
+              flash.now[:error] = "Payment source insufficient fund"
               raise ActiveRecord::Rollback
             end
           end
@@ -273,7 +273,7 @@ class ReservationsController < ApplicationController
 
 
         if(@account.free_balance < 0)
-          flash[:error] = "Payment source insufficient fund"
+          flash.now[:error] = "Payment source insufficient fund"
           raise ActiveRecord::Rollback
         end
 
