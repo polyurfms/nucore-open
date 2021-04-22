@@ -114,7 +114,7 @@ feature:
   send_statement_emails: true
   ready_for_journal_notice: true
   journals_may_span_fiscal_years: false
-  equipment_list: true
+  equipment_list: false
   new_user_registration: true
   price_change_reason_required: true
   can_manage_global_price_groups: true
