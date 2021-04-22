@@ -13,6 +13,11 @@
   = f.input :owner_user
   = f.input :type_string
   = f.input :description
+  
+  - if @account.affiliate
+    - if @account.affiliate.name.include?('PGMS')
+      = f.input :project_title, input_html: { value: @account.project_title}, as: :readonly
+
   - if SettingsHelper.feature_on?(:account_reference_field)
     = f.input :reference
     
@@ -41,9 +46,6 @@
 
   - if @account.affiliate
     = f.input :affiliate, input_html: { value: @account.affiliate_to_s }
-    - if @account.affiliate.name.include?('PGMS')
-      = f.input :project_title, input_html: { value: @account.project_title}, as: :readonly
-
   = f.input :display_status, input_html: { class: @account.suspended? ? "suspended-account" : "" }
 
 
