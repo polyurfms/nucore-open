@@ -1,5 +1,5 @@
-- if SettingsHelper.feature_on?(:equipment_list)
-  = render "shared/nav/equipment_list_nav"
+- if SettingsHelper.feature_on?(:equipment_list) or SettingsHelper.feature_on?(:new_user_registration)
+  = render "shared/nav/additional_nav"
 
 .alert.alert-info
   = text(".welcome")
