@@ -13,6 +13,11 @@
   = f.input :owner_user
   = f.input :type_string
   = f.input :description
+  
+  - if @account.affiliate
+    - if @account.affiliate.name.include?('PGMS')
+      = f.input :project_title, input_html: { value: @account.project_title}, as: :readonly, label: text("account_allocations.new.project_title")
+
   - if SettingsHelper.feature_on?(:account_reference_field)
     = f.input :reference
     
@@ -26,7 +31,7 @@
   - if @account.suspended?
     = f.input :suspended_at, date_only: true
 
-  = f.input :allows_allocation
+  = f.input :allows_allocation, label: text("account_allocations.new.allows_allocation")
 
   - if @account.type == "NufsAccount"
     = f.input  :alert_threshold, label: text("account_allocations.new.alert_threshold_input"), as: :readonly
@@ -41,9 +46,6 @@
 
   - if @account.affiliate
     = f.input :affiliate, input_html: { value: @account.affiliate_to_s }
-    - if @account.affiliate.name.include?('PGMS')
-      = f.input :project_title, input_html: { value: @account.project_title}, as: :readonly
-
   = f.input :display_status, input_html: { class: @account.suspended? ? "suspended-account" : "" }
 
 
