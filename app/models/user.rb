@@ -27,6 +27,8 @@ class User < ApplicationRecord
   has_many :user_preferences, dependent: :destroy
   has_many :user_delegations, dependent: :destroy
 
+  has_one :supervisor, inverse_of: :user
+
   validates_presence_of :username, :first_name, :last_name
   validates :email, presence: true, email_format: true
   validates_uniqueness_of :username, :email
@@ -215,4 +217,50 @@ class User < ApplicationRecord
 
     price_group_members.find_or_create_by!(price_group: default_price_group)
   end
+
+  def create_default_supervisor!
+    creator = SupervisorCreator.new(id, last_name, first_name, email)
+    creator.save()
+  end
+
+  def update_supervisor(params)
+    SupervisorCreator.update(supervisor, params[:supervisor_last_name], params[:supervisor_first_name], params[:supervisor_email])
+  end
+
+  def has_supervisor?
+    supervisor.present?
+  end
+
+  def supervisor_first_name
+    if supervisor.present?
+      supervisor.first_name
+    else
+      nil
+    end
+  end
+
+  def supervisor_last_name
+    if supervisor.present?
+      supervisor.last_name
+    else
+      nil
+    end
+  end
+
+  def supervisor_email
+    if supervisor.present?
+      supervisor.email
+    else
+      nil
+    end
+  end
+
+  def supervisor_full_name
+    if supervisor.present?
+      supervisor.first_name + " " + supervisor.last_name
+    else
+      nil
+    end
+  end
+
 end
