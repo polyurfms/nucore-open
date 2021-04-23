@@ -3,7 +3,8 @@
   = f.input :username
   = f.input :email
   = f.input :last_sign_in_at, default_value: "none"
-  = f.input :supervisor
+  = f.input :supervisor_full_name
+  = f.input :supervisor_email
 = simple_form_for :user, :url => update_mobile_path do |f|
   .form-inputs
     = f.input :phone, maxlength: 20, label:text("users.profile.phone_input")

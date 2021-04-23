@@ -255,7 +255,8 @@ en:
         suspended: SUSPENDED
         expired: EXPIRED
         phone: Telephone Number
-        supervisor: Supervisor
+        supervisor_full_name: Supervisor
+        supervisor_email: Supervisor Email
       facility:
         banner_notice: Banner Notice
         fax_number: Fax Number
