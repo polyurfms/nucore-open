@@ -13,13 +13,17 @@
   = f.input :account_number, as: :readonly
   = f.input :type_string, as: :readonly
   = f.input :description, as: :readonly
+  
+  - if @account.affiliate
+    - if @account.affiliate.name.include?('PGMS')
+      = f.input :project_title, input_html: { value: @account.project_title}, as: :readonly, label: text("account_allocations.new.project_title")
 
   = f.input :expires_at, label: text("account_allocations.new.expires_at"), as: :readonly, date_only: true
   - if @account.suspended?
     = f.input :suspended_at, as: :readonly, date_only: true
-  = f.input :committed_amt, label: text("account_allocations.new.committed_amt")
-  = f.input :total_expense, label: text("account_allocations.new.total_expense")
-  = f.input :free_balance, label: text("account_allocations.new.free_balance")
+  = f.input :committed_amt, label: text("account_allocations.new.committed_amt"), as: :readonly
+  = f.input :total_expense, label: text("account_allocations.new.total_expense"), as: :readonly
+  = f.input :free_balance, label: text("account_allocations.new.free_balance"), as: :readonly
 
   -# - if @account.type == "NufsAccount"
   -#   = f.label :facility_accounts, t("account_allocations.new.allows_allocation")
@@ -41,10 +45,7 @@
     = f.input :affiliate_id, as: :hidden
     = f.input :affiliate_other, as: :hidden
     = f.input :affiliate, input_html: { value: @account.affiliate_to_s }, as: :readonly
-    - if @account.affiliate.name.include?('PGMS')
-      = f.input :project_title, input_html: { value: @account.project_title}, as: :readonly
-  <br>
-  <br>
+
 
   = render_view_hook("after_end_of_form", f: f, account: @account)
 

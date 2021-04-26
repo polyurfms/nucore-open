@@ -93,7 +93,7 @@ en:
     my_items: My Items
     notices: Notices
     support: Support
-    my_payment_sources : My payment Soures
+    my_payment_sources : My Payment Sources
 
   affiliates:
     add: Add Affiliate
@@ -687,7 +687,7 @@ en:
       funding_requests_head: "Funding Requests"
       committed_amt: "Committed Amount: %{committed_amt}"
       total_expense: "Total Expense Amount: %{total_expense}"
-      free_balance: "Free balance: %{free_balance}"
+      free_balance: "Free Balance: %{free_balance}"
       amount : "Amount"
       save: "save"
       new_request : "New Request"
@@ -720,7 +720,7 @@ en:
       funding_requests_head: "Funding Requests"
       committed_amt: "Committed Amount: %{committed_amt}"
       total_expense: "Total Expense Amount: %{total_expense}"
-      free_balance: "Free balance: %{free_balance}"
+      free_balance: "Free Balance: %{free_balance}"
       amount : "Amount"
       save: "save"
       new_request : "New Request"
@@ -1440,12 +1440,13 @@ en:
       submenu: "%{account_number}"
       committed_amt: "Committed Amount (HKD)"
       total_expense: "Total Expense Amount (HKD)"
-      free_balance: "Free balance (HKD)"
-      allows_allocation: "Allows allocation"
-      alert_threshold: "Alert threshold"
-      alert_threshold_input: "Alert threshold (input 0 for no alert)"
+      free_balance: "Free Balance (HKD)"
+      allows_allocation: "Allows Allocation"
+      alert_threshold: "Alert Threshold"
+      alert_threshold_input: "Alert Threshold (input 0 for no alert)"
       is_auto_top_up: "Auto Top up"
       expires_at: "Valid Until"
+      project_title: "Project Title"
     member_allocation_table:
       th:
         # name: Name (username)
