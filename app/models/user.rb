@@ -218,7 +218,7 @@ class User < ApplicationRecord
     price_group_members.find_or_create_by!(price_group: default_price_group)
   end
 
-  def get_is_normal_user?
+  def is_normal_user?
     if @is_normal_user.nil?
       if administrator?
         @is_normal_user = false
@@ -226,6 +226,7 @@ class User < ApplicationRecord
         UserRole.where(deleted_at: nil, user_id: id).count > 0 ? @is_normal_user = false : @is_normal_user = true
       end
     end
+    return @is_normal_user
   end
 
 end
