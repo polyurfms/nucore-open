@@ -224,7 +224,7 @@ class User < ApplicationRecord
   end
 
   def update_supervisor(params)
-    SupervisorCreator.update(supervisor, params[:supervisor_last_name], params[:supervisor_first_name], params[:supervisor_email])
+    SupervisorCreator.update(supervisor, id, params[:supervisor_last_name], params[:supervisor_first_name], params[:supervisor_email])
   end
 
   def has_supervisor?

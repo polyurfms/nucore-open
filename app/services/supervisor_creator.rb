@@ -2,10 +2,18 @@ class SupervisorCreator
 
   attr_reader :params, :error
 
-  def self.update(supervisor, last_name, first_name, email)
+  def self.update(supervisor, user_id, last_name, first_name, email)
     @supervisor = supervisor
-
-    @supervisor.assign_attributes(last_name: last_name, first_name: first_name, email: email)
+    if @supervisor.present?
+      @supervisor.assign_attributes(last_name: last_name, first_name: first_name, email: email)
+    else
+      @supervisor = Supervisor.new(
+          user_id: user_id,
+          last_name: last_name,
+          first_name: first_name,
+          email: email
+      )
+    end
     @supervisor.save
   end
 
