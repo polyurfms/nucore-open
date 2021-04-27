@@ -86,8 +86,7 @@ class ApplicationController < ActionController::Base
 
   def check_supervisor
 
-
-    if !session_user.blank? && !request.env['PATH_INFO'].eql?('/users/sign_out') && !request.env['PATH_INFO'].eql?('/users/sign_in') && !session_user.administrator?
+    if !session_user.blank? && !request.env['PATH_INFO'].eql?('/users/sign_out') && !request.env['PATH_INFO'].eql?('/users/sign_in') && session_user.is_normal_user?
       session[:had_supervisor] = session_user.has_supervisor? ? 1 : 0
 
       if session[:had_supervisor] == 0
