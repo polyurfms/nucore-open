@@ -44,7 +44,7 @@ class User < ApplicationRecord
   # Gem ldap_authenticatable expects User to respond_to? :ldap_attributes. For us should return nil.
   attr_accessor :ldap_attributes
 
-  attr_accessor :is_normal_user
+  attr_reader :is_normal_user
 
   cattr_accessor(:default_price_group_finder) { ::Users::DefaultPriceGroupSelector.new }
 
@@ -219,14 +219,12 @@ class User < ApplicationRecord
   end
 
   def is_normal_user?
-    if @is_normal_user.nil?
-      if administrator?
-        @is_normal_user = false
-      else 
-        UserRole.where(deleted_at: nil, user_id: id).count > 0 ? @is_normal_user = false : @is_normal_user = true
-      end
+    if @is_normal_user.nil? 
+      @is_normal_user = false
+      @is_normal_user = true unless (administrator? || UserRole.where(deleted_at: nil, user_id: id).count > 0)
     end
+
     return @is_normal_user
   end
-
+  
 end
