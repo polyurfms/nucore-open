@@ -86,14 +86,16 @@ class ApplicationController < ActionController::Base
 
   def check_supervisor
 
+
     if !session_user.blank? && !request.env['PATH_INFO'].eql?('/users/sign_out') && !request.env['PATH_INFO'].eql?('/users/sign_in') && !session_user.administrator?
-      session[:had_supervisor] = session_user.supervisor.blank? ? 0 : 1
+      session[:had_supervisor] = session_user.has_supervisor? ? 1 : 0
 
       if session[:had_supervisor] == 0
         #Check role
         if (session_user.is_academic == true)
           @user = User.find(session_user[:id])
-          @user.update_attributes(supervisor: @user.username)
+          #@user.update_attributes(supervisor: @user.username)
+          @user.create_default_supervisor!
           session[:had_supervisor] = 1
           redirect_to '/facilities'
         else
