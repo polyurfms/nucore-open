@@ -245,7 +245,7 @@ class OrdersController < ApplicationController
       if(session_user.administrator? != true)
         @account = Account.find(@order.account_id.to_i)
         if(@account.allows_allocation == true)
-          @account_user = AccountUser.find_by(account_id: @order.account_id.to_i, deleted_at: nil, user_id: session_user.id)
+          @account_user = AccountUser.find_by(account_id: @order.account_id.to_i, deleted_at: nil, user_id: session[:acting_user_id] || session_user.id)
 
           if(@account_user.user_role != "Owner")
             if (@account_user.quota_balance < 0)

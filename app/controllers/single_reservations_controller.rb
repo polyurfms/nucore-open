@@ -26,7 +26,7 @@ class SingleReservationsController < ApplicationController
     @account = Account.find_by("id = #{params["order_account"].to_i} AND expires_at >= '#{@reservation.reserve_end_at}'")
 
     if(!@account.nil?)
-      if creator.save(session_user)
+      if creator.save(session_user, session[:acting_user_id] || 0)
         # @reservation = creator.reservation
         authorize! :create, @reservation
         flash[:notice] = I18n.t("controllers.reservations.create.success")

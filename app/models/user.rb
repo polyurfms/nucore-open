@@ -46,6 +46,8 @@ class User < ApplicationRecord
   # Gem ldap_authenticatable expects User to respond_to? :ldap_attributes. For us should return nil.
   attr_accessor :ldap_attributes
 
+  attr_reader :is_normal_user
+
   cattr_accessor(:default_price_group_finder) { ::Users::DefaultPriceGroupSelector.new }
 
   scope :authenticated_externally, -> { where(encrypted_password: nil, password_salt: nil) }
@@ -218,6 +220,15 @@ class User < ApplicationRecord
     price_group_members.find_or_create_by!(price_group: default_price_group)
   end
 
+  def is_normal_user?
+    if @is_normal_user.nil? 
+      @is_normal_user = false
+      @is_normal_user = true unless (administrator? || UserRole.where(deleted_at: nil, user_id: id).count > 0)
+    end
+
+    return @is_normal_user
+  end  
+
   def create_default_supervisor!
     creator = SupervisorCreator.new(id, last_name, first_name, email)
     creator.save()
@@ -262,5 +273,5 @@ class User < ApplicationRecord
       nil
     end
   end
-
+  
 end

@@ -29,7 +29,7 @@ class ApplicationController < ActionController::Base
   # in which case, return the all facility
 
   def get_facility_agreement_list
-    if (!session_user.nil? && session[:facility_agreement_list].nil?)
+    if (!session_user.nil? && session[:facility_agreement_list].nil?)  
       facility_agreement_list = []
       facility_agreement_list.push(0)
       @user = session[:acting_user_id] || session_user.id
@@ -181,12 +181,7 @@ class ApplicationController < ActionController::Base
     facility_id = params[:facility_id] || params[:id]
     @facility = Facility.find_by(url_name: facility_id)
     if(!params[:facility_id].nil? && !params[:id].nil? && !session[:facility_agreement_list].nil?)
-      if (session_user.administrator?)
-        #unless request.env['PATH_INFO'].last(7).eql?('/manage') || request.env['PATH_INFO'].last(5).eql?('/edit')
-        #  is_agree = session[:facility_agreement_list].include?(@facility.id)
-        #end
-        is_agree = true
-      else
+      if (session_user.is_normal_user?)
         is_agree = session[:facility_agreement_list].include?(@facility.id)
       end
     end

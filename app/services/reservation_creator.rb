@@ -12,7 +12,7 @@ class ReservationCreator
     @params = params
   end
 
-  def save(session_user)
+  def save(session_user, delegatee_id = 0)
     if !@order_detail.bundled? && params[:order_account].blank?
       @error = I18n.t("controllers.reservations.create.no_selection")
       return false
@@ -42,7 +42,7 @@ class ReservationCreator
         if(session_user.administrator? != true)
           @account = Account.find(@order_detail.order.account_id.to_i)
           if(@account.allows_allocation == true)
-            @account_user = AccountUser.find_by(account_id: @order_detail.account_id, deleted_at: nil, user_id: session_user.id)
+            @account_user = AccountUser.find_by(account_id: @order_detail.account_id, deleted_at: nil, user_id: delegatee_id == 0 ? session_user .id : delegatee_id)
 
             if(@account_user.user_role != "Owner")
               if(@account_user.quota_balance < 0)
