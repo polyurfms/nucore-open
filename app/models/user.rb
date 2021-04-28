@@ -221,21 +221,21 @@ class User < ApplicationRecord
   end
 
   def is_normal_user?
-    if @is_normal_user.nil? 
+    if @is_normal_user.nil?
       @is_normal_user = false
       @is_normal_user = true unless (administrator? || UserRole.where(deleted_at: nil, user_id: id).count > 0)
     end
 
     return @is_normal_user
-  end  
+  end
 
   def create_default_supervisor!
-    creator = SupervisorCreator.new(id, last_name, first_name, email)
+    creator = SupervisorCreator.new(self, last_name, first_name, email)
     creator.save()
   end
 
   def update_supervisor(params)
-    SupervisorCreator.update(supervisor, id, params[:supervisor_last_name], params[:supervisor_first_name], params[:supervisor_email])
+    SupervisorCreator.update(self, params[:supervisor_last_name], params[:supervisor_first_name], params[:supervisor_email])
   end
 
   def has_supervisor?
@@ -273,5 +273,5 @@ class User < ApplicationRecord
       nil
     end
   end
-  
+
 end

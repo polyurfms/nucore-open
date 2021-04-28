@@ -9,7 +9,7 @@ en:
         no_users: There are no active users for this !facility_downcase!.
       edit:
         head: Edit %{user}
-        subhead: You may use this to edit external users. The email address and username must match.
+        subhead: You may use this to edit users.
         update: Update
         internal: Internal Pricing
       show:

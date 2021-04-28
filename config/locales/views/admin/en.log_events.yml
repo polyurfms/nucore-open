@@ -63,3 +63,6 @@ en:
           create: Role added
           delete: Role removed
         user_label: User
+        supervisor:
+          create: Create Supervisor (%{last_name} %{first_name}/%{email})
+          update: Update Supervisor (%{last_name} %{first_name}/%{email})

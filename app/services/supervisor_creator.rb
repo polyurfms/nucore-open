@@ -2,23 +2,25 @@ class SupervisorCreator
 
   attr_reader :params, :error
 
-  def self.update(supervisor, user_id, last_name, first_name, email)
-    @supervisor = supervisor
-    if @supervisor.present?
+  def self.update(user, last_name, first_name, email)
+    @user = user
+    @supervisor = @user.supervisor
+    if @user.supervisor.present?
       @supervisor.assign_attributes(last_name: last_name, first_name: first_name, email: email)
     else
       @supervisor = Supervisor.new(
-          user_id: user_id,
+          user_id: @user.id,
           last_name: last_name,
           first_name: first_name,
           email: email
       )
     end
+    LogEvent.log(@supervisor, :update, @user, metadata: { last_name: last_name, first_name: first_name, email:email })
     @supervisor.save
   end
 
-  def initialize(user_id, last_name, first_name, email)
-    @user_id = user_id
+  def initialize(user, last_name, first_name, email)
+    @user = user
     @last_name = last_name
     @first_name = first_name
     @email = email
@@ -26,7 +28,7 @@ class SupervisorCreator
 
   def save
       @supervisor = Supervisor.new(
-          user_id: @user_id,
+          user_id: @user.id,
           last_name: @last_name,
           first_name: @first_name,
           email: @email
@@ -36,6 +38,7 @@ class SupervisorCreator
 
       if @supervisor.save
           @success = :default
+          LogEvent.log(@supervisor, :create, @user, metadata: { last_name: @last_name, first_name: @first_name, email: @email })
       else
          #@input_amt = amt
           @error = "Failed to save supervisor"
