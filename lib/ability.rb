@@ -162,6 +162,8 @@ class Ability
         can [:show, :index], [PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ServicePricePolicy]
       end
     end
+
+    can :manage, User
   end
 
 
