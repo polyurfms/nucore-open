@@ -91,8 +91,10 @@ class UserDelegationsController < ApplicationController
     else 
       @user_delegation_list ||= UserDelegation.where(delegatee: delegatee.username, delegator: delegator.id, deleted_at: nil).count
 
+      @delegatee_name = delegatee.first_name + " " + delegatee.last_name
+
       if (@user_delegation_list > 0)
-        flash[:error] = text("#{delegatee.username} has been delegated")
+        flash[:error] = text("#{@delegatee_name} has been delegated")
       elsif (!delegatee.user_type.eql?("Staff"))
         flash[:error] = "Invalid user"
       else
@@ -100,11 +102,11 @@ class UserDelegationsController < ApplicationController
         if @user_delegation.save
           LogEvent.log(@user_delegation, :create, delegator)
           UserDelegationMailer.notify(delegatee.full_name, delegatee.email, delegator: delegator).deliver_later
-          flash[:notice] = text("#{@user_delegation.delegatee} delegated")
+          flash[:notice] = text("You have assigned #{@delegatee_name} as your delegate.")
           has_error = false
           redirect_to action: :index
         else
-          flash[:error] = text("#{@user_delegation.delegatee} could not be delegated")
+          flash[:error] = text("#{@delegatee_name} could not be delegated")
         end
       end
     end
@@ -133,11 +135,12 @@ class UserDelegationsController < ApplicationController
       unless (user_delegation.delegator.nil?)
         user_delegation.deleted_at = Time.zone.now
         user_delegation.deleted_by =  session[:acting_user_id] || session_user[:id]
+        @delegatee_name = User.find_by(username: user_delegation.delegatee) 
         if user_delegation.save
           LogEvent.log(user_delegation, :delete, delegator)
-          flash[:notice] = "Delegatee #{user_delegation.delegatee} removed"
+          flash[:notice] = "Delegate #{@delegatee_name.first_name + " " + @delegatee_name.last_name} was removed."
         else
-          flash[:error] = "Delegatee #{ser_delegation.delegatee} could not be removed"
+          flash[:error] = "Delegatee #{@delegatee_name.first_name + " " + @delegatee_name.last_name} could not be removed"
         end
       end
     end
