@@ -17,7 +17,6 @@ class SupervisorCreator
           updated_by: updated_by
       )
     end
-
     @supervisor.save
 
   end
