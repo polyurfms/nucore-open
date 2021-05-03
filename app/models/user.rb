@@ -234,8 +234,8 @@ class User < ApplicationRecord
     creator.save()
   end
 
-  def update_supervisor(params)
-    SupervisorCreator.update(self, params[:supervisor_last_name], params[:supervisor_first_name], params[:supervisor_email])
+  def update_supervisor(params, created_by)
+    SupervisorCreator.update(self, params[:supervisor_last_name], params[:supervisor_first_name], params[:supervisor_email], created_by)
   end
 
   def has_supervisor?
