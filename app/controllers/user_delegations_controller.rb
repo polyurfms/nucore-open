@@ -99,7 +99,7 @@ class UserDelegationsController < ApplicationController
         @user_delegation = UserDelegation.create(@delegate_info)
         if @user_delegation.save
           LogEvent.log(@user_delegation, :create, delegator)
-          UserDelegationMailer.notify(delegatee.full_name, delegatee.email, delegator: delegator).deliver_later
+          UserDelegationMailer.notify(delegatee.first_name + " " + delegatee.last_name, delegatee.email,  delegator.first_name+ " " + delegator.last_name).deliver_later
           flash[:notice] = text("#{@user_delegation.delegatee} delegated")
           has_error = false
           redirect_to action: :index
