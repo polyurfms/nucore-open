@@ -2,21 +2,24 @@ class SupervisorCreator
 
   attr_reader :params, :error
 
-  def self.update(user, last_name, first_name, email)
+  def self.update(user, last_name, first_name, email, updated_by)
     @user = user
     @supervisor = @user.supervisor
     if @user.supervisor.present?
-      @supervisor.assign_attributes(last_name: last_name, first_name: first_name, email: email)
+      @supervisor.assign_attributes(last_name: last_name, first_name: first_name, email: email, updated_by: updated_by)
     else
       @supervisor = Supervisor.new(
           user_id: @user.id,
           last_name: last_name,
           first_name: first_name,
-          email: email
+          email: email,
+          created_by: updated_by,
+          updated_by: updated_by
       )
     end
-    LogEvent.log(@supervisor, :update, @user, metadata: { last_name: last_name, first_name: first_name, email:email })
+
     @supervisor.save
+
   end
 
   def initialize(user, last_name, first_name, email)
@@ -24,15 +27,18 @@ class SupervisorCreator
     @last_name = last_name
     @first_name = first_name
     @email = email
+
+    @supervisor = Supervisor.new(
+        user_id: @user.id,
+        last_name: @last_name,
+        first_name: @first_name,
+        email: @email,
+        created_by: @user.id,
+        updated_by: @user.id
+    )
   end
 
   def save
-      @supervisor = Supervisor.new(
-          user_id: @user.id,
-          last_name: @last_name,
-          first_name: @first_name,
-          email: @email
-      )
 
     ActiveRecord::Base.transaction do
 
