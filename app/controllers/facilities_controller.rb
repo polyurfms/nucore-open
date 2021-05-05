@@ -179,7 +179,14 @@ class FacilitiesController < ApplicationController
       include_facilities: current_facility.cross_facility?,
     )
     @date_range_field = @search_form.date_params[:field]
-    @order_details = @search.order_details.reorder(sort_clause).paginate(page: params[:page], per_page: 100)
+    
+    if params[:sort].nil?
+      @order_details = @search.order_details.paginate(page: params[:page], per_page: 100)
+    else 
+      @order_details = @search.order_details.reorder(sort_clause).paginate(page: params[:page], per_page: 100)
+    end
+    
+    
 
     @order_detail_action = :reassign_chart_strings
   end
