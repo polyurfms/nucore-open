@@ -8,5 +8,5 @@ en:
       order_receipt:
         subject: "!app_name! Order Receipt"
         intro: "Thank you for your order on the !app_name!"
-        outro: "All prices are estimates. Actual cost will be available for your review when the order is completed."
+        outro: " * All prices are estimates. Actual cost will be available for your review when the order is completed."
         total: Total
