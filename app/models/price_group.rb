@@ -49,7 +49,8 @@ class PriceGroup < ApplicationRecord
   end
 
   def name
-    master_internal? ? "#{I18n.t('institution_name')} #{self[:name]}" : self[:name]
+    #master_internal? ? "#{I18n.t('institution_name')} #{self[:name]}" :
+    self[:name]
   end
 
   def to_s

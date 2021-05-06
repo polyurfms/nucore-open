@@ -49,7 +49,7 @@ class FacilitiesController < ApplicationController
     @columns = "columns" if SettingsHelper.feature_on?(:product_list_columns)
     @active_tab = SettingsHelper.feature_on?(:use_manage) ? "use" : "home"
 
-    @product_scope = Product.alphabetized
+    @product_scope = Product.alphabetized.reorder(sort_lookup_hash["product_name"])
     if acting_as? || session_user.try(:operator_of?, current_facility)
       @product_scope = @product_scope.not_archived
     else
@@ -179,7 +179,14 @@ class FacilitiesController < ApplicationController
       include_facilities: current_facility.cross_facility?,
     )
     @date_range_field = @search_form.date_params[:field]
-    @order_details = @search.order_details.reorder(sort_clause).paginate(page: params[:page], per_page: 100)
+    
+    if params[:sort].nil?
+      @order_details = @search.order_details.paginate(page: params[:page], per_page: 100)
+    else 
+      @order_details = @search.order_details.reorder(sort_clause).paginate(page: params[:page], per_page: 100)
+    end
+    
+    
 
     @order_detail_action = :reassign_chart_strings
   end
