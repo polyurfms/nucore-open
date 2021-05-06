@@ -437,7 +437,7 @@ select:focus:invalid {
   display: none !important;
 }
 
-.alert-error:empty {
+.alert{
   &:empty {
     display: none;
   }
