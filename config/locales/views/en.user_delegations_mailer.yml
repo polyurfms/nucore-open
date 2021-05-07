@@ -3,12 +3,12 @@ en:
     user_delegation:
         subject:  "URFMS delegate assinged "
         body: |
-          Dear %{delegatee_name}, 
+          Dear %{delegator_name}, 
 
-          Please note that you have assigned %{delegator_name} as your delegate. Your delegate can :
+          Please note that you have assigned %{delegatee_name} as your delegate. He/She can :
 
           (1) Sign the facilities Terms and Conditions on behalf of you
-          
+
           (2) Make item purchase / instrument reservation on behalf of you
 
           (3) Manage your payment source, e.g. assign payment source member, make funding request
