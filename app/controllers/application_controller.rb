@@ -29,7 +29,7 @@ class ApplicationController < ActionController::Base
   # in which case, return the all facility
 
   def get_facility_agreement_list
-    if (!session_user.nil? && session[:facility_agreement_list].nil?)  
+    if (!session_user.nil? && session[:facility_agreement_list].nil?)
       facility_agreement_list = []
       facility_agreement_list.push(0)
       @user = session[:acting_user_id] || session_user.id
@@ -94,7 +94,7 @@ class ApplicationController < ActionController::Base
         if (session_user.is_academic == true)
           @user = User.find(session_user[:id])
           #@user.update_attributes(supervisor: @user.username)
-          @user.create_default_supervisor!
+          @user.create_default_supervisor!                
           session[:had_supervisor] = 1
           redirect_to '/facilities'
         else

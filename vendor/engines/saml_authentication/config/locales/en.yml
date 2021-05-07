@@ -3,4 +3,4 @@ en:
     saml_authentication:
       sessions:
         new:
-          sso_button: Single Sign On
+          sso_button: Login

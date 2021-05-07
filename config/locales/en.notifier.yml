@@ -74,11 +74,35 @@ en:
 
           %{facility}
       user_update:
-        subject: "!app_name! User Updated"
+        subject: "!app_name! Payment source member update"
         body: |
-          The following user %{user} has been added to your payment source %{account} by administrator %{created_by}.
-          If this is incorrect you may log in to !app_name! at %{login_url} and remove this user or contact the administrator named above.
-        body_html: |
-          The following user %{user} has been added to your payment source "%{account}" by administrator %{created_by}.
+          Dear %{account_owner},
 
-          If this is incorrect you may [log in to !app_name!](%{login_url}) and remove this user or contact the administrator named above.
+          The following user has been granted permission to use your payment source "%{account}" by administrator %{created_by} :
+          %{user}
+
+          Should you have any inquiries, please ""log in to !app_name!""" %{login_url} to remove this user or contact the administrator named above. 
+
+          Thank you.
+          
+          University Research Facility Management System
+        body_html: |
+          Dear %{account_owner},
+
+          The following user has been granted permission to use your payment source "%{account}" by administrator %{created_by} :
+          %{user}
+
+          Should you have any inquiries, please  "[log in to !app_name!](%{login_url})" to remove this user or contact the administrator named above. 
+
+          Thank you.
+
+          University Research Facility Management System
+
+        # subject: "!app_name! User Updated"
+        # body: |
+        #   The following user %{user} has been added to your payment source %{account} by administrator %{created_by}.
+        #   If this is incorrect you may log in to !app_name! at %{login_url} and remove this user or contact the administrator named above.
+        # body_html: |
+        #   The following user %{user} has been added to your payment source "%{account}" by administrator %{created_by}.
+
+        #   If this is incorrect you may [log in to !app_name!](%{login_url}) and remove this user or contact the administrator named above.
