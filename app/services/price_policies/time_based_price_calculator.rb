@@ -77,6 +77,7 @@ module PricePolicies
         # Add "+ 1" for 23:59:59(end_of_day) + 1 secorc 
         # First date
         duration_mins = TimeRange.new(start_at, start_at.end_of_day).duration_mins
+
         total_duration_mins = duration_mins + 1
         # result = over_maximum_cost(duration_mins, usage_rate, 0)
         result = over_maximum_cost(duration_mins + 1, usage_rate, 0)
@@ -86,7 +87,6 @@ module PricePolicies
         total_duration_mins = total_duration_mins + duration_mins if end_at.beginning_of_day != end_at
         # duration_mins = TimeRange.new(end_at, end_at.end_of_day).duration_mins
         result = result + over_maximum_cost(duration_mins, usage_rate, 0) if end_at.beginning_of_day != end_at
-
         # Other date (60mins *24hr) = 1440
         result = result + over_maximum_cost(1440, usage_rate, count_day - 1) 
         total_duration_mins = total_duration_mins + (1440 * (count_day - 1))
