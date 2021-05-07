@@ -10,8 +10,8 @@ class UserDelegationMailer < ActionMailer::Base
       send_nucore_mail @delegatee.email, text("views.user_delegation.subject", delegatee: @delegatee.username, delegator: @delegator.username)
     end
 
-    def notify(delegatee_name,delegatee_email, delegator:)
-      @delegator = delegator
+    def notify(delegatee_name,delegatee_email, delegator_name)
+      @delegator_name = delegator_name
       @delegatee_name = delegatee_name
       #send_nucore_mail delegatee_email, text("views.user_delegation.subject", delegatee: delegatee_name, delegator: @delegator.username)
       send_nucore_mail delegatee_email, text("views.user_delegation.subject")

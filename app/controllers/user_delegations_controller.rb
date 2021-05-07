@@ -99,12 +99,12 @@ class UserDelegationsController < ApplicationController
         @user_delegation = UserDelegation.create(@delegate_info)
         if @user_delegation.save
           LogEvent.log(@user_delegation, :create, delegator)
-          UserDelegationMailer.notify(delegatee.full_name, delegatee.email, delegator: delegator).deliver_later
+          UserDelegationMailer.notify(delegatee.first_name + " " + delegatee.last_name, delegatee.email,  delegator.first_name+ " " + delegator.last_name).deliver_later
           flash[:notice] = text("#{@user_delegation.delegatee} delegated")
           has_error = false
           redirect_to action: :index
         else
-          flash[:error] = text("#{@user_delegation.delegatee} could not be delegated")
+          flash[:error] = text("#{delegatee.username} could not be delegated")
         end
       end
     end
@@ -135,9 +135,9 @@ class UserDelegationsController < ApplicationController
         user_delegation.deleted_by =  session[:acting_user_id] || session_user[:id]
         if user_delegation.save
           LogEvent.log(user_delegation, :delete, delegator)
-          flash[:notice] = "Delegatee #{user_delegation.delegatee} removed"
+          flash[:notice] = "Delegate #{user_delegation.delegatee} was removed."
         else
-          flash[:error] = "Delegatee #{ser_delegation.delegatee} could not be removed"
+          flash[:error] = "Delegatee #{user_delegation.delegatee} could not be removed"
         end
       end
     end

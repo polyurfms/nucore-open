@@ -3,4 +3,16 @@ en:
     user_delegation:
         subject:  "URFMS delegate assinged "
         body: |
-          This is to inform you that you have just assigned %{delegator} as your delegate.
+          Dear %{delegatee_name}, 
+
+          Please note that you have assigned %{delegator_name} as your delegate. Your delegate can :
+
+          (1) Sign the facilities Terms and Conditions on behalf of you
+          
+          (2) Make item purchase / instrument reservation on behalf of you
+
+          (3) Manage your payment source, e.g. assign payment source member, make funding request
+
+          Thank you,
+
+          University Research Facility Management System

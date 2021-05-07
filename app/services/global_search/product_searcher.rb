@@ -17,7 +17,7 @@ module GlobalSearch
     def restrict(products)
       facilities = user ? user.operable_facilities.pluck(:id) : []
 
-      products.in_active_facility.not_archived.merge(Product.where(is_hidden: false).or(Product.where(facility: facilities)))
+      products.in_active_facility.not_archived.merge(Product.where(is_hidden: false).or(Product.where(facility: facilities))).order(name: :ASC)
     end
 
   end
