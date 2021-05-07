@@ -81,7 +81,7 @@ en:
           The following user has been granted permission to use your payment source "%{account}" by administrator %{created_by} :
           %{user}
 
-          Should you have any inquiries, please "log in to !app_name!" %{login_url} to remove this user or contact the administrator named above. 
+          Should you have any inquiries, please ""log in to !app_name!""" %{login_url} to remove this user or contact the administrator named above. 
 
           Thank you.
           
@@ -92,7 +92,7 @@ en:
           The following user has been granted permission to use your payment source "%{account}" by administrator %{created_by} :
           %{user}
 
-          Should you have any inquiries, please  [log in to !app_name!](%{login_url}) to remove this user or contact the administrator named above. 
+          Should you have any inquiries, please  "[log in to !app_name!](%{login_url})" to remove this user or contact the administrator named above. 
 
           Thank you.
 
