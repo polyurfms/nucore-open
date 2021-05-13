@@ -2,5 +2,6 @@
   = tab Facility.model_name.human(count: 2), facilities_path
   - if SettingsHelper.feature_on?(:equipment_list)
     = tab Instrument.model_name.human(count: 2), list_facility_instruments_path(Facility.cross_facility)
-  - if SettingsHelper.feature_on?(:new_user_registration)
-    = tab "New User Registration", user_registration_path(Facility.cross_facility)
+  - if session_user.nil?
+    - if SettingsHelper.feature_on?(:new_user_registration)
+      = tab "New User Registration", user_registration_path(Facility.cross_facility)
