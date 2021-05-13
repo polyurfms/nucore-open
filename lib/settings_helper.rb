@@ -54,4 +54,8 @@ module SettingsHelper
     current
   end
 
+  def self.saml_enabled?
+    Settings.saml.present?
+  end
+
 end
