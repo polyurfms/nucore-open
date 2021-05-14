@@ -3,8 +3,11 @@
     .container
       = link_to :root, class: "brand" do
         - if Settings.header_logo_path.present?
-          = image_tag Settings.header_logo_path, class: "img__brand"
-        %span= app_name
+          -#= image_tag Settings.header_logo_r_path, class: "img__brand"
+          -# else
+          - if responsive?
+            = image_tag Settings.header_logo_path, class: "img__brand"
+            %span= app_name
       - if session_user.nil?
         %ul.nav.pull-right.hide-from-print
           = render "/shared/support"
