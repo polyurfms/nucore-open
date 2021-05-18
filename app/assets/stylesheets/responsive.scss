@@ -15,9 +15,17 @@ $navbarActiveBorderColor: #aaa;
     }
   }
 
+  .navbar .brand {
+    .img__brand {
+      //display: none !important;
+      max-width: 150px;
+    }
+  }
+
   .hidden-with-nav {
     display: inherit !important;
   }
+
   .visible-with-nav {
     display: none !important;
   }
@@ -34,6 +42,7 @@ $navbarActiveBorderColor: #aaa;
       border-top: 0;
     }
   }
+
   header .navbar .nav > li > a, .nav-collapse .dropdown-menu a {
     padding: 10px;
     border-radius: 0;
