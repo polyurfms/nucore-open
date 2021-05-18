@@ -40,7 +40,7 @@ module SamlAuthentication
       user.update!(attributes)
 
       if user.sign_in_count == 0
-        if user.user_type == 'Staff'
+        if user.user_type == 'Staff' || user.user_type == 'Student'
           user.update_to_internal_price_group!
         end
       end
