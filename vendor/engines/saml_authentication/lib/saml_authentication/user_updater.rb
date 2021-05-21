@@ -42,6 +42,8 @@ module SamlAuthentication
       if user.sign_in_count == 0
         if user.user_type == 'Staff' || user.user_type == 'Student'
           user.update_to_internal_price_group!
+        else
+          user.update_to_base_external_group!
         end
       end
 

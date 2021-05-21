@@ -210,6 +210,11 @@ class User < ApplicationRecord
     price_group_members.find_or_create_by(price_group: PriceGroup.base)
   end
 
+  def update_to_base_external_group!
+    price_group_members.find_by(price_group: PriceGroup.base).try(:destroy)
+    price_group_members.find_or_create_by(price_group: PriceGroup.external)
+  end
+
   def default_price_group
     self.class.default_price_group_finder.call(self)
   end
