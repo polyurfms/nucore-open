@@ -5,10 +5,17 @@ class ExampleStatementPdf < StatementPdf
   def generate(pdf)
     #@invoice_number = @facility.abbreviation + " " + @statement.invoice_number
     @invoice_number = @statement.ref_no
+    @enquiry_person = Settings.statement_pdf.enquiry_person
     @contact_name = Settings.statement_pdf.contact_name
     @email = Settings.statement_pdf.email
     @phone = Settings.statement_pdf.phone
+    @bank_name = Settings.statement_pdf.bank_name
     @bank_account = Settings.statement_pdf.bank_account
+    @payee = Settings.statement_pdf.payee
+
+    @address_1 = Settings.statement_pdf.address_1
+    @address_2 = Settings.statement_pdf.address_2
+    @address_3 = Settings.statement_pdf.address_3
 
     generate_document_header(pdf)
     # generate_contact_info(pdf) if @facility.has_contact_info?
@@ -43,12 +50,12 @@ class ExampleStatementPdf < StatementPdf
     pdf.move_down(20)
 
     pdf.indent(40) do
-      pdf.markup("<p>Send a crossed cheque made payable to &ldquo;The Hong Kong Polytechnic University&rdquo; to the following address and write the invoice no. <strong>"+@invoice_number+"</strong> at the back of the cheque.</p>")
+      pdf.markup("<p>Send a crossed cheque made payable to &ldquo;"+@payee+"&rdquo; to the following address and write the invoice no. <strong>"+@invoice_number+"</strong> at the back of the cheque.</p>")
       pdf.move_down(20)
       pdf.markup("<p>Address:</p>")
-      pdf.markup("<p>Research Office</p>")
-      pdf.markup("<p>Room Z404, 4/F, Block Z</p>")
-      pdf.markup("<p>The Hong Kong Polytechnic University, Hung Hom, Kowloon</p>")
+      pdf.markup("<p>"+@address_1+"</p>")
+      pdf.markup("<p>"+@address_2+"</p>")
+      pdf.markup("<p>"+@address_3+"</p>")
       pdf.markup("<p>Attn: "+@contact_name+"</p>")
     end
 
@@ -59,15 +66,15 @@ class ExampleStatementPdf < StatementPdf
     end
 
     pdf.indent(40) do
-      pdf.markup("<p>Transfer payment to the following bank account with the payee name &ldquo;The Hong Kong Polytechnic University&rdquo;</p>")
-      pdf.markup("<p>Bank Name: Hang Seng Bank Limited</p>")
+      pdf.markup("<p>Transfer payment to the following bank account with the payee name &ldquo;"+@payee+"&rdquo;</p>")
+      pdf.markup("<p>Bank Name: "+@bank_name+"</p>")
       pdf.markup("<p>Bank Account No.: "+@bank_account+"</p>")
       pdf.markup("<p>Details of Payment: Please indicate the invoice no. <strong>"+@invoice_number+"</strong> for our reference.</p>")
       pdf.move_down(20)
       pdf.markup("<p>After the payment, please send us a copy of the bank advice by email at <a href='mailto:"+@email+"' style='color:#0563c1; text-decoration:underline'>"+@email+"</a> for follow-up action.&nbsp;</p>")
     end
     pdf.move_down(10)
-    pdf.markup("<p>For enquiries, please contact Miss Stella Wong by email at "+@email+" or by phone at "+@phone+".</p>")
+    pdf.markup("<p>For enquiries, please contact "+@enquiry_person+" by email at "+@email+" or by phone at "+@phone+".</p>")
   end
 
   def generate_document_footer(pdf)
@@ -89,8 +96,14 @@ class ExampleStatementPdf < StatementPdf
     pdf.text "INVOICE", size: 13, font_style: :bold, align: :center
     pdf.move_down(5)
 
+    if @account.remittance_information.present?
+      @bill_to = @account.remittance_information
+    else
+      @bill_to = @account.owner.user.full_name(suspended_label: false)
+    end
+
     table_data = [["From:  " + @facility.name , ""],
-                  ["To:  " + @account.remittance_information , "Invoice No.: " + @invoice_number],
+                  ["To:  " + @bill_to , "Invoice No.: " + @invoice_number],
                   ["Attn: " + "#{@account.owner.user.full_name(suspended_label: false)}", "Date: " + "#{date}"]]
 
     pdf.table(table_data, :width => 500, :cell_style => { :inline_format => true }) do
@@ -122,11 +135,11 @@ class ExampleStatementPdf < StatementPdf
 
   end
 
-  def generate_remittance_information(pdf)
-    pdf.move_down(10)
-    pdf.text "Bill To:", font_style: :bold
-    pdf.text normalize_whitespace(@account.remittance_information)
-  end
+#  def generate_remittance_information(pdf)
+#    pdf.move_down(10)
+#    pdf.text "Bill To:", font_style: :bold
+#    pdf.text normalize_whitespace(@account.remittance_information)
+#  end
 
   def order_detail_headers
     ["Fulfillment Date", "Order", "Quantity", "Amount"]
