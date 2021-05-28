@@ -12,7 +12,6 @@ class ExampleStatementPdf < StatementPdf
     @bank_name = Settings.statement_pdf.bank_name
     @bank_account = Settings.statement_pdf.bank_account
     @payee = Settings.statement_pdf.payee
-
     @address_1 = @facility.address
 
     generate_document_header(pdf)
