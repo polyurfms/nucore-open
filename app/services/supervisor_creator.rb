@@ -21,7 +21,7 @@ class SupervisorCreator
 
   end
 
-  def initialize(user, last_name, first_name, email)
+  def self.create(user, last_name, first_name, email)
     @user = user
     @last_name = last_name
     @first_name = first_name
