@@ -7,15 +7,12 @@ class ExampleStatementPdf < StatementPdf
     @invoice_number = @statement.ref_no
     @enquiry_person = Settings.statement_pdf.enquiry_person
     @contact_name = Settings.statement_pdf.contact_name
-    @email = Settings.statement_pdf.email
-    @phone = Settings.statement_pdf.phone
+    @email = @facility.email
+    @phone = @facility.phone_number
     @bank_name = Settings.statement_pdf.bank_name
     @bank_account = Settings.statement_pdf.bank_account
     @payee = Settings.statement_pdf.payee
-
-    @address_1 = Settings.statement_pdf.address_1
-    @address_2 = Settings.statement_pdf.address_2
-    @address_3 = Settings.statement_pdf.address_3
+    @address_1 = @facility.address
 
     generate_document_header(pdf)
     # generate_contact_info(pdf) if @facility.has_contact_info?
@@ -47,15 +44,13 @@ class ExampleStatementPdf < StatementPdf
       pdf.markup("<p><strong> 1. By Cheque</strong></p>")
     end
 
-    pdf.move_down(20)
+#    pdf.move_down(20)
 
     pdf.indent(40) do
       pdf.markup("<p>Send a crossed cheque made payable to &ldquo;"+@payee+"&rdquo; to the following address and write the invoice no. <strong>"+@invoice_number+"</strong> at the back of the cheque.</p>")
       pdf.move_down(20)
       pdf.markup("<p>Address:</p>")
-      pdf.markup("<p>"+@address_1+"</p>")
-      pdf.markup("<p>"+@address_2+"</p>")
-      pdf.markup("<p>"+@address_3+"</p>")
+      pdf.markup(@address_1)
       pdf.markup("<p>Attn: "+@contact_name+"</p>")
     end
 
@@ -71,10 +66,10 @@ class ExampleStatementPdf < StatementPdf
       pdf.markup("<p>Bank Account No.: "+@bank_account+"</p>")
       pdf.markup("<p>Details of Payment: Please indicate the invoice no. <strong>"+@invoice_number+"</strong> for our reference.</p>")
       pdf.move_down(20)
-      pdf.markup("<p>After the payment, please send us a copy of the bank advice by email at <a href='mailto:"+@email+"' style='color:#0563c1; text-decoration:underline'>"+@email+"</a> for follow-up action.&nbsp;</p>")
+      pdf.markup("<p>After the payment, please send us a copy of the bank advice by email at <u>"+@email+"</u> for follow-up action.&nbsp;</p>")
     end
     pdf.move_down(10)
-    pdf.markup("<p>For enquiries, please contact "+@enquiry_person+" by email at "+@email+" or by phone at "+@phone+".</p>")
+    pdf.markup("<p>For enquiries, please contact "+@enquiry_person+" by email at <u>"+@email+"</u> or by phone at "+@phone+".</p>")
   end
 
   def generate_document_footer(pdf)
