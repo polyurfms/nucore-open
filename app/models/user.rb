@@ -235,7 +235,7 @@ class User < ApplicationRecord
   end
 
   def create_default_supervisor!
-    creator = SupervisorCreator.new(self, last_name, first_name, email)
+    creator = SupervisorCreator.create(self, last_name, first_name, email)
     creator.save()
   end
 
