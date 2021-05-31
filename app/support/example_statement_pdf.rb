@@ -7,12 +7,15 @@ class ExampleStatementPdf < StatementPdf
     @invoice_number = @statement.ref_no
     @enquiry_person = Settings.statement_pdf.enquiry_person
     @contact_name = Settings.statement_pdf.contact_name
-    @email = @facility.email
-    @phone = @facility.phone_number
+
+    @email = Settings.statement_pdf.email
+    @phone = Settings.statement_pdf.phone
     @bank_name = Settings.statement_pdf.bank_name
     @bank_account = Settings.statement_pdf.bank_account
     @payee = Settings.statement_pdf.payee
-    @address_1 = @facility.address
+    @address_1 = Settings.statement_pdf.address_1
+    @address_2 = Settings.statement_pdf.address_2
+    @address_3 = Settings.statement_pdf.address_3
 
     generate_document_header(pdf)
     # generate_contact_info(pdf) if @facility.has_contact_info?
@@ -50,7 +53,9 @@ class ExampleStatementPdf < StatementPdf
       pdf.markup("<p>Send a crossed cheque made payable to &ldquo;"+@payee+"&rdquo; to the following address and write the invoice no. <strong>"+@invoice_number+"</strong> at the back of the cheque.</p>")
       pdf.move_down(20)
       pdf.markup("<p>Address:</p>")
-      pdf.markup(@address_1)
+      pdf.markup("<p>"+@address_1+"</p>")
+      pdf.markup("<p>"+@address_2+"</p>")
+      pdf.markup("<p>"+@address_3+"</p>")
       pdf.markup("<p>Attn: "+@contact_name+"</p>")
     end
 
