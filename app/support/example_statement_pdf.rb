@@ -7,6 +7,7 @@ class ExampleStatementPdf < StatementPdf
     @invoice_number = @statement.ref_no
     @enquiry_person = Settings.statement_pdf.enquiry_person
     @contact_name = Settings.statement_pdf.contact_name
+
     @email = Settings.statement_pdf.email
     @phone = Settings.statement_pdf.phone
     @bank_name = Settings.statement_pdf.bank_name
@@ -15,7 +16,6 @@ class ExampleStatementPdf < StatementPdf
     @address_1 = Settings.statement_pdf.address_1
     @address_2 = Settings.statement_pdf.address_2
     @address_3 = Settings.statement_pdf.address_3
-
 
     generate_document_header(pdf)
     # generate_contact_info(pdf) if @facility.has_contact_info?
