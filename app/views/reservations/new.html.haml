@@ -30,7 +30,7 @@
   = render "reservations/account_field", f: f unless @order_detail.bundled?
   = render "reservations/reservation_fields", f: f
 
-  - if session_user.administrator?
+  - unless session_user.is_normal_user?
     .row
       .span4
         = f.input :reference_id
