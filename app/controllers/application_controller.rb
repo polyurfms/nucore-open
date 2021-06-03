@@ -92,9 +92,9 @@ class ApplicationController < ActionController::Base
       if session[:had_supervisor] == 0
         #Check role
         if (session_user.is_academic == true)
-          @user = User.find(session_user[:id])
+          #@user = User.find(session_user[:id])
           #@user.update_attributes(supervisor: @user.username)
-          @user.create_default_supervisor!                
+          session_user.create_default_supervisor!                
           session[:had_supervisor] = 1
           redirect_to '/facilities'
         else
