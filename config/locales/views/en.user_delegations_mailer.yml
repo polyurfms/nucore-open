@@ -1,11 +1,11 @@
 en:
   views:
     user_delegation:
-        subject:  "URFMS delegate assinged "
+        subject:  "URFMS assistant assinged "
         body: |
-          Dear %{delegator_name}, 
+          Dear %{delegator_name},
 
-          Please note that you have assigned %{delegatee_name} as your delegate. He/She can :
+          Please note that you have assigned %{delegatee_name} as your assistant. He/She can :
 
           (1) Sign the facilities Terms and Conditions on behalf of you
 
