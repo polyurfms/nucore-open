@@ -1,7 +1,9 @@
 en:
   views:
     user_delegation:
-      header: My Delegation 
+      header: My Assistant
+      delegatee: NetID of My Assistant
+      submit: Assign
       table:
         name: "NetID"
         date: "Assign date"

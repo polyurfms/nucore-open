@@ -53,9 +53,9 @@ class UserDelegationsController < ApplicationController
   def index
     @user_delegation = UserDelegation.new
     @user_id = session[:acting_user_id] || session_user[:id]
-#    @user_id = session_user[:id]    
+#    @user_id = session_user[:id]
     @current_type = "my_delegation"
-    
+
     # @assigned_list = UserDelegation.find_by ("delegator = #{session_user[:id]} AND deleted_at IS NULL " )
     @assigned_list ||= UserDelegation.where(delegator: session[:acting_user_id] || session_user[:id], deleted_at: nil)
 
@@ -73,9 +73,9 @@ class UserDelegationsController < ApplicationController
     @user_id = session_user[:id]
     @count ||= User.check_academic_user_and_payment_source(@user_id).count
     @current_type = "my_delegation"
-    
+
     @delegate_info = user_delegation_params
-    
+
     # delegatee = service_username_lookup(@delegate_info["delegatee"].strip)
     delegatee= User.find_by(username: @delegate_info["delegatee"].strip)
     # delegator = User.find(session_user[:id])
@@ -85,14 +85,14 @@ class UserDelegationsController < ApplicationController
 
     if (delegatee.nil? || delegator.nil?)
       # flash[:error] = text("#{@delegate_info["delegatee"].strip} cannot be found") if delegatee.nil?
-      flash[:error] = text("User cannot found") if delegatee.nil?
+      flash[:error] = text(" User not found ") if delegatee.nil?
     elsif (delegatee.username.eql?(delegator.username))
-      flash[:error] = text("delegator cannot be delegatee")
-    else 
+      flash[:error] = text(" Cannot assign yourself ")
+    else
       @user_delegation_list ||= UserDelegation.where(delegatee: delegatee.username, delegator: delegator.id, deleted_at: nil).count
 
       if (@user_delegation_list > 0)
-        flash[:error] = text("#{delegatee.username} has been delegated")
+        flash[:error] = text("#{delegatee.username} has been assigned")
       elsif (!delegatee.user_type.eql?("Staff"))
         flash[:error] = "Invalid user"
       else
@@ -100,11 +100,11 @@ class UserDelegationsController < ApplicationController
         if @user_delegation.save
           LogEvent.log(@user_delegation, :create, delegator)
           UserDelegationMailer.notify(delegatee.first_name + " " + delegatee.last_name, delegator.email,  delegator.first_name+ " " + delegator.last_name).deliver_later
-          flash[:notice] = text("#{@user_delegation.delegatee} delegated")
+          flash[:notice] = text("#{@user_delegation.delegatee} assigned")
           has_error = false
           redirect_to action: :index
         else
-          flash[:error] = text("#{delegatee.username} could not be delegated")
+          flash[:error] = text("#{delegatee.username} could not be assigned")
         end
       end
     end
@@ -135,9 +135,9 @@ class UserDelegationsController < ApplicationController
         user_delegation.deleted_by =  session[:acting_user_id] || session_user[:id]
         if user_delegation.save
           LogEvent.log(user_delegation, :delete, delegator)
-          flash[:notice] = "Delegate #{user_delegation.delegatee} was removed."
+          flash[:notice] = "Assistant #{user_delegation.delegatee} was removed."
         else
-          flash[:error] = "Delegatee #{user_delegation.delegatee} could not be removed"
+          flash[:error] = "Assistant #{user_delegation.delegatee} could not be removed"
         end
       end
     end
