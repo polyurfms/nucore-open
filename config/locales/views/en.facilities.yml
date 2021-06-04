@@ -3,7 +3,7 @@ en:
     facilities:
       index:
         welcome: |
-          Welcome to the <b>U</b>niversity <b>R</b>esearch <b>F</b>acility <b>M</b>anagement <b>S</b>ystem (!app_name!).  Please select the URFs below to view and research facilities offered by the URFs.
+          Welcome to the <b>U</b>niversity <b>R</b>esearch <b>F</b>acility <b>M</b>anagement <b>S</b>ystem (!app_name!).  Please select the URF(s) below to view and reserve facilities offered by the URF(s).
       recently_used_facilities:
         title: Recently Used !Facilities!
       recently_used_products:
