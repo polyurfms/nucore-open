@@ -177,7 +177,7 @@ order_detail_price_change_reason_options: ~
 google_analytics_key: ~
 
 send_payment_source_requests: <%= 12.hours %>
-fip_url: ~
+fip_url: http://www.google.com
 
 research_project_affiliate_id: 3
 
