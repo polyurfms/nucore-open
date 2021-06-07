@@ -42,8 +42,6 @@
     %p Confirm create request?
     %button{:onclick => "ConfirmYes()", :type => "button", :class => "btn btn-primary"} Yes
     %button{:onclick => "ConfirmNo()", :type => "button", :class => "btn btn-primary"} No
-
-
 <br>
 <br>
 
@@ -54,6 +52,10 @@
     = f.hidden_field :account_id ,  value: @account.id
     %button{:onclick => "PopUpMessage()", :type => "button", :class => "btn btn-primary"} New request
     = f.submit t(".new_request"), class: "btn btn-primary",id:"submitBtn",style:"display:none"
+
+<p> Note : It would take 1-2 hours for the Finance Office to process your funding request(s) during the office hours.  You will be notified by email once the request is processed. </p>
+<br>
+
 -if !is_allow_request
   <div class="notice">
   %h4= t(".message.in_progress")
