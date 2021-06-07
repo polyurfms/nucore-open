@@ -6,6 +6,6 @@
   %ul.nav.nav-tabs
     = tab "My Profile", edit_current_profile_path, (@current_type == "my_profile")
     - if @count > 0
-      = tab "My Delegation", user_delegations_path, (@current_type == "my_delegation")
+      = tab "My Assistant", user_delegations_path, (@current_type == "my_delegation")
 
 = render "my_profile", users: @user
