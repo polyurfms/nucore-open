@@ -8,7 +8,9 @@
     - if (is_sort == "1")
       %tr
         - if(!is_insufficient_fund)
-          -if @order_detail_action or @order_detail_link
+          -if @order_detail_action
+            %th
+          -if @order_detail_link
             %th
         -# %th= sortable "order_number", Order.model_name.human
         -# %th= OrderDetail.model_name.human
@@ -28,10 +30,12 @@
         %th= sortable "status",OrderDetail.human_attribute_name("order_status")
         - if local_assigns[:show_statements]
           %th= Statement.model_name.human
-    -else 
+    -else
       %tr
         - if(!is_insufficient_fund)
-          -if @order_detail_action or @order_detail_link
+          -if @order_detail_action
+            %th
+          -if @order_detail_link
             %th
         -# %th= sortable "order_number", Order.model_name.human
         -# %th= OrderDetail.model_name.human
@@ -62,9 +66,9 @@
           - if @order_detail_action
             %td= check_box_tag "order_detail_ids[]", order_detail.id, false, {:class => 'toggle'}
             - colspan_for_total += 1
-        - if @order_detail_link
-          %td.nowrap= link_to @order_detail_link[:text], @order_detail_link[:proc].call(order_detail) if @order_detail_link[:display?].call(order_detail)
-          - colspan_for_total += 1
+          - if @order_detail_link
+            %td.nowrap= link_to @order_detail_link[:text], @order_detail_link[:proc].call(order_detail) if @order_detail_link[:display?].call(order_detail)
+            - colspan_for_total += 1
         - if backend?
           %td.nowrap= link_to order_detail.order.id, facility_order_path(order_detail.order.facility, order_detail.order)
           %td.nowrap= link_to order_detail.id, manage_order_detail_path(order_detail), :class => 'manage-order-detail'
