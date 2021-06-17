@@ -39,6 +39,10 @@ module SamlAuthentication
           allowed_clock_drift: Devise.allowed_clock_drift_in_seconds,
         ).issuers.first
       end
+
+      resuce => e
+        nil
+      end
     end
 
   end
