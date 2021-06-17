@@ -26,20 +26,20 @@ module SamlAuthentication
 
     # Copied rather than inherited from default class for clarity.
     def self.original_implementation(params)
-      if params[:SAMLRequest]
-        OneLogin::RubySaml::SloLogoutrequest.new(
-          params[:SAMLRequest],
-          settings: Devise.saml_config,
-          allowed_clock_drift: Devise.allowed_clock_drift_in_seconds,
-        ).issuer
-      elsif params[:SAMLResponse]
-        OneLogin::RubySaml::Response.new(
-          params[:SAMLResponse],
-          settings: Devise.saml_config,
-          allowed_clock_drift: Devise.allowed_clock_drift_in_seconds,
-        ).issuers.first
-      end
-
+      begin
+        if params[:SAMLRequest]
+          OneLogin::RubySaml::SloLogoutrequest.new(
+            params[:SAMLRequest],
+            settings: Devise.saml_config,
+            allowed_clock_drift: Devise.allowed_clock_drift_in_seconds,
+          ).issuer
+        elsif params[:SAMLResponse]
+          OneLogin::RubySaml::Response.new(
+            params[:SAMLResponse],
+            settings: Devise.saml_config,
+            allowed_clock_drift: Devise.allowed_clock_drift_in_seconds,
+          ).issuers.first
+        end
       resuce => e
         nil
       end
