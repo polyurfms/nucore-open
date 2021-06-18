@@ -42,6 +42,10 @@ module SamlAuthentication
         attributes["first_name"] = " "
       end
 
+      if attributes["first_name"].nil?
+        attributes["first_name"] = " "
+      end
+
       user.update!(attributes)
 
       if user.sign_in_count == 0
