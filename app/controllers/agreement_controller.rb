@@ -1,15 +1,21 @@
 
 class AgreementController <  ApplicationController
- 
+
+  before_action :authenticate_user!
+
   # GET /agreement
   def index
-    @is_admin = session_user.administrator? ? true : false 
+    if have_global_agreement?
+      redirect_to '/facilities'
+    else
+      @is_admin = session_user.administrator? ? true : false
+    end
   end
 
-  def show 
-    if session[:facility_url_name].nil? || session[:product_url_name].nil? 
+  def show
+    if session[:facility_url_name].nil? || session[:product_url_name].nil?
       raise ActiveRecord::RecordNotFound
-    else 
+    else
       @product = Product.find_by(url_name:session[:product_url_name])
       @facility = Facility.find_by(id: @product.facility_id)
       is_agree = UserAgreementFinder.new(session[:acting_user_id] || session_user.id, session[:facility_url_name], session[:product_url_name]).check_agreement
@@ -18,18 +24,18 @@ class AgreementController <  ApplicationController
           session[:facility_agreement_list].push(@facility.id)
         end
         case @product.type
-        when "Item"   
+        when "Item"
           redirect_to facility_item_path(@facility , @product)
-        when "Service"  
+        when "Service"
           redirect_to facility_service_path(@facility , @product)
-        when "Instrument"    
+        when "Instrument"
           redirect_to new_facility_instrument_single_reservation_path(@facility , @product)
-        when "Bundle"    
+        when "Bundle"
           redirect_to facility_bundle_path(@facility , @product)
         else
           raise ActiveRecord::RecordNotFound
         end
-        
+
         session[:facility_url_name] = nil
         session[:product_url_name] = nil
       else
@@ -40,42 +46,42 @@ class AgreementController <  ApplicationController
 
   def agree
     facility_id = agreement_params
-    
+
     if facility_id.nil?
       flash[:error] = text("Error")
-      redirect_to "/" 
-    else 
+      redirect_to "/"
+    else
       @facility = Facility.find_by(id: facility_id)
       @product = Product.find_by(url_name: session[:product_url_name])
       # user = User.find(session_user[:id])
-      
+
       @agreement = UserAgreement.new()
       @agreement.user_id = session[:acting_user_id] || session_user.id
       @agreement.accept = true
       @agreement.facility_id = @facility.id
-      
+
       if @agreement.save
         session[:facility_agreement_list].push(@facility.id)
         session[:facility_url_name] = nil
         session[:product_url_name] = nil
         case @product.type
-        when "Item"   
+        when "Item"
           redirect_to facility_item_path(@facility , @product)
-        when "Service"  
+        when "Service"
           redirect_to facility_service_path(@facility , @product)
-        when "Instrument"    
+        when "Instrument"
           redirect_to new_facility_instrument_single_reservation_path(@facility , @product)
-        when "Bundle"    
+        when "Bundle"
           redirect_to facility_bundle_path(@facility , @product)
         else
           raise ActiveRecord::RecordNotFound
         end
       else
         flash[:error] = text("Error")
-        redirect_to "/" 
+        redirect_to "/"
       end
     end
-   
+
 
   end
 
@@ -83,5 +89,16 @@ class AgreementController <  ApplicationController
     return params.permit(:facility)["facility"]
   end
 
-  
+  def have_global_agreement?
+    puts "check_global_agreement starts"
+    is_agreed = true
+    @user_agreement = UserAgreement.where(facility_id: nil, user_id: session[:acting_user_id] || session_user.id)
+
+    if @user_agreement.count < 1
+        is_agreed = false
+    end
+    return is_agreed
+
+  end
+
  end
