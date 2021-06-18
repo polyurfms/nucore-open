@@ -37,6 +37,15 @@ module SamlAuthentication
         end
       end
 
+      #in case user do not have first name, set it to empty space to pass validation
+      unless attributes.key?("first_name")
+        attributes["first_name"] = " "
+      end
+
+      if attributes["first_name"].nil?
+        attributes["first_name"] = " "
+      end
+
       user.update!(attributes)
 
       if user.sign_in_count == 0
