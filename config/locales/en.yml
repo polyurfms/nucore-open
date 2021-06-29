@@ -926,6 +926,8 @@ en:
     new:
       label:
         search_term: "Search by name, NetID, or username"
+    table:
+      date_added: Date Added
 
   user_price_group_members:
     new:
@@ -1187,6 +1189,7 @@ en:
       training_requested: Training Requested
       update_approvals:
         submit: "Update Access List"
+      date_added: "Date Added"
 
     new_external:
       head: "Add External User"
