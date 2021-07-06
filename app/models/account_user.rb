@@ -60,7 +60,7 @@ class AccountUser < ApplicationRecord
   def self.selectable_user_roles(granting_user = nil, facility = nil)
     case
     when granting_user.blank? || facility.blank?
-      default_roles
+      user_roles - [ACCOUNT_OWNER]
     when granting_user.account_manager? || granting_user.manager_of?(facility)
       user_roles
     else
