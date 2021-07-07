@@ -705,6 +705,7 @@ en:
         failded_code : "FAILED"
         failded_string : "Failed"
       table:
+        ref_no : "Ref. No."
         date : "Date"
         transaction_date: Transaction Date
         type : "Top Up / Release"
