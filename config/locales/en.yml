@@ -245,6 +245,8 @@ en:
         expense_amt: Expense
         quota_balance: Quota balance
       save: Save
+      submit: submit
+      download_link: Right-click and choose 'save target' to download import template
     allocation:
       save: Save
       committed_amt: "Committed Amount: %{committed_amt}"
@@ -1410,6 +1412,8 @@ en:
     member_table:
       add_access: Add Access
       remove_access: Remove Access
+      submit: submit
+      download_link: Right-click and choose 'save target' to download import template
       th:
         # name: Name (username)
         name: Name (Net ID)
@@ -1457,3 +1461,6 @@ en:
         expense_amt: Expense
         quota_balance: Quota balance
       save: Save
+      submit: submit
+      download_link: Right-click and choose 'save target' to download import template
+

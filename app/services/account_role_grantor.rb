@@ -37,6 +37,34 @@ class AccountRoleGrantor
     account_user
   end
 
+  def create_member(user, role, quota)
+    account_user = nil
+
+    begin
+      AccountUser.transaction do
+        # Remove the old owner if we're assigning a new one
+        destroy(account.owner) if role == AccountUser::ACCOUNT_OWNER
+
+        # Delete any previous role the user might have had
+        old_account_user = AccountUser.find_by(account: account, user: user, deleted_at: nil)
+        # destroy(old_account_user)
+        account_user = account.account_users.build(
+          account: account,
+          user: user,
+          deleted_at: nil,
+          user_role: role,
+          created_by_user: by,
+          allocation_amt: quota,
+        )
+
+        account_user.save!
+      end
+    rescue ActiveRecord::RecordInvalid # rubocop:disable Lint/HandleExceptions
+      # do nothing
+    end
+    account_user
+  end
+
   private
 
   def destroy(account_user)

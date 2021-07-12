@@ -82,6 +82,10 @@ class AccountUser < ApplicationRecord
     AccountRoleGrantor.new(account, by: by).grant(user, role)
   end
 
+  def self.create_member(quota = 0, user, role, account, by:)
+    AccountRoleGrantor.new(account, by: by).create_member(user, role, quota)
+  end
+
   def can_administer?
     deleted_at.nil? && AccountUser.admin_user_roles.any? { |r| r == user_role }
   end

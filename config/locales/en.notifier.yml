@@ -106,3 +106,19 @@ en:
         #   The following user %{user} has been added to your payment source "%{account}" by administrator %{created_by}.
 
         #   If this is incorrect you may [log in to !app_name!](%{login_url}) and remove this user or contact the administrator named above.
+
+      send_payment_source_import_error_mail:
+        subject: "[%{account}] %{status} payment source user error"
+        body: |
+          Hello %{upload_csv_user},
+
+          The following list of user encountered import error:
+          %{error_user_list}
+
+          Thank you.
+          
+          University Research Facility Management System
+
+
+       
+       
