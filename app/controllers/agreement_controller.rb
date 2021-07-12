@@ -52,37 +52,40 @@ class AgreementController <  ApplicationController
       redirect_to "/"
     else
       @facility = Facility.find_by(id: facility_id)
-      @product = Product.find_by(url_name: session[:product_url_name])
-      # user = User.find(session_user[:id])
 
-      @agreement = UserAgreement.new()
-      @agreement.user_id = session[:acting_user_id] || session_user.id
-      @agreement.accept = true
-      @agreement.facility_id = @facility.id
+      if session[:facility_agreement_list].include?(@facility.id)
+        redirect_to facility_path(@facility)
+      else 
+        @product = Product.find_by(url_name: session[:product_url_name])
+        # user = User.find(session_user[:id])
 
-      if @agreement.save
-        session[:facility_agreement_list].push(@facility.id)
-        session[:facility_url_name] = nil
-        session[:product_url_name] = nil
-        case @product.type
-        when "Item"
-          redirect_to facility_item_path(@facility , @product)
-        when "Service"
-          redirect_to facility_service_path(@facility , @product)
-        when "Instrument"
-          redirect_to new_facility_instrument_single_reservation_path(@facility , @product)
-        when "Bundle"
-          redirect_to facility_bundle_path(@facility , @product)
+        @agreement = UserAgreement.new()
+        @agreement.user_id = session[:acting_user_id] || session_user.id
+        @agreement.accept = true
+        @agreement.facility_id = @facility.id
+
+        if @agreement.save
+          session[:facility_agreement_list].push(@facility.id)
+          session[:facility_url_name] = nil
+          session[:product_url_name] = nil
+          case @product.type
+          when "Item"
+            redirect_to facility_item_path(@facility , @product)
+          when "Service"
+            redirect_to facility_service_path(@facility , @product)
+          when "Instrument"
+            redirect_to new_facility_instrument_single_reservation_path(@facility , @product)
+          when "Bundle"
+            redirect_to facility_bundle_path(@facility , @product)
+          else
+            raise ActiveRecord::RecordNotFound
+          end
         else
-          raise ActiveRecord::RecordNotFound
+          flash[:error] = text("Error")
+          redirect_to "/"
         end
-      else
-        flash[:error] = text("Error")
-        redirect_to "/"
       end
     end
-
-
   end
 
   def agreement_params
