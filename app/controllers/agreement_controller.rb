@@ -29,7 +29,8 @@ class AgreementController <  ApplicationController
         when "Service"
           redirect_to facility_service_path(@facility , @product)
         when "Instrument"
-          redirect_to new_facility_instrument_single_reservation_path(@facility , @product)
+          redirect_to facility_instrument_path(@facility , @product)
+          # redirect_to new_facility_instrument_single_reservation_path(@facility , @product)
         when "Bundle"
           redirect_to facility_bundle_path(@facility , @product)
         else
@@ -74,7 +75,8 @@ class AgreementController <  ApplicationController
           when "Service"
             redirect_to facility_service_path(@facility , @product)
           when "Instrument"
-            redirect_to new_facility_instrument_single_reservation_path(@facility , @product)
+            redirect_to facility_instrument_path(@facility , @product)
+            # redirect_to new_facility_instrument_single_reservation_path(@facility , @product)
           when "Bundle"
             redirect_to facility_bundle_path(@facility , @product)
           else
