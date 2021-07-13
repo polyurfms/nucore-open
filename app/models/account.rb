@@ -53,6 +53,8 @@ class Account < ApplicationRecord
     where(id: OrderDetail.for_facility(facility).select(:account_id).distinct)
   }
 
+  before_validation :strip_blanks
+
   validates_presence_of :account_number, :description, :expires_at, :created_by, :type
   validates_length_of :description, maximum: 50
 
@@ -297,4 +299,11 @@ class Account < ApplicationRecord
   def has_sufficient_fund?
     committed_amt > total_expense
   end
+
+  protected
+
+  def strip_blanks
+    self.account_number = self.account_number.strip
+  end
+
 end
