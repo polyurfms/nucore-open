@@ -18,7 +18,9 @@ class ReservationCreator
       return false
     end
 
-    if params[:reserve_end_minute].blank? || params[:reserve_start_minute].blank?
+    reservation_param = params[:reservation]
+
+    if reservation_param[:reserve_end_min].blank? || reservation_param[:reserve_start_min].blank?
       @error = I18n.t("controllers.reservations.create.invalid_start_end_time")
       return false
     end
