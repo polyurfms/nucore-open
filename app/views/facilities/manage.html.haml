@@ -16,12 +16,13 @@
   = f.input :dashboard_enabled, label: text("views.facilities.facility_fields.labels.dashboard_enabled")
   = render_view_hook("before_is_active", f: f)
   = f.input :is_active
-  = f.input :address, value_method: proc { |value| value.present? ? simple_format(value) : '<p>None Entered</p>'.html_safe }
-  = f.input :phone_number, default_value: "None Entered"
-  = f.input :fax_number, default_value: "None Entered"
-  = f.input :email, default_value: "None Entered"
-  - if SettingsHelper.feature_on?(:facility_payment_urls)
-    = f.input :payment_url
+  -# comment out billing info
+    = f.input :address, value_method: proc { |value| value.present? ? simple_format(value) : '<p>None Entered</p>'.html_safe }
+    = f.input :phone_number, default_value: "None Entered"
+    = f.input :fax_number, default_value: "None Entered"
+    = f.input :email, default_value: "None Entered"
+    - if SettingsHelper.feature_on?(:facility_payment_urls)
+      = f.input :payment_url
   = f.input :journal_mask
   = f.input :order_notification_recipient, default_value: "None Entered"
 
