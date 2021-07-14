@@ -2,7 +2,9 @@
 - if f.object.actual_cost?
   .cost-table
     .cost= f.input :actual_cost, as: :currency
-    .subsidy=  f.input :actual_subsidy, as: :currency, disabled: !f.object.price_policy.try(:has_subsidy?), hint: "#{f.object.price_policy.try(:price_group)}"
+    -# .subsidy=  f.input :actual_subsidy, as: :currency, disabled: !f.object.price_policy.try(:has_subsidy?), hint: "#{f.object.price_policy.try(:price_group)}"
+    .subsidy=  f.input :actual_subsidy, as: :currency
+    .adjust= f.input :adjust_cost, as: :currency
     .total= f.input :actual_total, as: :currency, disabled: true
 
 - else

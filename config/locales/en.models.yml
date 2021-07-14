@@ -324,6 +324,7 @@ en:
         actual_subsidy: Subsidy
         actual_max_cost: Maximum Cost/Day
         actual_total: Total
+        adjust_cost: Adjust
         assigned_user: Assigned Staff
         created_by_user: Ordered By
         description: Description

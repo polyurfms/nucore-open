@@ -89,9 +89,10 @@ class OrderDetailManagement
 
   initTotalCalculating: ->
     self = this
-    $('.cost-table .cost, .cost-table .subsidy').change ->
+    $('.cost-table .cost, .cost-table .subsidy, .cost-table .adjust').change ->
       row = $(this).closest('.cost-table')
-      total = row.find('.cost input').val() - row.find('.subsidy input').val()
+      adjust =  parseFloat( row.find('.adjust input').val());
+      total = (row.find('.cost input').val() - row.find('.subsidy input').val()) + adjust
       row.find('.total input').val(total.toFixed(2))
       self.notify_of_update $(row).find('input[name*=total]')
 

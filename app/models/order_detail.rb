@@ -499,7 +499,7 @@ class OrderDetail < ApplicationRecord
   end
 
   def actual_total
-    actual_cost - actual_subsidy if actual_cost && actual_subsidy
+    actual_cost - actual_subsidy + adjust_cost if actual_cost && actual_subsidy && adjust_cost
   end
 
   def estimated_total
@@ -700,6 +700,7 @@ class OrderDetail < ApplicationRecord
     return unless costs
     self.price_policy_id = pp.id
     self.actual_cost     = costs[:cost]
+    self.adjust_cost     = costs[:adjust]
     self.actual_subsidy  = costs[:subsidy]
     pp
   end
@@ -995,6 +996,7 @@ class OrderDetail < ApplicationRecord
     if calculator.costs.present?
       assign_attributes(
         actual_cost: calculator.costs[:cost],
+        adjust_cost: calculator.costs[:adjust],
         actual_subsidy: calculator.costs[:subsidy],
       )
     end
@@ -1016,6 +1018,7 @@ class OrderDetail < ApplicationRecord
 
   def clear_costs
     self.actual_cost     = nil
+    self.adjust_cost     = nil
     self.actual_subsidy  = nil
     self.price_policy_id = nil
   end
