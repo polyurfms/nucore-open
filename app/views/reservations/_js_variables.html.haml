@@ -14,3 +14,4 @@
   var reserveMaximum  = #{@instrument.max_reserve_mins || 0};
   var instrumentOnline = #{@instrument.online?};
   var initialDate = "#{@reservation&.reserve_start_at&.iso8601}";
+  var slotDuration = "00:"+#{@instrument.reserve_interval == 60? 60:30}+":00";

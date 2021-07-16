@@ -1,6 +1,7 @@
 $(document).ready(function() {
   init_datepickers();
   new ReservationCalendar().init($("#calendar"), $(".js--reservationForm"));
+  $('#calendar').fullCalendar('option','slotDuration',slotDuration);
 
   // initialize datepicker
   function init_datepickers() {
@@ -52,4 +53,3 @@ $(document).ready(function() {
   $('.copy_actual_from_reservation a').click(copyReservationTimeIntoActual);
 
 });
-
