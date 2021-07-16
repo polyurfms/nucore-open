@@ -181,5 +181,8 @@ fip_url: http://www.google.com
 
 research_project_affiliate_id: 3
 
+# allow_affiliate: Dept
+allow_affiliate: PGMS
+
 uat:
   email: ~

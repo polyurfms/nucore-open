@@ -96,8 +96,9 @@ class Reports::PaymentSourceUserImport
           if !@user.nil? && !@user.blank? && (@quota == 0 || @quota.match(/\A-?+(?=.??\d)\d*\.?\d*\z/) )
             @account_user = AccountUser.find_by(account: @account, user: @user, deleted_at: nil)
             unless @account_user.nil? && @user.blank?
-              h = {:allocation_amt => @quota, :id => @account_user.id}
-              @account_user_list[@account_user.id] = h
+              h = {:allocation_amt => @quota, :id => @account_user.id} if !@account_user.user_role.eql?("Owner")
+              @account_user_list[@account_user.id] = h if !@account_user.user_role.eql?("Owner")
+              error_user_list(@netid) if @account_user.user_role.eql?("Owner")
             else 
               error_user_list(@netid) unless @netid == ""
             end

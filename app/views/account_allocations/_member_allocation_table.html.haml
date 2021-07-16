@@ -2,9 +2,11 @@
 
 -# - if @account.allows_allocation
 - if !@account_users.empty?
-  - if !@account.affiliate.nil? && @account.affiliate.name.include?('PGMS') && @account.type == "NufsAccount"
+  - if !@account.affiliate.nil? && @account.affiliate.name.include?(Settings.allow_affiliate) && @account.type == "NufsAccount"
     = simple_form_for AccountUser.new, url: { action: :import_user}, html: { multipart: true } do |f|
       .well.well-small#bulk-import-fields
+        %h4
+          %b= t(".title")
         .pull-right
           = link_to t(".download_link"), export_user_account_account_allocations_path(format: "csv"), id: "bulk-import-template"
         = f.file_field :file
