@@ -1,7 +1,7 @@
 - can_edit_accounts = SettingsHelper.feature_on? :edit_accounts
 
 -# - if @account.allows_allocation
-- if !@account_users.empty?
+- if @account.allows_allocation?
   - if !@account.affiliate.nil? && @account.affiliate.name.include?(Settings.allow_affiliate) && @account.type == "NufsAccount"
     = simple_form_for AccountUser.new, url: { action: :import_user}, html: { multipart: true } do |f|
       .well.well-small#bulk-import-fields
