@@ -297,7 +297,7 @@ class Account < ApplicationRecord
   end
 
   def has_sufficient_fund?
-    committed_amt > total_expense
+    committed_amt >= total_expense
   end
 
   protected
