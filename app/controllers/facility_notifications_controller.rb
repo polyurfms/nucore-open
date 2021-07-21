@@ -69,6 +69,8 @@ class FacilityNotificationsController < ApplicationController
   def in_review
     order_details = OrderDetail.in_review.for_facility(current_facility)
 
+    @payment_type_filter = true
+
     @search_form = TransactionSearch::SearchForm.new(params[:search])
     
     @search_form.date_range_start = @search_form.date_range_start unless @search_form.date_range_start.nil?

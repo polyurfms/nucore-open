@@ -406,6 +406,7 @@ en:
     order_for_journal:
       head:
         h2: "Order for journal"
+      no_transactions: "There are no transactions"
 
 
 
@@ -1155,6 +1156,7 @@ en:
       instrument_reports:
         between: Fulfilled between
       billing_status: Billing Status
+      payment_type: Payment Type
       date_start: Start Date
       date_end: End Date
       auto_cancel_name: 'Auto Cancel'

@@ -8,7 +8,7 @@ module TransactionSearch
 
     include DateHelper
 
-    attr_accessor :date_range_field, :date_range_start, :date_range_end, :allowed_date_fields
+    attr_accessor :date_range_field, :date_range_start, :date_range_end, :allowed_date_fields, :payment_type_field, :payment_type_fields
     attr_accessor :facilities, :accounts, :products, :account_owners,
                   :order_statuses, :statements, :date_ranges, :ordered_fors
 
@@ -41,6 +41,7 @@ module TransactionSearch
         field: date_range_field,
         start: start_d,
         end: end_d,
+        payment_type_field: payment_type_field,
       }
     end
 
@@ -50,6 +51,8 @@ module TransactionSearch
       {
         date_range_field: "fulfilled_at",
         allowed_date_fields: TransactionSearch::DateRangeSearcher::FIELDS,
+        payment_type_field: "all",
+        payment_type_fields: TransactionSearch::DateRangeSearcher::PAYMENT_TYPE_FIELDS,
       }
     end
 

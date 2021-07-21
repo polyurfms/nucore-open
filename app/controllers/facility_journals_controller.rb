@@ -33,6 +33,9 @@ class FacilityJournalsController < ApplicationController
   raise ActiveRecord::RecordNotFound if current_facility.cross_facility?
 
   order_details = OrderDetail.for_facility(current_facility).need_journal
+
+  @payment_type_filter = true
+
   @search_form = TransactionSearch::SearchForm.new(params[:search])
 
   @search_form.date_range_start = @search_form.date_range_start unless @search_form.date_range_start.nil?

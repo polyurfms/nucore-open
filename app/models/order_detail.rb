@@ -313,10 +313,10 @@ class OrderDetail < ApplicationRecord
     action_in_date_range :fulfilled_at, start_date, end_date
   }
 
-  scope :action_in_date_range, lambda { |action, start_date, end_date|
+  scope :action_in_date_range, lambda { |action, start_date, end_date, type|
     valid = TransactionSearch::DateRangeSearcher::FIELDS.map(&:to_sym) + [:journal_date]
     raise ArgumentError.new("Invalid action: #{action}. Must be one of: #{valid}") unless valid.include? action.to_sym
-    logger.debug("searching #{action} between #{start_date} and #{end_date}")
+    logger.debug("searching #{action} and account type #{type} between #{start_date} and #{end_date}")
     search = all
 
     return journaled_or_statemented_in_date_range(start_date, end_date) if action.to_sym == :journal_or_statement_date
@@ -327,6 +327,9 @@ class OrderDetail < ApplicationRecord
 
     search = search.where("#{action} >= ?", start_date.beginning_of_day) if start_date
     search = search.where("#{action} <= ?", end_date.end_of_day) if end_date
+    search = search.joins(:account).where("accounts.type = ?", "NufsAccount") if type.eql?("charge")
+    search = search.joins(:account).where("accounts.type = ?", "ChequeOrOtherAccount") if type.eql?("cheque")
+
     search
   }
 
