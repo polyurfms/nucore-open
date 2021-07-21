@@ -26,15 +26,15 @@
   %p= text(".inactive")
   = f.input :is_active, as: :boolean, label: false, inline_label: text(".labels.is_active")
 
--# Comment out billing info
-  .well
-    %p= text(".contact")
-    = f.input :address, input_html: { cols: 46, rows: 5 }
-    = f.input :phone_number
-    = f.input :fax_number
-    = f.input :email
-    - if SettingsHelper.feature_on?(:facility_payment_urls)
-      = f.input :payment_url
+
+.well
+  %p= text(".contact")
+  = f.input :address, input_html: { cols: 46, rows: 5 }
+  = f.input :phone_number
+  = f.input :fax_number
+  = f.input :email
+  - if SettingsHelper.feature_on?(:facility_payment_urls)
+    = f.input :payment_url
 
 .well
   %p= text(".order_notification")
