@@ -16,7 +16,7 @@ class OrderDetails::PriceChecker
 
     fields = [:estimated_cost, :estimated_subsidy, :estimated_total,
               :actual_cost,    :actual_subsidy,    :actual_total,
-              :adjust_cost]
+              :actual_adjustment]
 
     results = fields.collect { |f| [f, number_with_precision(@order_detail.send(f), precision: 2)] }
 
