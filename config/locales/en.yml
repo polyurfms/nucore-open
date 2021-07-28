@@ -1413,7 +1413,7 @@ en:
     member_table:
       add_access: Add Access
       remove_access: Remove Access
-      title: Bulk import
+      title: Bulk import (Assign new members)
       submit: Import
       download_link: Right-click and choose 'save target' to download import template
       th:
@@ -1463,7 +1463,6 @@ en:
         expense_amt: Expense
         quota_balance: Quota balance
       save: Save
-      title: Bulk import
+      title: Bulk import (Create/Update records)
       submit: Import
       download_link: Right-click and choose 'save target' to download import template
-
