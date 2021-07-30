@@ -27,6 +27,9 @@ class FacilityInsufficientFundController < ApplicationController
   # GET /facilities/insufficient_fund
   def index
     order_details = OrderDetail.with_insufficient_fund.for_facility(current_facility)
+    
+    @payment_type_filter = true
+
     @search_form = TransactionSearch::SearchForm.new(params[:search])
     @search = TransactionSearch::Searcher.billing_search(order_details, @search_form, include_facilities: current_facility.cross_facility?)
     @date_range_field = @search_form.date_params[:field]
