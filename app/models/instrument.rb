@@ -28,12 +28,14 @@ class Instrument < Product
   validates :min_reserve_mins,
             :max_reserve_mins,
             :auto_cancel_mins,
+            :session_mins,
             numericality: { only_integer: true, greater_than_or_equal_to: 0, allow_nil: true }
   validates :cutoff_hours, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validate :minimum_reservation_is_multiple_of_interval,
            :maximum_reservation_is_multiple_of_interval,
-           :max_reservation_not_less_than_min
+           :max_reservation_not_less_than_min,
+           :session_duration_is_multiple_of_interval
 
   # Callbacks
   # --------
@@ -105,6 +107,10 @@ class Instrument < Product
 
   def maximum_reservation_is_multiple_of_interval
     validate_multiple_of_reserve_interval :max_reserve_mins
+  end
+
+  def session_duration_is_multiple_of_interval
+    validate_multiple_of_reserve_interval :session_mins
   end
 
   def validate_multiple_of_reserve_interval(attribute)
