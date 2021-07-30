@@ -1156,7 +1156,7 @@ en:
       instrument_reports:
         between: Fulfilled between
       billing_status: Billing Status
-      payment_type: Payment Type
+      payment_type: Payment Source Type
       date_start: Start Date
       date_end: End Date
       auto_cancel_name: 'Auto Cancel'

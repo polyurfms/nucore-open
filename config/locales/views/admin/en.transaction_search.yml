@@ -7,8 +7,8 @@ en:
         journal_or_statement_date: "Journaled/Statement"
         reconciled_at: Reconciled
       payment_type_fields:
-        charge: "Charge" 
-        cheque: "Cheque"
+        charge: "Charge Account"
+        cheque: "Cheque/Other"
         all: "All"
       actions:
         reassign_chart_strings: Reassign Chart Strings
@@ -17,4 +17,3 @@ en:
         mark_as_reviewed: Mark as Reviewed
         create: Create
         history: Transaction History
-

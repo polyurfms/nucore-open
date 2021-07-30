@@ -28,13 +28,13 @@ class FacilityJournalsController < ApplicationController
   def index
     set_pending_journals if @journals.current_page == 1
   end
-  
+
   def order_for_journal
   raise ActiveRecord::RecordNotFound if current_facility.cross_facility?
 
   order_details = OrderDetail.for_facility(current_facility).need_journal
 
-  @payment_type_filter = true
+  @payment_type_filter = false
 
   @search_form = TransactionSearch::SearchForm.new(params[:search])
 
@@ -80,7 +80,7 @@ end
 
     if params[:sort].nil?
       @order_details = @search.order_details
-    else 
+    else
       @order_details = @search.order_details.reorder(sort_clause)
     end
 
@@ -141,7 +141,7 @@ end
     # (See Task #48311). This is just preventative.
     referer = response.headers["Referer"]
     response.headers["Referer"] = referer[0..referrer.index("?")] if referer.present?
-    
+
 
     if @journal.errors.blank? && @journal.save
       @journal.create_spreadsheet if Journals::JournalFormat.exists?(:xls)
@@ -239,17 +239,17 @@ end
     end
 
     flash[:error] = msg.html_safe if msg.present?
-  end  
+  end
 
   def sort_lookup_hash
-    {      
+    {
       "order_number" => "order_details.order_id",
       "fulfilled_date" => "order_details.fulfilled_at",
       "product_name" => "products.name",
       "ordered_for" => ["#{User.table_name}.last_name", "#{User.table_name}.first_name"],
       "payment_source" => "accounts.description",
-      # "actual_subsidy" => "order_details.actual_subsidy", 
-      "actual_subsidy" => "order_details.actual_cost", 
+      # "actual_subsidy" => "order_details.actual_subsidy",
+      "actual_subsidy" => "order_details.actual_cost",
       "state" => "order_details.state",
     }
   end
