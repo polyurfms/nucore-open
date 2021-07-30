@@ -94,7 +94,7 @@ class ApplicationController < ActionController::Base
         if (session_user.is_academic == true)
           #@user = User.find(session_user[:id])
           #@user.update_attributes(supervisor: @user.username)
-          session_user.create_default_supervisor!                
+          session_user.create_default_supervisor!
           session[:had_supervisor] = 1
           redirect_to '/facilities'
         else
@@ -180,7 +180,7 @@ class ApplicationController < ActionController::Base
     facility_id = params[:facility_id] || params[:id]
     @facility = Facility.find_by(url_name: facility_id)
     if(!params[:facility_id].nil? && !params[:id].nil? && !session[:facility_agreement_list].nil?)
-      if (session_user.is_normal_user?)
+      if (!session_user.nil? && session_user.is_normal_user?)
         is_agree = session[:facility_agreement_list].include?(@facility.id)
       end
     end
