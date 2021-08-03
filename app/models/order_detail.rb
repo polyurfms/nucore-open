@@ -503,7 +503,7 @@ class OrderDetail < ApplicationRecord
   end
 
   def estimated_total
-    estimated_cost - estimated_subsidy if estimated_cost && estimated_subsidy
+    estimated_cost - estimated_subsidy + actual_adjustment if estimated_cost && estimated_subsidy && actual_adjustment
   end
 
   def total
@@ -690,9 +690,7 @@ class OrderDetail < ApplicationRecord
 
     # is account valid for facility
     return unless product.facility.can_pay_with_account?(account)
-    puts "xxxxxxxxxxxxx 1"
     assign_actual_price
-    puts "xxxxxxxxxxxxx 2"
   end
 
   def assign_actual_price
@@ -1055,7 +1053,9 @@ class OrderDetail < ApplicationRecord
   def pricing_note_required?
     return false unless @manually_priced && SettingsHelper.feature_on?(:price_change_reason_required)
     return false if cost_estimated? || canceled_at?
-
+    
+    return ( actual_adjustment == 0.0 || actual_adjustment == 0 ) ? false : true
+    
     !actual_costs_match_calculated?
   end
 

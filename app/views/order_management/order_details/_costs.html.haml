@@ -11,4 +11,5 @@
   .cost-table
     .cost= f.input :estimated_cost, as: :currency, disabled: true
     .subsidy= f.hidden_field :estimated_subsidy, as: :currency, disabled: true
+    .adjust= f.input :actual_adjustment, as: :currency
     .total= f.input :estimated_total, as: :currency, disabled: true
