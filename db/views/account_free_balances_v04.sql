@@ -2,7 +2,7 @@ SELECT
       a.id AS account_id,
       a.committed_amt AS committed_amt,
       COALESCE(SUM((CASE
-                  WHEN ISNULL(od.actual_cost) THEN od.estimated_cost - od.estimated_subsidy
+                  WHEN ISNULL(od.actual_cost) THEN od.estimated_cost - od.estimated_subsidy + od.actual_adjustment
                   ELSE od.actual_cost - od.actual_subsidy + od.actual_adjustment
               END)),
               0) AS total_expense
