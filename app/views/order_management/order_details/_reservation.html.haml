@@ -1,4 +1,5 @@
 - reservation = f.object.reservation
+
 = f.simple_fields_for reservation do |r|
   .datetime-block.js--pricingUpdate
     - if reservation.admin_editable?
@@ -28,3 +29,13 @@
     - else
       = r.label :actual_start_date
       = reservation.actuals_string
+  
+- unless reservation.card_start_at.nil?
+  .span
+    .well
+      %p
+        %b= t(".th.card_time")
+      %p= format_usa_datetime(reservation.card_start_at) + " - " + format_usa_datetime(reservation.card_end_at)  
+      %p
+        %b= t(".th.card_duration")
+      %p= reservation.card_duration_mins
