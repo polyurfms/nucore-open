@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_26_061205) do
+ActiveRecord::Schema.define(version: 2021_08_03_065649) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -1113,7 +1113,7 @@ ActiveRecord::Schema.define(version: 2021_07_26_061205) do
   add_foreign_key "user_roles", "users"
 
   create_view "account_free_balances", sql_definition: <<-SQL
-      select `a`.`id` AS `account_id`,`a`.`committed_amt` AS `committed_amt`,coalesce(sum((case when isnull(`od`.`actual_cost`) then (`od`.`estimated_cost` - `od`.`estimated_subsidy`) else ((`od`.`actual_cost` - `od`.`actual_subsidy`) + `od`.`actual_adjustment`) end)),0) AS `total_expense` from ((`accounts` `a` join `order_details` `od` on(((`od`.`account_id` = `a`.`id`) and (`od`.`state` <> 'validated') and isnull(`od`.`canceled_at`)))) join `orders` `o` on(((`o`.`id` = `od`.`order_id`) and (`o`.`state` <> 'validated')))) group by `a`.`id`,`a`.`committed_amt`
+      select `a`.`id` AS `account_id`,`a`.`committed_amt` AS `committed_amt`,coalesce(sum((case when isnull(`od`.`actual_cost`) then ((`od`.`estimated_cost` - `od`.`estimated_subsidy`) + `od`.`actual_adjustment`) else ((`od`.`actual_cost` - `od`.`actual_subsidy`) + `od`.`actual_adjustment`) end)),0) AS `total_expense` from ((`accounts` `a` join `order_details` `od` on(((`od`.`account_id` = `a`.`id`) and (`od`.`state` <> 'validated') and isnull(`od`.`canceled_at`)))) join `orders` `o` on(((`o`.`id` = `od`.`order_id`) and (`o`.`state` <> 'validated')))) group by `a`.`id`,`a`.`committed_amt`
   SQL
   create_view "account_user_expenses", sql_definition: <<-SQL
       select `au`.`id` AS `account_user_id`,`od`.`account_id` AS `account_id`,`o`.`user_id` AS `user_id`,sum((case when isnull(`od`.`actual_cost`) then `od`.`estimated_cost` else `od`.`actual_cost` end)) AS `expense_amt` from ((`order_details` `od` join `orders` `o` on(((`o`.`id` = `od`.`order_id`) and (`o`.`state` <> 'validated')))) join `account_users` `au` on(((`au`.`account_id` = `od`.`account_id`) and (`au`.`user_id` = `o`.`user_id`)))) where isnull(`od`.`canceled_at`) group by `au`.`id`,`od`.`account_id`,`o`.`user_id`
