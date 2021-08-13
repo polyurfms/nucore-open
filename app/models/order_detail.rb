@@ -959,6 +959,14 @@ class OrderDetail < ApplicationRecord
     ActiveModel::Type::Boolean.new.cast(resolve_dispute)
   end
 
+  def card_present_time
+    if reservation.card_start_at.nil?
+      "-"
+    else
+      "From #{reservation.card_start_at} to #{reservation.card_end_at} (#{reservation.card_duration_mins})"
+    end
+  end
+
   private
 
   # Is there enough information to move an associated order to complete/problem?
