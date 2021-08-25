@@ -1300,6 +1300,7 @@ en:
 
     instrument_fields:
       show_details: "Show reservation details (name, email, etc) on schedule"
+      show_details_with_access: "Show reservation details when access right granted"
       relay:
         control_mechanisms:
           manual: Reservation only
