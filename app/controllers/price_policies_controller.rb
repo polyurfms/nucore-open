@@ -42,6 +42,8 @@ class PricePoliciesController < ApplicationController
   # POST /facilities/:facility_id/{product_type}/:product_id/price_policies
   def create
     if update_policies_from_params
+      #create addition pricing rule
+      addition_price_policy_creator("create", current_user.id)
       redirect_to facility_product_price_policies_path, notice: text("create.success")
     else
       flash.now[:error] = text("errors.save")
@@ -68,11 +70,22 @@ class PricePoliciesController < ApplicationController
   def destroy
     return flash_remove_active_policy_warning_and_redirect if @start_date <= Date.today
 
-    if PricePolicyUpdater.destroy_all_for_product!(@product, @start_date)
-      flash[:notice] = text("destroy.success")
-    else
+    begin
+      #create addition pricing rule
+      addition_price_policy_creator("delete", current_user.id, )
+      if PricePolicyUpdater.destroy_all_for_product!(@product, @start_date) 
+        flash[:notice] = text("destroy.success")
+        
+        #create addition pricing rule
+        addition_price_policy_creator("delete", current_user.id)
+      else
+        flash[:error] = text("destroy.failure")
+      end
+    rescue => e
       flash[:error] = text("destroy.failure")
     end
+
+    
     redirect_to facility_product_price_policies_path
   end
 
@@ -127,6 +140,18 @@ class PricePoliciesController < ApplicationController
       parse_usa_date(params[:start_date])&.beginning_of_day,
       parse_usa_date(params[:expire_date])&.end_of_day,
       params.merge(created_by_id: current_user.id),
+    )
+  end
+
+  def addition_price_policy_creator(action, current_user)    
+    @creator = AdditionPricePolicyCreator.new
+    @creator.create_addition_price_policy_in_price_policy(
+      @product,
+      parse_usa_date(params[:start_date])&.beginning_of_day,
+      parse_usa_date(params[:expire_date])&.end_of_day, 
+      action, 
+      current_user, 
+      @start_date || ""
     )
   end
 

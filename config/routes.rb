@@ -143,6 +143,13 @@ Rails.application.routes.draw do
       resources :schedule_rules, except: [:show]
       resources :product_access_groups
       resources :price_policies, controller: "instrument_price_policies", except: [:show]
+      resources :addition_price_policies, except: [:show, :new, :edit, :update, :destroy] do 
+        get "add", to:"addition_price_policies#add"
+        post "update", to: "addition_price_policies#update"
+        get "/edit/:name", to: "addition_price_policies#edit", as: :addition_price_policies
+        get "/delete/:name", to: "addition_price_policies#delete", as: :addition_price_policies_delete
+      end
+
       resources :reservations, only: [:new, :create, :destroy], controller: "facility_reservations" do
         get "edit_admin", to: "facility_reservations#edit_admin"
         patch "update_admin", to: "facility_reservations#update_admin"

@@ -11,7 +11,9 @@
 = "========================================"
 - @order.order_details.each do |order_detail|
   #{OrderDetail.human_attribute_name(:id)}: #{order_detail}
-  #{OrderDetailPresenter.new(order_detail).description_as_text}
+  #{OrderDetailPresenter.new(order_detail).description_as_text} 
+  #{OrderDetailPresenter.new(order_detail).addition_price_policy_type}
+
   - if order_detail.reservation
     #{Reservation.model_name.to_s.titleize}: #{order_detail.reservation}
   #{OrderDetail.human_attribute_name(:quantity)}: #{OrderDetailPresenter.new(order_detail).wrapped_quantity}

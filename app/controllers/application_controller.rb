@@ -208,6 +208,7 @@ class ApplicationController < ActionController::Base
   end
 
   def init_current_facility
+    
     raise ActiveRecord::RecordNotFound unless current_facility
   end
 

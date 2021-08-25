@@ -7,10 +7,12 @@ class SingleReservationsController < ApplicationController
   before_action :build_order
   before_action { @submit_action = facility_instrument_single_reservations_path }
 
+  
+
   def new
     @reservation = NextAvailableReservationFinder.new(@instrument).next_available_for(current_user, acting_user)
     @reservation.order_detail = @order_detail
-
+    
     authorize! :new, @reservation
 
     unless @instrument.can_be_used_by?(acting_user)
@@ -25,24 +27,27 @@ class SingleReservationsController < ApplicationController
     @reservation = creator.reservation
     @account = Account.find_by("id = #{params["order_account"].to_i} AND expires_at >= '#{@reservation.reserve_end_at}'")
 
+    set_windows
+    
     if(!@account.nil?)
+      
+      @select_addition_price_policy = params[:addition_price_policy] if params[:addition_price_policy].nil?
       if creator.save(session_user, session[:acting_user_id] || 0)
         # @reservation = creator.reservation
         authorize! :create, @reservation
         flash[:notice] = I18n.t("controllers.reservations.create.success")
-        flash[:error] = I18n.t("controllers.reservations.create.admin_hold_warning") if creator.reservation.conflicting_admin_reservation?
         redirect_to purchase_order_path(@order, params.permit(:send_notification))
       else
         # @reservation = creator.reservation
         @error = "Validation failed: "
         flash.now[:error] = creator.error.html_safe unless creator.error == @error
-        set_windows
+        # set_windows
         render "reservations/new"
       end
     else 
       flash.now[:error] = I18n.t("controllers.reservations.create.null_payment_source") if params["order_account"].to_i == 0
       flash.now[:error] = I18n.t("controllers.reservations.create.expires_at") unless params["order_account"].to_i == 0
-      set_windows
+      # set_windows
       render "reservations/new"
     end
   end
@@ -67,6 +72,8 @@ class SingleReservationsController < ApplicationController
   end
 
   def set_windows
+    @addition_price_policy = @order_detail.product.price_policies.get_addition_price_policy_list
+    @select_addition_price_policy = params[:addition_price_policy] if params[:addition_price_policy].nil?
     @reservation_window = ReservationWindow.new(@reservation, current_user)
   end
 

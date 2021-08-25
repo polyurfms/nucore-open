@@ -628,6 +628,9 @@ en:
       add_button: Add %{group}
 
   reservations:
+    addition_price_policity_field:
+      label: "Addition Item"
+
     logout:
       body: "You will be logged out automatically in 60 seconds. Would you like to remain logged in?"
       cancel: "Stay logged in"
@@ -1279,6 +1282,7 @@ en:
         Contact the !facility_downcase! for more information.
         You may place reservations, but if the instrument is still down at your
         scheduled time they will be canceled at no charge.
+    
 
     public_schedule:
       title: Schedule

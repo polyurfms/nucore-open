@@ -30,7 +30,8 @@ class ReservationCreator
         update_order_account
 
         @order.dept_abbrev = session_user.dept_abbrev
-
+        
+        @order_detail.addition_price_policy_type = params[:addition_price_policy] unless params[:addition_price_policy].blank?
         # merge state can change after call to #save! due to OrderDetailObserver#before_save
         to_be_merged = @order_detail.order.to_be_merged?
 

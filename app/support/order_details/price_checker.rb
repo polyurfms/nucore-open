@@ -9,9 +9,11 @@ class OrderDetails::PriceChecker
     @order_detail.time_data = order_detail.time_data.dup
   end
 
-  def prices_from_params(params)
+  def prices_from_params(params, addition_price_policy)
     updater = OrderDetails::ParamUpdater.new(@order_detail)
     updater.assign_attributes(params)
+
+    @order_detail.addition_price_policy_type = addition_price_policy
     @order_detail.assign_price_policy
 
     fields = [:estimated_cost, :estimated_subsidy, :estimated_total,

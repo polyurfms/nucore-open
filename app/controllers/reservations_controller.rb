@@ -30,6 +30,8 @@ class ReservationsController < ApplicationController
   # GET /facilities/1/instruments/1/reservations.js?_=1279579838269&start=1279429200&end=1280034000
   def index
 
+    @addition_price_policy = @order_detail.product.price_policies.get_addition_price_policy_list
+
     @facility = Facility.find_by!(url_name: params[:facility_id])
     @instrument = @facility.instruments.find_by!(url_name: params[:instrument_id])
 
@@ -249,14 +251,14 @@ class ReservationsController < ApplicationController
           flash[:error] = "Payment source expired"
           raise ActiveRecord::Rollback
         end
-
+        
+        @order_detail.addition_price_policy_type = params[:addition_price_policy] unless params[:addition_price_policy].nil?
         @old_order_detail_estimated_cost = @order_detail.estimated_cost
 
         # @account_user = AccountUser.find_by(account_id: @order_detail.account_id, deleted_at: nil, user_id: session_user.id)
 
         # merge state can change after call to #save! due to OrderDetailObserver#before_save
         mergeable = @order_detail.order.to_be_merged?
-
         save_reservation_and_order_detail
 
         if(@account.allows_allocation == true)
@@ -264,7 +266,7 @@ class ReservationsController < ApplicationController
 
           if(@account_user.user_role != "Owner")
             if(@account_user.quota_balance < 0)
-              flash.now[:error] = "Payment source insufficient fund"
+              flash.now[:error] = "Payment source insuffici ent fund"
               raise ActiveRecord::Rollback
             end
           end
@@ -451,6 +453,10 @@ class ReservationsController < ApplicationController
   end
 
   def set_windows
+    
+    @select_addition_price_policy = @order_detail.addition_price_policy_type
+    @addition_price_policy = @order_detail.product.price_policies.get_addition_price_policy_list
+    @select_addition_price_policy = params[:addition_price_policy] unless params[:addition_price_policy].nil?
     @reservation_window = ReservationWindow.new(@reservation, current_user)
   end
 
