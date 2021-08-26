@@ -45,7 +45,7 @@
 
     = render_view_hook "after_order_status", f: f, order_detail: @order_detail
 
-    - if @order_detail.reservation.has_relay?
+    - if @order_detail.time_data.present? && @order_detail.product.has_real_relay?
       .row
         .span5
           = f.input :card_present_time, as: :readonly

@@ -347,10 +347,6 @@ class Reservation < ApplicationRecord
     actual_start_at.present? && actual_end_at.present? && actual_end_at > actual_start_at
   end
 
-  def has_relay?
-    !instrument.reservation_only?
-  end
-
   def started?
     actual_start_at.present?
   end
