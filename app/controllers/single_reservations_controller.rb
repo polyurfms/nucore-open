@@ -30,8 +30,6 @@ class SingleReservationsController < ApplicationController
     set_windows
     
     if(!@account.nil?)
-      
-      @select_addition_price_policy = params[:addition_price_policy] if params[:addition_price_policy].nil?
       if creator.save(session_user, session[:acting_user_id] || 0)
         # @reservation = creator.reservation
         authorize! :create, @reservation
@@ -73,7 +71,8 @@ class SingleReservationsController < ApplicationController
 
   def set_windows
     @addition_price_policy = @order_detail.product.price_policies.get_addition_price_policy_list
-    @select_addition_price_policy = params[:addition_price_policy] if params[:addition_price_policy].nil?
+    # @select_addition_price_policy = params[:addition_price_policy] if params[:addition_price_policy].nil?
+    @select_addition_price_policy = @reservation.select_addition_price_policy? unless @reservation.select_addition_price_policy?.nil?
     @reservation_window = ReservationWindow.new(@reservation, current_user)
   end
 

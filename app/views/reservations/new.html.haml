@@ -24,8 +24,7 @@
 - elsif @instrument.alert
   %p.alert.alert-warning= text("instruments.schedule.instrument_alert_is_active", note: @instrument.alert.note)
 
--# -  @addition_price_policy = @order_detail.product.price_policies.get_addition_price_policy_list
-
+-  @addition_price_policy = @order_detail.product.price_policies.get_addition_price_policy_list
 = render "products_common/description", product: @instrument
 = simple_form_for [@order, @order_detail, @reservation], html: { class: "js--reservationForm js--reservationUpdateCreateAndStart" }, url: @submit_action do |f|
   = f.error_messages

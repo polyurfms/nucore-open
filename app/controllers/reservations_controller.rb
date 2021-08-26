@@ -29,9 +29,6 @@ class ReservationsController < ApplicationController
 
   # GET /facilities/1/instruments/1/reservations.js?_=1279579838269&start=1279429200&end=1280034000
   def index
-
-    @addition_price_policy = @order_detail.product.price_policies.get_addition_price_policy_list
-
     @facility = Facility.find_by!(url_name: params[:facility_id])
     @instrument = @facility.instruments.find_by!(url_name: params[:instrument_id])
 
@@ -60,7 +57,6 @@ class ReservationsController < ApplicationController
     end
 
     @show_details = params[:with_details] == "true" && (@instrument.show_details? || can?(:administer, Reservation))
-
     respond_to do |format|
       as_calendar_object_options = { start_date: @start_at.beginning_of_day, with_details: @show_details }
       format.js do
@@ -453,10 +449,9 @@ class ReservationsController < ApplicationController
   end
 
   def set_windows
-    
     @select_addition_price_policy = @order_detail.addition_price_policy_type
     @addition_price_policy = @order_detail.product.price_policies.get_addition_price_policy_list
-    @select_addition_price_policy = params[:addition_price_policy] unless params[:addition_price_policy].nil?
+    @select_addition_price_policy = @reservation.select_addition_price_policy? unless @reservation.select_addition_price_policy?.nil?
     @reservation_window = ReservationWindow.new(@reservation, current_user)
   end
 

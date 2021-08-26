@@ -194,14 +194,20 @@ class AdditionPricePoliciesController < ApplicationController
   end
 
   def delete
+
+
     @params = params.permit(:facility_id, :instrument_id, :addition_price_policy_id, :name) 
     return redirect_to facility_instrument_addition_price_policies_path if @params[:addition_price_policy_id].blank? && @params[:name].blank?
 
     @addition_price_name = @params[:name]
     @price_policy_date = @params[:addition_price_policy_id]
+    if @price_policy_date.to_date <= Date.today
+      flash[:error] = text("errors.remove_active_policy")
+      return  redirect_to facility_instrument_addition_price_policies_path 
+    end
 
     @price_policies = @product.price_policies.where("start_date <= :now AND expire_date > :now", now: @price_policy_date.to_datetime)
-    raise ActiveRecord::RecordNotFound if @price_policies.blank?
+    raise ActiveRecord::RecordNotFound unless @price_policies.length > 0
     @addition_price_policies = get_current_addition_price_policies(@price_policies, @params[:name])
 
     @current_start_date = @price_policies.first.try(:start_date) unless @price_policies.nil?
