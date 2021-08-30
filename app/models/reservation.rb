@@ -188,9 +188,8 @@ class Reservation < ApplicationRecord
       # not start.
       MoveToProblemQueue.move!(reservation.order_detail, user: reservation.user, cause: :reservation_started)
     end
-
     @t = Time.current
-    update!(card_start_at: @t ,actual_start_at: @t)
+    update!(card_start_at: @t ,actual_start_at: reserve_start_at)
   end
 
   def round_to_15_minutes(t)
@@ -210,12 +209,13 @@ class Reservation < ApplicationRecord
   def end_reservation!
 
     @t = Time.current
-    if reserve_end_at.to_datetime > @t
-      update!(card_end_at: @t ,actual_end_at: @t)
-    else
-      @new_t = round_to_15_minutes(@t)
-      update!(card_end_at: @new_t ,actual_end_at: @new_t)
-    end
+    @new_t = round_to_15_minutes(@t)
+    #if reserve_end_at.to_datetime > @t
+      update!(card_end_at: @t ,actual_end_at: @new_t)
+    #else
+
+    #  update!(card_end_at: @new_t ,actual_end_at: @new_t)
+    #end
     order_detail.complete!
   end
 
