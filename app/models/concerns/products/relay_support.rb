@@ -30,6 +30,10 @@ module Products::RelaySupport
     relay && !relay.is_a?(RelayDummy) && relay.ip? && relay.outlet?
   end
 
+  def has_relay?
+    relay
+  end
+
   private ###################################
 
   # this is necessary because when rails builds the attached relay
