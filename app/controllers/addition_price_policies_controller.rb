@@ -100,8 +100,8 @@ class AdditionPricePoliciesController < ApplicationController
       flash.now[:error] = text("errors.duplcation_name") if @duplcation > 0
       return render :add
     else
-      begin
-        ActiveRecord::Base.transaction do
+      ActiveRecord::Base.transaction do
+        begin
           @addition_price_policies.all?(&:save) || raise(ActiveRecord::Rollback)
         end
       rescue => e
@@ -149,9 +149,8 @@ class AdditionPricePoliciesController < ApplicationController
       flash.now[:error] = text("errors.duplcation_name") if @duplcation > 0
       return render :edit
     else
-      begin
-        ActiveRecord::Base.transaction do
-          
+      ActiveRecord::Base.transaction do
+        begin
           @date = Time.zone.now
 
           @addition_price_policies.each do |addition_price_policy|
@@ -218,9 +217,9 @@ class AdditionPricePoliciesController < ApplicationController
   end
 
   def destroy(addition_price_policies)
-    begin
-      ActiveRecord::Base.transaction do
+    ActiveRecord::Base.transaction do
         
+      begin
         @date = Time.zone.now
         addition_price_policies.each do |addition_price_policy|
 
