@@ -7,6 +7,7 @@ class OrderDetail < ApplicationRecord
   include NotificationSubject
   include OrderDetail::Accessorized
   include Nucore::Database::WhereIdsIn
+  include DateHelper
 
   has_paper_trail
 
@@ -960,6 +961,14 @@ class OrderDetail < ApplicationRecord
 
   def resolve_dispute?
     ActiveModel::Type::Boolean.new.cast(resolve_dispute)
+  end
+
+  def sign_in_out_time
+    if reservation.card_start_at.nil?
+      "-"
+    else
+      "From #{human_date(reservation.card_start_at)} #{human_time(reservation.card_start_at)} to #{human_date(reservation.card_end_at)} #{human_time(reservation.card_end_at)} (#{reservation.card_duration_mins})"
+    end
   end
 
   private

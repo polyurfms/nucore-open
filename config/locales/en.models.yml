@@ -395,6 +395,7 @@ en:
         reserve_end_date: Reserve End
         duration_mins: Duration
         actuals_string: Actual Usage
+        card_string: Sign In/Out Time
         actual_start_date: Actual Start
         actual_duration_mins: Actual Duration
         canceled_by_user: Canceled By
