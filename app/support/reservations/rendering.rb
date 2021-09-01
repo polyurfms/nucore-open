@@ -6,7 +6,7 @@ module Reservations::Rendering
   extend ActiveSupport::Concern
 
   included do
-    delegate :to_s, :reserve_to_s, :actuals_string, to: :time_presenter
+    delegate :to_s, :reserve_to_s, :actuals_string, :card_string, to: :time_presenter
     delegate :as_calendar_object, to: :calendar_presenter
   end
 

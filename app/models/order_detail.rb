@@ -7,6 +7,7 @@ class OrderDetail < ApplicationRecord
   include NotificationSubject
   include OrderDetail::Accessorized
   include Nucore::Database::WhereIdsIn
+  include DateHelper
 
   has_paper_trail
 
@@ -502,11 +503,11 @@ class OrderDetail < ApplicationRecord
   end
 
   def actual_total
-    actual_cost - actual_subsidy if actual_cost && actual_subsidy
+    actual_cost - actual_subsidy + actual_adjustment if actual_cost && actual_subsidy && actual_adjustment
   end
 
   def estimated_total
-    estimated_cost - estimated_subsidy if estimated_cost && estimated_subsidy
+    estimated_cost - estimated_subsidy + actual_adjustment if estimated_cost && estimated_subsidy && actual_adjustment
   end
 
   def total
@@ -703,6 +704,7 @@ class OrderDetail < ApplicationRecord
     return unless costs
     self.price_policy_id = pp.id
     self.actual_cost     = costs[:cost]
+    self.actual_adjustment     = costs[:adjust]
     self.actual_subsidy  = costs[:subsidy]
     pp
   end
@@ -962,6 +964,14 @@ class OrderDetail < ApplicationRecord
     ActiveModel::Type::Boolean.new.cast(resolve_dispute)
   end
 
+  def sign_in_out_time
+    if reservation.card_start_at.nil?
+      "-"
+    else
+      "From #{human_date(reservation.card_start_at)} #{human_time(reservation.card_start_at)} to #{human_date(reservation.card_end_at)} #{human_time(reservation.card_end_at)} (#{reservation.card_duration_mins})"
+    end
+  end
+
   private
 
   # Is there enough information to move an associated order to complete/problem?
@@ -998,6 +1008,7 @@ class OrderDetail < ApplicationRecord
     if calculator.costs.present?
       assign_attributes(
         actual_cost: calculator.costs[:cost],
+        actual_adjustment: calculator.costs[:adjust],
         actual_subsidy: calculator.costs[:subsidy],
       )
     end
@@ -1019,6 +1030,7 @@ class OrderDetail < ApplicationRecord
 
   def clear_costs
     self.actual_cost     = nil
+    self.actual_adjustment     = nil
     self.actual_subsidy  = nil
     self.price_policy_id = nil
   end
@@ -1053,7 +1065,9 @@ class OrderDetail < ApplicationRecord
   def pricing_note_required?
     return false unless @manually_priced && SettingsHelper.feature_on?(:price_change_reason_required)
     return false if cost_estimated? || canceled_at?
-
+    
+    return ( actual_adjustment == 0.0 || actual_adjustment == 0 ) ? false : true
+    
     !actual_costs_match_calculated?
   end
 

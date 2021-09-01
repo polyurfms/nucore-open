@@ -623,6 +623,10 @@ en:
         remove_from_journal: "Remove From Journal"
         fo_status: "Status"
         fo_journal_id: "FO Journal ID"
+      reservation:
+        th:
+          card_time: "Tap on & Tap off: "
+          card_duration: "Duration: "
   product_access_groups:
     index:
       add_button: Add %{group}

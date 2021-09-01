@@ -24,7 +24,7 @@
                 data: { min_date: ValidFulfilledAtDate.min.iso8601,
                   max_date: ValidFulfilledAtDate.max.iso8601,
                   complete_target: "#order_detail_order_status_id"}}
-            
+
 
 
         - else
@@ -44,6 +44,11 @@
               = t("facility_order_details.edit.label.with_cancel_fee")
 
     = render_view_hook "after_order_status", f: f, order_detail: @order_detail
+
+    - if @order_detail.time_data.present? && @order_detail.product.has_relay?
+      .row
+        .span5
+          = f.input :sign_in_out_time, label: "Sign In/Out Time", as: :readonly
 
     .row
       - if @order_detail.time_data.present?
@@ -87,7 +92,7 @@
     .hidden.updating-message= t("facility_order_details.edit.label.updating")
     = f.submit "Save", class: ["btn", "btn-primary"]
     = modal_cancel_button
-    
+
 :javascript
   $(".datepicker").datepicker({ dateFormat: 'd M yy' });
 

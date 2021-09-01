@@ -1,4 +1,5 @@
 - reservation = f.object.reservation
+
 = f.simple_fields_for reservation do |r|
   .datetime-block.js--pricingUpdate
     - if reservation.admin_editable?
