@@ -39,12 +39,12 @@ class ProductsCommonController < ApplicationController
   def show
     @active_tab = "home"
     product_for_cart = ProductForCart.new(@product)
-    # @add_to_cart = product_for_cart.purchasable_by?(acting_user, session_user) 
+    # @add_to_cart = product_for_cart.purchasable_by?(acting_user, session_user)
 
     @add_to_cart = false
-    if(has_delegated && session[:is_selected_user] == true) 
+    if(has_delegated && session[:is_selected_user] == true)
       @add_to_cart = true
-    else 
+    else
       @add_to_cart = product_for_cart.purchasable_by?(acting_user, session_user)
     end
 
@@ -116,6 +116,7 @@ class ProductsCommonController < ApplicationController
                                                       :user_notes_field_mode, :user_notes_label, :show_details,
                                                       :schedule_id, :control_mechanism, :reserve_interval,
                                                       :min_reserve_mins, :max_reserve_mins, :min_cancel_hours,
+                                                      :session_mins,
                                                       :auto_cancel_mins, :lock_window, :cutoff_hours,
                                                       :problems_resolvable_by_user, :room_no,
                                                       relay_attributes: [:ip, :ip_port, :outlet, :username, :password, :type,

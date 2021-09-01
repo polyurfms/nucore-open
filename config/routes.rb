@@ -71,6 +71,8 @@ Rails.application.routes.draw do
     resources :account_allocations, only: [:index, :create, :new, :edit, :show, :update] do
       collection do
         post "update_allocation"
+        post "import_user"
+        get "export_user"
       end
     end
 
@@ -81,6 +83,7 @@ Rails.application.routes.draw do
         get "new_external"
         post "add_user"
         post "insert_user"
+        post "import_user"
       end
     end
 
@@ -277,6 +280,7 @@ Rails.application.routes.draw do
         resources :account_users, controller: "facility_account_users", only: [:new, :destroy, :create, :update] do
           collection do
             get "user_search"
+            post "import_user"
           end
         end
 
@@ -299,6 +303,7 @@ Rails.application.routes.draw do
       post "/allocation_update", to: "facility_accounts#allocation_update", as: "allocation_update"
       post "/create_funding_request", to: "facility_accounts#create_funding_request", as: "create_funding_request"
 
+      post "import_user"
 
       if Account.config.statements_enabled?
         get "/statements", to: "facility_accounts#statements", as: :statements

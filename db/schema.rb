@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_03_065649) do
+ActiveRecord::Schema.define(version: 2021_07_14_064255) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 2021_08_03_065649) do
     t.integer "created_by", null: false
     t.datetime "deleted_at"
     t.integer "deleted_by"
-    t.decimal "allocation_amt", precision: 10, scale: 2, default: "0.0"
+    t.decimal "allocation_amt", precision: 10, scale: 2, default: 0
     t.index ["account_id"], name: "fk_accounts"
     t.index ["user_id"], name: "index_account_users_on_user_id"
   end

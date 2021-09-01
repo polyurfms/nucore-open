@@ -245,6 +245,9 @@ en:
         expense_amt: Expense
         quota_balance: Quota balance
       save: Save
+      title: Bulk import
+      submit: Import
+      download_link: Right-click and choose 'save target' to download import template
     allocation:
       save: Save
       committed_amt: "Committed Amount: %{committed_amt}"
@@ -406,6 +409,7 @@ en:
     order_for_journal:
       head:
         h2: "Order for journal"
+      no_transactions: "There are no transactions"
 
 
 
@@ -709,6 +713,7 @@ en:
         failded_code : "FAILED"
         failded_string : "Failed"
       table:
+        ref_no : "Ref. No."
         date : "Date"
         transaction_date: Transaction Date
         type : "Top Up / Release"
@@ -930,6 +935,8 @@ en:
     new:
       label:
         search_term: "Search by name, NetID, or username"
+    table:
+      date_added: Date Added
 
   user_price_group_members:
     new:
@@ -1159,6 +1166,7 @@ en:
       instrument_reports:
         between: Fulfilled between
       billing_status: Billing Status
+      payment_type: Payment Source Type
       date_start: Start Date
       date_end: End Date
       auto_cancel_name: 'Auto Cancel'
@@ -1191,6 +1199,7 @@ en:
       training_requested: Training Requested
       update_approvals:
         submit: "Update Access List"
+      date_added: "Date Added"
 
     new_external:
       head: "Add External User"
@@ -1314,6 +1323,7 @@ en:
           reserve_interval: "The minutes of an hour on which a reservation is allowed to begin (e.g. if 5 reservations can be scheduled every 5 minutes)"
           min_reserve: "Minimum amount of time for a reservation (optional; must be a multiple of the reservation interval)"
           max_reserve: "Maximum amount of time for a reservation (optional)"
+          session_reserve: "Session duration for a reservation (optional; must be a mulitple of the reservation interval)"
           cancel_hours: "Minimum length of time before a reservation begins that a user may cancel a reservation without invoking the reservation cost"
           auto_cancel: |
             The number of minutes the system will wait before automatically
@@ -1327,6 +1337,7 @@ en:
           reserve_interval: "Interval (minutes)"
           min_reserve: "Minimum (minutes)"
           max_reserve: "Maximum (minutes)"
+          session_reserve: "Session duration (minutes)"
           cancel_hours: "Cancelation Minimum (hours)"
           auto_cancel: "Automatic Cancelation (minutes)"
           lock_window: "Reservation Lock Window (hours)"
@@ -1414,6 +1425,9 @@ en:
     member_table:
       add_access: Add Access
       remove_access: Remove Access
+      title: Bulk import (Assign new members)
+      submit: Import
+      download_link: Right-click and choose 'save target' to download import template
       th:
         # name: Name (username)
         name: Name (Net ID)
@@ -1461,3 +1475,6 @@ en:
         expense_amt: Expense
         quota_balance: Quota balance
       save: Save
+      title: Bulk import (Create/Update records)
+      submit: Import
+      download_link: Right-click and choose 'save target' to download import template

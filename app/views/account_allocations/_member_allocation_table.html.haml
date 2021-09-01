@@ -1,7 +1,18 @@
 - can_edit_accounts = SettingsHelper.feature_on? :edit_accounts
 
+-# - if @account.allows_allocation
+- if @account.allows_allocation?
+  - if !@account.affiliate.nil? && @account.affiliate.name.include?(Settings.allow_affiliate) && @account.type == "NufsAccount"
+    = simple_form_for AccountUser.new, url: { action: :import_user}, html: { multipart: true } do |f|
+      .well.well-small#bulk-import-fields
+        %h4
+          %b= t(".title")
+        .pull-right
+          = link_to t(".download_link"), export_user_account_account_allocations_path(format: "csv"), id: "bulk-import-template"
+        = f.file_field :file
+        = submit_tag t(".submit"), class: ["btn", "btn-primary"], data: { disable_with: t(".submit") }
 
-- if !@account_users.empty?
+  -# - if !@account_users.empty?
   = simple_form_for AccountUser.new, url: { action: :update_allocation}, method: "POST" do |f|
     = f.error_messages
     = f.error_notification

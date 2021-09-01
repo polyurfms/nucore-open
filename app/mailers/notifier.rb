@@ -64,6 +64,17 @@ class Notifier < ActionMailer::Base
     )
   end
 
+  def send_payment_source_import_error_mail(user, account, error_user_list, status)
+    @upload_csv_user = user
+    @error_user_list = error_user_list
+    account = account
+    status = status
+    mail(
+      to: user.email,
+      subject: text("views.notifier.send_payment_source_import_error_mail.subject", account: account, status: status)
+    )
+  end
+
   private
 
   def attach_statement_pdf
@@ -88,6 +99,5 @@ class Notifier < ActionMailer::Base
       cc: Settings.statement_pdf.email_cc,
       template_name: template_name)
   end
-
 
 end

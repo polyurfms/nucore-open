@@ -18,14 +18,19 @@ class ReservationCreator
       return false
     end
 
-    
+    reservation_param = params[:reservation]
+
+    if reservation_param[:reserve_end_min].blank? || reservation_param[:reserve_start_min].blank?
+      @error = I18n.t("controllers.reservations.create.invalid_start_end_time")
+      return false
+    end
 
     Reservation.transaction do
       begin
         update_order_account
-        
+
         @order.dept_abbrev = session_user.dept_abbrev
-        
+
         # merge state can change after call to #save! due to OrderDetailObserver#before_save
         to_be_merged = @order_detail.order.to_be_merged?
 
@@ -82,7 +87,7 @@ class ReservationCreator
       end
     end
 
-    
+
   end
 
   def reservation
