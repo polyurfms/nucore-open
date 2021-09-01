@@ -3,6 +3,7 @@
 module InstrumentPricePolicyCalculations
 
   def estimate_cost_and_subsidy_from_order_detail(order_detail)
+    puts "estimate_cost_and_subsidy_from_order_detail"
     reservation = order_detail.reservation
     estimate_cost_and_subsidy reservation.reserve_start_at, reservation.reserve_end_at if reservation
   end
@@ -15,7 +16,6 @@ module InstrumentPricePolicyCalculations
     return if restrict_purchase?
     return if start_at.blank? || end_at.blank?
     return if end_at <= start_at
-
     calculate_for_time(start_at, end_at)
   end
 
@@ -32,6 +32,8 @@ module InstrumentPricePolicyCalculations
       calculate_usage(reservation)
     when InstrumentPricePolicy::CHARGE_FOR[:overage]
       calculate_overage(reservation)
+    when InstrumentPricePolicy::CHARGE_FOR[:usage_with_penalty_and_discount]
+      calculate_usage_with_penalty_and_discount(reservation)
     end
   end
 
@@ -75,8 +77,18 @@ module InstrumentPricePolicyCalculations
     calculate_for_time(reservation.reserve_start_at, end_at)
   end
 
+  def calculate_usage_with_penalty_and_discount(reservation)
+    return unless reservation.has_actual_times?
+    calculate_for_time_with_penalty_early_discount(reservation.reserve_start, reservation.reserve_end_at, reservation.actual_start_at, reservation.actual_end_at)
+  end
+
   def calculate_for_time(start_at, end_at)
     PricePolicies::TimeBasedPriceCalculator.new(self).calculate(start_at, end_at)
   end
+
+  def calculate_for_time_with_penalty_early_discount(reserve_start, reserve_end, start_at, end_at)
+    PricePolicies::TimeBasedPriceCalculator.new(self).calculate_penalty_and_early_discount(reserve_start, reserve_end, start_at, end_at)
+  end
+
 
 end
