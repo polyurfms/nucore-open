@@ -15,14 +15,15 @@ module Reservations::Validations
              :allowed_in_schedule_rules,
              :satisfies_minimum_length,
              :satisfies_maximum_length,
+             :satisfies_session_length,
              if: ->(r) { r.reserve_start_at && r.reserve_end_at && r.reservation_changed? },
              unless: :admin?
 
-    validates_each [:actual_start_at, :actual_end_at] do |record, attr, value|
-      if value
-        record.errors.add(attr.to_s, "cannot be in the future") if Time.zone.now < value
-      end
-    end
+#    validates_each [:actual_start_at, :actual_end_at] do |record, attr, value|
+#      if value
+#        record.errors.add(attr.to_s, "cannot be in the future") if Time.zone.now < value
+#      end
+#    end
 
     validate :starts_before_ends
     validate :duration_is_interval
@@ -126,6 +127,16 @@ module Reservations::Validations
 
   def satisfies_minimum_length
     errors.add(:base, :too_short, length: product.min_reserve_mins) unless satisfies_minimum_length?
+  end
+
+  def satisfies_session_length?
+    diff = reserve_end_at - reserve_start_at # in seconds
+    return false unless product.session_mins.nil? || product.session_mins == 0 || (diff / 60) % product.session_mins == 0
+    true
+  end
+
+  def satisfies_session_length
+    errors.add(:base, :invalid_session_length, length: product.session_mins) unless satisfies_session_length?
   end
 
   def satisfies_maximum_length?

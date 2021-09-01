@@ -127,6 +127,7 @@ en:
         admin_hold_warning: "Warning: You have scheduled over an administrative hold."
         expires_at: "Payment source expired "
         null_payment_source: "Please select a payment source"
+        invalid_start_end_time: "Warning: invalid reservation start or end time. Please check the booking interval."
       order_detail_removed: |
         The instrument order has been removed from your cart.
         Please add it again to make a reservation.

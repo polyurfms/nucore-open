@@ -149,6 +149,11 @@ class User < ApplicationRecord
     acts
   end
 
+  # Returns a hash of product_id => approved_at date when this user was granted
+  # access to the product
+  def approval_dates_by_product
+    product_users.pluck(:product_id, :approved_at).to_h
+  end
 
   def administered_order_details(curr_user = self)
     OrderDetail.where(account_id: Account.administered_by(curr_user))

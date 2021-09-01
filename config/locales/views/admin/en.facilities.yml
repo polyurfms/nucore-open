@@ -15,7 +15,8 @@ en:
           show_instrument_availability: Show Instrument Availability Status?
           dashboard_enabled: Enable Instrument Dashboard
         inactive: "Uncheck this box to prevent end users from viewing or purchasing from this !facility_downcase!:"
-        contact: "The following contact information will appear on statements and should indicate where payment should be sent"
+        #contact: "The following contact information will appear on statements and should indicate where payment should be sent"
+        contact: "Facility contact information:"
         order_notification: |
           This email address will be notified when an order is placed by a user
           (if left blank, notifications will not be sent)

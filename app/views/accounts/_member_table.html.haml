@@ -6,6 +6,18 @@
       current_facility ? user_search_facility_account_account_users_path(current_facility, @account) : user_search_account_path(@account),
       class: "btn-add"
 
+  - if !@account.affiliate.nil? && @account.affiliate.name.include?(Settings.allow_affiliate) && @account.type == "NufsAccount"
+    -# = simple_form_for :account_user, url: { action: :import_user}, html: { multipart: true } do |f|
+    = simple_form_for :account_user, url: current_facility ? import_user_facility_account_account_users_path() : import_user_account_account_users_path(), html: { multipart: true } do |f|
+  
+      .well.well-small#bulk-import-fields
+        %h4
+          %b= t(".title")
+        .pull-right
+          = link_to t(".download_link"), "#{root_path}templates/payment_source_user_import_template.csv", id: "bulk-import-template"
+        = f.file_field :file
+        = submit_tag t(".submit"), class: ["btn", "btn-primary"], data: { disable_with: t(".submit") }
+
 %table.table.table-striped.table-hover
   %thead
     %tr

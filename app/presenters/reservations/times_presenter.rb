@@ -24,6 +24,14 @@ module Reservations
       end
     end
 
+    def card_string
+      if card_start_at.blank? && card_end_at.blank?
+        "No sign in/out times recorded"
+      else
+        TimeRange.new(card_start_at, card_end_at).to_s
+      end
+    end
+
   end
 
 end

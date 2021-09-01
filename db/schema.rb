@@ -10,6 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+
 ActiveRecord::Schema.define(version: 2021_08_03_065649) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -30,7 +31,7 @@ ActiveRecord::Schema.define(version: 2021_08_03_065649) do
     t.integer "created_by", null: false
     t.datetime "deleted_at"
     t.integer "deleted_by"
-    t.decimal "allocation_amt", precision: 10, scale: 2, default: "0.0"
+    t.decimal "allocation_amt", precision: 10, scale: 2, default: 0
     t.index ["account_id"], name: "fk_accounts"
     t.index ["user_id"], name: "index_account_users_on_user_id"
   end
@@ -703,6 +704,8 @@ ActiveRecord::Schema.define(version: 2021_08_03_065649) do
     t.string "group_id"
     t.string "user_note"
     t.integer "billable_minutes"
+    t.datetime "card_start_at"
+    t.datetime "card_end_at"
     t.index ["created_by_id"], name: "index_reservations_on_created_by_id"
     t.index ["deleted_at"], name: "index_reservations_on_deleted_at"
     t.index ["group_id"], name: "index_reservations_on_group_id"

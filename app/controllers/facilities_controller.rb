@@ -128,6 +128,8 @@ class FacilitiesController < ApplicationController
     order_details = OrderDetail.purchased.for_facility(current_facility)
     @export_enabled = true
 
+    @payment_type_filter = true
+
     @search_form = TransactionSearch::SearchForm.new(
       params[:search],
       defaults: {
@@ -152,6 +154,9 @@ class FacilitiesController < ApplicationController
 # GET /facilities/:facility_id/disputed_orders
   def disputed_orders
     order_details = OrderDetail.in_dispute.for_facility(current_facility)    
+
+    @payment_type_filter = true
+
     @search_form = TransactionSearch::SearchForm.new(params[:search])
 
     @search_form.date_range_start = @search_form.date_range_start unless @search_form.date_range_start.nil?
@@ -168,6 +173,8 @@ class FacilitiesController < ApplicationController
 
   # GET /facilities/:facility_id/movable_transactions
   def movable_transactions
+    
+    @payment_type_filter = true
     
     @search_form = TransactionSearch::SearchForm.new(params[:search])
 

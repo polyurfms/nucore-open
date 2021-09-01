@@ -111,6 +111,7 @@ en:
               no_schedule_group: You do not have permission to make a reservation at this time
               too_long: The reservation is too long. It cannot be longer than %{length} minutes.
               too_short: The reservation is too short. It must be at least %{length} minutes.
+              invalid_session_length: The reservation must be a mupliter of %{length} minutes.
             reserve_start_at:
               after_cutoff: must be at least %{hours} hours in the future
               in_past: must be in the future
@@ -297,6 +298,7 @@ en:
         min_reserve_mins: Minimum Reservation Minutes
         max_reserve_mins: Maximum Reservation Minutes
         min_cancel_hours: Minimum Cancellation Hours
+        session_mins: Session Duration (Minutes)
         auto_cancel_mins: Automatic Cancellation Minutes
       price_group:
         is_internal: Is Internal?
@@ -394,6 +396,7 @@ en:
         reserve_end_date: Reserve End
         duration_mins: Duration
         actuals_string: Actual Usage
+        card_string: Sign In/Out Time
         actual_start_date: Actual Start
         actual_duration_mins: Actual Duration
         canceled_by_user: Canceled By
