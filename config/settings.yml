@@ -185,3 +185,7 @@ allow_affiliate: Dept
 
 uat:
   email: ~
+
+aes:
+  key: ~
+  iv: ~

@@ -1,0 +1,5 @@
+%p
+  Approval?
+%ul.inline
+  %li= link_to "Approval", supervisor_endorsement_submit_path(token: @token, is_approval: true), :class => ['btn', 'btn-primary', 'pull-left'], method: "POST" 
+  %li= link_to "Reject", supervisor_endorsement_submit_path(token: @token, is_approval: false), :class => ['btn', 'pull-left'], method: "POST" 

@@ -28,6 +28,11 @@ Rails.application.routes.draw do
   post "get_is_agree_terms" , to: "user_agreements#get_is_agree_terms"
   post "agree_facility_terms" , to: "agreement#agree"
 
+  # API
+  get "api/supervisor_endorsement?token=:token", to: "api#supervisor_endorsement", as: "supervisor_endorsement"
+  get "api/supervisor_endorsement", to: "api#supervisor_endorsement"
+  post "api/supervisor_endorsement_submit", to: "api#supervisor_endorsement_submit" , as: "supervisor_endorsement_submit"
+
   resources :agreement, controller: "agreement", only: [:index, :update, :show] do
   end
 
@@ -37,10 +42,10 @@ Rails.application.routes.draw do
 
   # shared searches
   get "/user_search_results", to: "search#user_search_results"
+  get "/supervisor_user_search_results", to: "search#supervisor_user_search_results"
   get "/#{I18n.t('facilities_downcase')}/:facility_id/price_group/:price_group_id/account_price_group_members/search_results", to: "account_price_group_members#search_results"
 
   post "global_search" => "global_search#index", as: "global_search"
-
   resources :users, only: [] do
     resources :user_preferences, only: [:index, :edit, :update], shallow: true
   end
@@ -453,6 +458,10 @@ Rails.application.routes.draw do
 
   resources :user_delegations, users_options do
     get "switch_to",    to: "user_delegations#switch_to"
+  end
+
+  resources :request_endorsements, except: [:update, :new, :create, :edit, :show], controller: "request_endorsements" do
+    post "make_request", to: "request_endorsements#make_request"
   end
 
   # file upload routes
