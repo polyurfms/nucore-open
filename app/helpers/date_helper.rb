@@ -115,6 +115,11 @@ module DateHelper
     "#{values['hour']}:#{values['minute']} #{values['ampm']}"
   end
 
+  def round_up_15min(t)
+    new_min = (15-t.min%15)%15
+    return t + new_min.minutes
+  end
+
   private
 
   def minute_options(step = nil)

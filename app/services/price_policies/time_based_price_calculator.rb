@@ -24,7 +24,7 @@ module PricePolicies
       end
     end
 
-    def calculate_penalty_and_early_discount(reserve_start, reserve_end, start_at, end_at)
+    def calculate_overage_penalty_and_end_early_discount(reserve_start, reserve_end, start_at, end_at)
       return if start_at > end_at
       reserve_duration = TimeRange.new(reserve_start, reserve_end).duration_mins
       duration_mins = TimeRange.new(start_at, end_at).duration_mins
@@ -32,10 +32,21 @@ module PricePolicies
       if (!maximum_cost.nil? && maximum_cost > 0)
         cost_and_subsidy_with_max(start_at, end_at, discount_multiplier)
       else
-        cost_and_subsidy_with_penalty_and_discount(reserve_duration, duration_mins)
+        cost_and_subsidy_with_penalty_and_discount(reserve_duration, duration_mins, discount_multiplier)
       end
     end
 
+    def calculate_overage_penalty(reserve_start, reserve_end, start_at, end_at)
+      return if start_at > end_at
+      reserve_duration = TimeRange.new(reserve_start, reserve_end).duration_mins
+      duration_mins = TimeRange.new(start_at, end_at).duration_mins
+      discount_multiplier = calculate_discount(start_at, end_at)
+      if (!maximum_cost.nil? && maximum_cost > 0)
+        cost_and_subsidy_with_max(start_at, end_at, discount_multiplier)
+      else
+        cost_and_subsidy_with_penalty(reserve_duration, duration_mins, discount_multiplier)
+      end
+    end
 
     def calculate_discount(start_at, end_at)
       discount = product.schedule_rules.to_a.sum do |sr|
@@ -57,30 +68,83 @@ module PricePolicies
       end
     end
 
-    def cost_and_subsidy_with_penalty_and_discount(reserve_duration, actual_duration)
-      puts "in cost_and_subsidy_with_penalty_and_discount"
-      puts reserve_duration
-      puts "xxxxxxxxxxxx2"
-      puts actual_duration
+    def cost_and_subsidy_with_penalty_and_discount(reserve_duration, actual_duration, discount_multiplier)
 
-      if (actual_duration - reserve_duration + 15 > 0)
-        puts "in xxxx"
-        normal_duration = reserve_duration + 15
-        penalty_duration = actual_duration - normal_duration
+      # actual larger than reserve, charge penalty
+      if actual_duration >= reserve_duration
+
+        if actual_duration <= reserve_duration + 15
+          normal_duration = actual_duration
+          penalty_duration = 0
+        else
+          normal_duration = reserve_duration + 15
+          penalty_duration = actual_duration - normal_duration
+        end
 
         normal_cost = normal_duration * usage_rate * discount_multiplier
-        penalty_cost = penalty_duration * usage_rate * 1.5
-
-        puts "normal_cost:"+normal_cost.to_s
-        puts "penalty_cost:"+penalty_cost.to_s
+        penalty_cost = penalty_duration * usage_rate * 1.5 * discount_multiplier
 
         costs = { cost: normal_cost + penalty_cost }
 
         if costs[:cost] < minimum_cost.to_f
           { cost: minimum_cost, subsidy: minimum_cost_subsidy }
         else
-          costs.merge(subsidy: duration_mins * usage_subsidy * discount_multiplier)
+          costs.merge(subsidy: normal_duration * usage_subsidy * discount_multiplier)
         end
+      else #actual smaller than reserve, give discount
+        normal_duration = actual_duration
+        discount_duration = reserve_duration - normal_duration
+
+        normal_cost = normal_duration * usage_rate * discount_multiplier
+        discount_cost = discount_duration * usage_rate * discount_multiplier * 0.75
+
+        costs = {cost: normal_cost + discount_cost }
+
+        if costs[:cost] < minimum_cost.to_f
+          { cost: minimum_cost, subsidy: minimum_cost_subsidy }
+        else
+          costs.merge(subsidy: normal_duration * usage_subsidy * discount_multiplier)
+        end
+
+      end
+    end
+
+    def cost_and_subsidy_with_penalty(reserve_duration, actual_duration, discount_multiplier)
+
+      # actual larger than reserve, charge penalty
+      if actual_duration >= reserve_duration
+
+        if actual_duration <= reserve_duration + 15
+          normal_duration = actual_duration
+          penalty_duration = 0
+        else
+          normal_duration = reserve_duration + 15
+          penalty_duration = actual_duration - normal_duration
+        end
+
+        normal_cost = normal_duration * usage_rate * discount_multiplier
+        penalty_cost = penalty_duration * usage_rate * 1.5 * discount_multiplier
+
+        costs = { cost: normal_cost + penalty_cost }
+
+        if costs[:cost] < minimum_cost.to_f
+          { cost: minimum_cost, subsidy: minimum_cost_subsidy }
+        else
+          costs.merge(subsidy: normal_duration * usage_subsidy * discount_multiplier)
+        end
+      else #actual smaller than reserve, no discount
+        normal_duration = reserve_duration
+
+        normal_cost = normal_duration * usage_rate * discount_multiplier
+
+        costs = {cost: normal_cost}
+
+        if costs[:cost] < minimum_cost.to_f
+          { cost: minimum_cost, subsidy: minimum_cost_subsidy }
+        else
+          costs.merge(subsidy: normal_duration * usage_subsidy * discount_multiplier)
+        end
+
       end
     end
 

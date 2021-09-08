@@ -192,30 +192,42 @@ class Reservation < ApplicationRecord
     update!(card_start_at: @t ,actual_start_at: reserve_start_at)
   end
 
+=begin
   def round_to_15_minutes(t)
     @date = @t.to_date
     @hour = @t.hour
     @minutes = @t.sec > 0 ? @t.min + 1 : @t.min
 
     @new_minutes = ((@minutes/15.to_f).ceil) *15
-    @new_hour = @new_minutes == 60 ?  @hour + 1 : @hour
+    if @new_minutes == 60
+      @new_hour = @hour + 1
+      @new_minutes = 0
+    else
+      @new_hour = @hour
+    end
+    #@new_hour = @new_minutes == 60 ?  @hour + 1 : @hour
     @add_one_date = @new_hour > 23 ? @date + 1.days : @date
 
     @new_date = @add_one_date == @date ? @date.to_s + " " + @new_hour.to_s + ":" + @new_minutes.to_s + ":00" : @add_one_date.to_date.to_s  + " 00:00:00"
 
     return @new_date
   end
+=end
 
   def end_reservation!
 
     @t = Time.current
-    @new_t = round_to_15_minutes(@t)
-    #if reserve_end_at.to_datetime > @t
-      update!(card_end_at: @t ,actual_end_at: @new_t)
-    #else
 
-    #  update!(card_end_at: @new_t ,actual_end_at: @new_t)
-    #end
+    @new_t = round_up_15min(@t)
+
+    @end_diff = TimeRange.new(reserve_end_at, @new_t).duration_mins
+
+    if reserve_end_at.to_datetime < @t && @end_diff < 15
+      update!(card_end_at: @t ,actual_end_at: reserve_end_at)
+    else
+      update!(card_end_at: @t ,actual_end_at: @new_t)
+    end
+
     order_detail.complete!
   end
 
@@ -405,6 +417,7 @@ class Reservation < ApplicationRecord
   # FIXME: Temporary override to include reconciled orders, so we can backfill them
   def calculated_billable_minutes
     if (order_detail&.complete? || order_detail&.reconciled?) && order_detail&.canceled_at.blank? && price_policy.present?
+
       case price_policy.charge_for
       when InstrumentPricePolicy::CHARGE_FOR.fetch(:reservation)
         TimeRange.new(reserve_start_at, reserve_end_at).duration_mins
@@ -413,8 +426,12 @@ class Reservation < ApplicationRecord
       when InstrumentPricePolicy::CHARGE_FOR.fetch(:overage)
         end_time = [reserve_end_at, actual_end_at].max
         TimeRange.new(reserve_start_at, end_time).duration_mins
-      when InstrumentPricePolicy::CHARGE_FOR.fetch(:usage_with_penalty_and_discount)
-        TimeRange.new(reserve_start_at, actual_end_at).duration_mins
+      when InstrumentPricePolicy::CHARGE_FOR.fetch(:overage_penalty_and_end_early_discount)
+        end_time = [reserve_end_at, actual_end_at].max
+        TimeRange.new(reserve_start_at, end_time).duration_mins
+      when InstrumentPricePolicy::CHARGE_FOR.fetch(:overage_penalty)
+        end_time = [reserve_end_at, actual_end_at].max
+        TimeRange.new(reserve_start_at, end_time).duration_mins
       end
     end
   end
