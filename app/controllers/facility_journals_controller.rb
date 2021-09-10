@@ -157,6 +157,12 @@ end
   # GET /facilities/journals/:id
   def show
     @journal_rows = @journal.journal_rows
+        
+    if params[:sort].nil?
+      @order_details = @journal.order_details
+    else 
+      @order_details = @journal.order_details.reorder(sort_clause)
+    end
     respond_to do |format|
       format.html {}
 
