@@ -18,6 +18,10 @@ module TransactionSearch
       :account_list_item
     end
 
+    def label_name
+      I18n.t("search_field.payment_source")
+    end
+
   end
 
 end

@@ -4,5 +4,5 @@ en:
       index:
         empty: You do not have any %{models}
         all: "*All*"
-        transactions: Transactions
+        transactions: Transaction
         members: Members

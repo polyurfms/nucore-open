@@ -61,6 +61,13 @@ en:
         orders: Orders
         statements: Statements
         funding_requests: Funding Requests
+  search_field:
+    payment_source: Payment Source
+    order_status: Order Status
+    product: Product
+    owner: Owner
+    faclicy: facilities 
+    order_for: Ordered For
 
   pages:
     home: Home
@@ -85,15 +92,16 @@ en:
     logout: Logout
     manage: Manage %{model}
     my_tab: My %{model}
-    transactions: My Transactions
+    transactions: My Transaction
     payment_source_requests: Request Payment Source
-    transactions_in_review: My Transactions In Review (%{count})
+    transactions_in_review: My Transaction In Review (%{count})
     user_delegations: My Assistant
     user_profile: My Profile
-    my_items: My Items
+    my_items: My Item
     notices: Notices
     support: Support
-    my_payment_sources : My Payment Sources
+    my_payment_sources : My Payment Source
+    my_reservation : My Reservation
 
   affiliates:
     add: Add Affiliate
@@ -155,13 +163,13 @@ en:
     sidenav_admin:
       overview: "Overview"
     tabnav_account:
-      details: "Payment Source Details"
-      transact: "Transactions"
-      statement: "Statements"
-      members: "Payment Source Users"
+      details: "Payment Source Detail"
+      transact: "Transaction"
+      statement: "Statement"
+      members: "Payment Source User"
       # members: "Members"
-      funding_requests: "Funding Requests"
-      allocations: "Allocations"
+      funding_requests: "Funding Request"
+      allocations: "Allocation"
     tabnav_price_group:
       accounts: "Payment Sources"
       users: "Users"
@@ -726,7 +734,7 @@ en:
     index:
       head: "Lock funds"
       submenu: "%{account_number}"
-      funding_requests_head: "Funding Requests"
+      funding_requests_head: "Funding Request"
       committed_amt: "Committed Amount: %{committed_amt}"
       total_expense: "Total Expense Amount: %{total_expense}"
       free_balance: "Free Balance: %{free_balance}"
@@ -979,7 +987,7 @@ en:
 
   account_users:
     index:
-      head: "Payment Source Users"
+      head: "Payment Source User"
       submenu: "%{account_number}"
     new:
       head: "Add Payment Source Member"
@@ -1419,7 +1427,7 @@ en:
       head: Payment Source Details
       save: Save
     show:
-      head: Payment Source Details
+      head: Payment Source Detail
       submenu: "%{account_number}"
       save: Save
     member_table:
@@ -1455,7 +1463,7 @@ en:
 
   account_allocations:
     new:
-      head: "Allocations"
+      head: "Allocation"
       submenu: "%{account_number}"
       committed_amt: "Committed Amount (HKD)"
       total_expense: "Total Expense Amount (HKD)"

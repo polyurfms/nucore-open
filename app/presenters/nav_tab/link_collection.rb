@@ -83,13 +83,15 @@ class NavTab::LinkCollection
     if is_show
       NavTab::Link.new(
         tab: :payment_sources,
-        text: t_my(Account),
+        # text: t_my(Account),
+        text: I18n.t("pages.my_payment_sources"),
         subnav: [accounts, transactions, transactions_in_review],
       )
     else
       NavTab::Link.new(
         tab: :payment_sources,
-        text: t_my(Account),
+        # text: t_my(Account),
+        text: I18n.t("pages.my_payment_sources"),
         url: accounts_path,
       )
 
@@ -97,7 +99,8 @@ class NavTab::LinkCollection
   end
 
   def accounts
-    NavTab::Link.new(tab: :accounts, text: t_my(Account), url: accounts_path)
+    # NavTab::Link.new(tab: :accounts, text: t_my(Account), url: accounts_path)
+    NavTab::Link.new(tab: :accounts, text: I18n.t("pages.my_payment_sources"), url: accounts_path)
   end
 
   def transactions
@@ -219,7 +222,8 @@ class NavTab::LinkCollection
   def reservations
     NavTab::Link.new(
       tab: :reservations,
-      text: t_my(Reservation),
+      # text: t_my(Reservation),
+      text: I18n.t("pages.my_reservation"),
       url: reservations_path,
     )
   end
