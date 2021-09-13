@@ -15,7 +15,9 @@ class ApplicationController < ActionController::Base
   helper_method :current_facility, :session_user, :manageable_facilities, :operable_facilities, :acting_user, :acting_as?, :check_acting_as, :current_cart, :backend?, :has_delegated?
   helper_method :open_or_facility_path
 
-  before_action :set_paper_trail_whodunnit, :check_agreement
+  # before_action :set_paper_trail_whodunnit, :check_agreement
+  
+  before_action :set_paper_trail_whodunnit
   
   before_action :check_delegations
   # before_action :set_paper_trail_whodunnit,:check_supervisor, :check_agreement
