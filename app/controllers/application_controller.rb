@@ -106,12 +106,13 @@ class ApplicationController < ActionController::Base
               @request_endorsement.each do |request|
                 @is_requested = true if request.deleted_at.nil? && request.created_at.to_datetime + 1.days > Time.zone.now.to_datetime && (request.is_accepted.nil? || request.is_accepted == true)
                 (!request.is_accepted.nil? && request.is_accepted == true)
-              end
-              
+              end              
               msg = "No Supervisor. Please go to 'My Profile' -> 'Request Endorsements' to make endorsement " unless @is_requested
             end
+          else
+            @is_requested = true
           end
-          
+
           msg = msg + ", " if !@is_requested && !@has_phone
           msg = msg + "No phone number. Please go to 'My Profile' -> 'My Assistant' to add phone number " unless @has_phone
           
