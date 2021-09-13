@@ -90,23 +90,33 @@ class ApplicationController < ActionController::Base
   def check_supervisor_and_phone
     if request.env['PATH_INFO'].eql?('/facilities')
       unless session_user.nil? 
-        @is_requested = false
-        msg = ""
-        session[:had_supervisor] = session_user.has_supervisor? ? 1 : 0
-        if session[:had_supervisor] == 0
-          @request_endorsement = RequestEndorsement.where(user_id: session[:acting_user_id] || session_user[:id]) 
-          @request_endorsement.each do |request|
-            @is_requested = true if request.deleted_at.nil? && request.created_at.to_datetime + 1.days > Time.zone.now.to_datetime && (request.is_accepted.nil? || request.is_accepted == true)
-            (!request.is_accepted.nil? && request.is_accepted == true)
+        if session_user.is_normal_user?
+          @is_requested = false
+          @has_phone = !session_user.phone.nil? && !session_user.phone.blank?
+          msg = ""
+          session[:had_supervisor] = session_user.has_supervisor? ? 1 : 0
+          if session[:had_supervisor] == 0
+            if (session_user.is_academic == true)
+              @is_requested = true
+              session_user.create_default_supervisor!                
+              session[:had_supervisor] = 1
+              @has_phone = true
+            else
+              @request_endorsement = RequestEndorsement.where(user_id: session[:acting_user_id] || session_user[:id]) 
+              @request_endorsement.each do |request|
+                @is_requested = true if request.deleted_at.nil? && request.created_at.to_datetime + 1.days > Time.zone.now.to_datetime && (request.is_accepted.nil? || request.is_accepted == true)
+                (!request.is_accepted.nil? && request.is_accepted == true)
+              end
+              
+              msg = "No Supervisor. Please go to 'My Profile' -> 'Request Endorsements' to make endorsement " unless @is_requested
+            end
           end
           
-          msg = "No Supervisor. Please go to 'My Profile' -> 'Request Endorsements' to make endorsement " unless @is_requested
+          msg = msg + ", " if !@is_requested && !@has_phone
+          msg = msg + "No phone number. Please go to 'My Profile' -> 'My Assistant' to add phone number " unless @has_phone
+          
+          flash.now[:error] = msg unless msg.blank?
         end
-        
-        msg = msg + ", " if !@is_requested && (session_user.phone.nil? && session_user.phone.blank?)
-        msg = msg + "No phone number. Please go to 'My Profile' -> 'My Assistant' to add phone number " if session_user.phone.nil? && session_user.phone.blank?
-        
-        flash.now[:error] = msg unless msg.blank?
       end
     end
   end

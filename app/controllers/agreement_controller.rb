@@ -115,12 +115,7 @@ class AgreementController <  ApplicationController
       session[:had_supervisor] = session_user.has_supervisor? ? 1 : 0
 
       if session[:had_supervisor] == 0
-        #Check role
-        if (session_user.is_academic == true)
-          session_user.create_default_supervisor!                
-          session[:had_supervisor] = 1
-          redirect_to '/facilities'
-        else
+        unless (session_user.is_academic == true)
           return redirect_to '/no_supervisor' unless request.env['PATH_INFO'].eql?('/no_supervisor')
         end
       end
