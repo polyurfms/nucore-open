@@ -22,9 +22,6 @@ class AdditionalPricePolicyCreator
 
     @map_group_id = {}
 
-    array_price_policy_id = Array.new
-    @map_policy_group_with_cost = {}
-
 #    unless @new_additional_price_policies.nil?
     ActiveRecord::Base.transaction do
 
@@ -58,7 +55,7 @@ class AdditionalPricePolicyCreator
           @new_additional_price_policies.all?(&:save) || raise(ActiveRecord::Rollback)
         end
       end
-#      end
+
     end
   end
 
