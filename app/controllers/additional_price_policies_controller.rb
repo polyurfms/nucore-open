@@ -132,9 +132,9 @@ class AdditionalPricePoliciesController < ApplicationController
 
 #    return redirect_to facility_instrument_additional_price_policies_path if @params[:startdate].blank?
 
-    @additonal_price_group_id = params[:additional_price_group][:additional_price_group_id]
+    @additional_price_group_id = params[:additional_price_group][:additional_price_group_id]
 
-    @additional_price_group = AdditionalPriceGroup.find_by(id: @additonal_price_group_id)
+    @additional_price_group = AdditionalPriceGroup.find_by(id: @additional_price_group_id)
     @additional_price_group.name = params[:additional_price_group][:name]
 
     #@addition_price_name = params[:addition_price_name] || ""
@@ -150,9 +150,9 @@ class AdditionalPricePoliciesController < ApplicationController
 
     @additional_price_policies.each do |additional_price_policy|
       additional_price_policy.id = params["price_policy_#{additional_price_policy.price_policy.id}"][:id]
-      #additional_price_policy.name = @addition_price_name
+      #additional_price_policy.price_policy_id = additional_price_policy.id
       additional_price_policy.cost = params["price_policy_#{additional_price_policy.price_policy.id}"][:cost]
-      #additional_price_policy.product_price_group.name = @addition_price_name
+      additional_price_policy.additional_price_group_id = @additional_price_group_id
     end
 
     @search_price_policy_id = @price_policies.map do |price_policy|
@@ -176,7 +176,7 @@ class AdditionalPricePoliciesController < ApplicationController
 
           @additional_price_policies.each do |additional_price_policy|
             id = params["price_policy_#{additional_price_policy.price_policy.id}"][:id]
-            name = @additional_price_group.name
+            #name = @additional_price_group.name
             cost = params["price_policy_#{additional_price_policy.price_policy.id}"][:cost]
 
             @a = AdditionalPricePolicy.find(id.to_i)
