@@ -705,7 +705,8 @@ class OrderDetail < ApplicationRecord
     return unless costs
     self.price_policy_id = pp.id
     self.actual_cost     = costs[:cost]
-    self.actual_adjustment     = costs[:adjust]
+    #self.actual_adjustment = costs[:adjust]
+    #self.actual_adjustment = 0
     self.actual_subsidy  = costs[:subsidy]
     pp
   end
@@ -966,11 +967,9 @@ class OrderDetail < ApplicationRecord
   end
 
   def sign_in_out_time
-    if reservation.card_start_at.nil?
-      "-"
-    else
-      "From #{human_date(reservation.card_start_at)} #{human_time(reservation.card_start_at)} to #{human_date(reservation.card_end_at)} #{human_time(reservation.card_end_at)} (#{reservation.card_duration_mins})"
-    end
+    card_start = reservation.card_start_at.nil? ? "---" : human_date(reservation.card_start_at) + " " + human_time(reservation.card_start_at)
+    card_end = reservation.card_end_at.nil? ? "---" : human_date(reservation.card_end_at) + " " + human_time(reservation.card_end_at)
+    "From #{card_start} to #{card_end} (#{reservation.card_duration_mins})"
   end
 
   private
@@ -1003,7 +1002,6 @@ class OrderDetail < ApplicationRecord
     assign_price_policy unless price_policy
 
     calculator = CancellationFeeCalculator.new(self)
-
     change_status!(calculator.total_cost > 0 ? OrderStatus.complete : order_status)
 
     if calculator.costs.present?
@@ -1031,7 +1029,7 @@ class OrderDetail < ApplicationRecord
 
   def clear_costs
     self.actual_cost     = nil
-    self.actual_adjustment     = nil
+    #self.actual_adjustment     = nil
     self.actual_subsidy  = nil
     self.price_policy_id = nil
   end
@@ -1066,9 +1064,9 @@ class OrderDetail < ApplicationRecord
   def pricing_note_required?
     return false unless @manually_priced && SettingsHelper.feature_on?(:price_change_reason_required)
     return false if cost_estimated? || canceled_at?
-    
+
     return ( actual_adjustment == 0.0 || actual_adjustment == 0 ) ? false : true
-    
+
     !actual_costs_match_calculated?
   end
 
