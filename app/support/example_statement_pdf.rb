@@ -51,7 +51,7 @@ class ExampleStatementPdf < StatementPdf
 
     pdf.indent(40) do
       pdf.markup("<p>Send a crossed cheque made payable to &ldquo;"+@payee+"&rdquo; to the following address and write the invoice no. <strong>"+@invoice_number+"</strong> at the back of the cheque.</p>")
-      pdf.move_down(20)
+      # pdf.move_down(20)
       pdf.markup("<p>Address:</p>")
       pdf.markup("<p>"+@address_1+"</p>")
       pdf.markup("<p>"+@address_2+"</p>")
@@ -70,7 +70,7 @@ class ExampleStatementPdf < StatementPdf
       pdf.markup("<p>Bank Name: "+@bank_name+"</p>")
       pdf.markup("<p>Bank Account No.: "+@bank_account+"</p>")
       pdf.markup("<p>Details of Payment: Please indicate the invoice no. <strong>"+@invoice_number+"</strong> for our reference.</p>")
-      pdf.move_down(20)
+      # pdf.move_down(20)
       pdf.markup("<p>After the payment, please send us a copy of the bank advice by email at <u>"+@email+"</u> for follow-up action.&nbsp;</p>")
     end
     pdf.move_down(10)
@@ -84,11 +84,11 @@ class ExampleStatementPdf < StatementPdf
 
   def generate_document_header(pdf)
 
-    date = Time.zone.now.strftime("%Y-%m-%d")
+    date = Time.zone.now.strftime("%d %b %Y")
     pdf.font_size = 10.5
 
     pdf.image "#{Rails.root}/app/assets/images/statement-logo.jpg", :at => [0,700], :width => 200
-
+    pdf.draw_text  @facility.abbreviation , size: 24, font_style: :bold, :at => [425,675]
     pdf.move_down(10)
     pdf.stroke_color '000000'
     pdf.stroke_horizontal_rule
@@ -96,15 +96,20 @@ class ExampleStatementPdf < StatementPdf
     pdf.text "INVOICE", size: 13, font_style: :bold, align: :center
     pdf.move_down(5)
 
-    if @account.remittance_information.present?
-      @bill_to = @account.remittance_information
-    else
-      @bill_to = @account.owner.user.full_name(suspended_label: false)
-    end
+    table_data = [
+                  ["To:  " + @account.remittance_information , "Invoice No.: " + @invoice_number],
+                  ["Attn: " + "#{@account.attention}", "Date: " + "#{date}"]]
 
-    table_data = [["From:  " + @facility.name , ""],
-                  ["To:  " + @bill_to , "Invoice No.: " + @invoice_number],
-                  ["Attn: " + "#{@account.owner.user.full_name(suspended_label: false)}", "Date: " + "#{date}"]]
+
+    # if @account.remittance_information.present?
+    #   @bill_to = @account.remittance_information
+    # else
+    #   @bill_to = @account.owner.user.full_name(suspended_label: false)
+    # end
+
+    # table_data = [["From:  " + @facility.name , ""],
+    #               ["To:  " + @bill_to , "Invoice No.: " + @invoice_number],
+    #               ["Attn: " + "#{@account.owner.user.full_name(suspended_label: false)}", "Date: " + "#{date}"]]
 
     pdf.table(table_data, :width => 500, :cell_style => { :inline_format => true }) do
       style(rows(0..-1), :padding => [0, 0, 0, 0], :borders => [])
@@ -125,9 +130,8 @@ class ExampleStatementPdf < StatementPdf
     pdf.table([order_detail_headers] + order_detail_rows, header: true, width: 510) do
       row(0).style(LABEL_ROW_STYLE)
       column(0).width = 125
-      column(1).width = 225
-      column(2).width = 75
-      column(2).style(align: :right)
+      column(1).width = 300
+      # column(2).style(align: :right)
       column(3).style(align: :right)
     end
     pdf.move_down(10)
@@ -142,7 +146,8 @@ class ExampleStatementPdf < StatementPdf
 #  end
 
   def order_detail_headers
-    ["Fulfillment Date", "Order", "Quantity", "Amount"]
+    ["Fulfillment Date", "Order", "Amount"]
+    # ["Fulfillment Date", "Order", "Quantity", "Amount"]
     # ["Item", "Booking ID", "User", "Description", "Date", "Subtotal (HKD)"]
   end
 
@@ -151,7 +156,7 @@ class ExampleStatementPdf < StatementPdf
       [
         format_usa_datetime(order_detail.fulfilled_at),
         "##{order_detail}: #{order_detail.product}" + (order_detail.note.blank? ? "" : "\n#{normalize_whitespace(order_detail.note)}"),
-        OrderDetailPresenter.new(order_detail).wrapped_quantity,
+        # OrderDetailPresenter.new(order_detail).wrapped_quantity,
         number_to_currency(order_detail.actual_total),
       ]
     end

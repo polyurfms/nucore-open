@@ -6,6 +6,11 @@
   label: false,
   inline_label: text("instruments.instrument_fields.show_details")
 
+= f.input :show_details_with_access,
+  as: :boolean,
+  label: false,
+  inline_label: text("instruments.instrument_fields.show_details_with_access")
+
 - if f.object.new_record?
   = f.association :schedule,
     collection: current_facility.schedules.active.order(:name),

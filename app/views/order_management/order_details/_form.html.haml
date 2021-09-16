@@ -55,6 +55,11 @@
 
     = render_view_hook "after_order_status", f: f, order_detail: @order_detail
 
+    - if @order_detail.time_data.present? && @order_detail.product.has_relay?
+      .row
+        .span5
+          = f.input :sign_in_out_time, label: "Sign In/Out Time", as: :readonly
+
     .row
       - if @order_detail.time_data.present?
         .span5= render "order_management/order_details/#{@order_detail.time_data.class.name.underscore}", f: f

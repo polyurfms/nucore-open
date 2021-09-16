@@ -623,6 +623,10 @@ en:
         remove_from_journal: "Remove From Journal"
         fo_status: "Status"
         fo_journal_id: "FO Journal ID"
+      reservation:
+        th:
+          card_time: "Tap on & Tap off: "
+          card_duration: "Duration: "
   product_access_groups:
     index:
       add_button: Add %{group}
@@ -1305,6 +1309,7 @@ en:
 
     instrument_fields:
       show_details: "Show reservation details (name, email, etc) on schedule"
+      show_details_with_access: "Show reservation details when access right granted"
       relay:
         control_mechanisms:
           manual: Reservation only
