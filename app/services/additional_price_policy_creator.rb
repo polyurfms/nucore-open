@@ -22,33 +22,40 @@ class AdditionalPricePolicyCreator
 
     @map_group_id = {}
 
-    unless @new_additional_price_policies.nil?
-      ActiveRecord::Base.transaction do
+#    unless @new_additional_price_policies.nil?
+    ActiveRecord::Base.transaction do
 
-        @existing_additional_price_groups = AdditionalPriceGroup.where(product_id: product.id, deleted_at: nil)
+      @existing_additional_price_groups = AdditionalPriceGroup.joins(:additional_price_policies).where("additional_price_policies.price_policy_id=? and additional_price_groups.deleted_at is null",current_price_policies.first.id)
 
-        @existing_additional_price_groups.each do |existing_group|
-          new_group = existing_group.dup
-          new_group.save
-          @map_group_id.store(existing_group.id, new_group.id)
-        end
-
-        @existing_additional_price_groups.all?(&:save) || raise(ActiveRecord::Rollback)
-
-        current_price_policies.each do |current_price_policy|
-          # @additional_price_policies = AdditionalPricePolicy.where("price_policy_id = :id AND deleted_at IS NULL", id: current_price_policy.id)
-          @additional_price_policies = AdditionalPricePolicy.get_additional_price_policy_list(current_price_policy.id)
-          @price_policy_id = @mapping[current_price_policy.price_group_id]
-
-          unless @additional_price_policies.nil?
-            @additional_price_policies.each do |additional_price_policy|
-              @new_additional_price_policies << new_additional_price_policy(additional_price_policy, current_user, @price_policy_id) if additional_price_policy.deleted_at.nil? || additional_price_policy.deleted_at.blank?
-            end
-          end
-        end
-
-        @new_additional_price_policies.all?(&:save) || raise(ActiveRecord::Rollback)
+      @existing_additional_price_groups.each do |existing_group|
+        new_group = existing_group.dup
+        new_group.save
+        @map_group_id.store(existing_group.id, new_group.id)
       end
+
+      price_policies.each do |new_price_policy|
+        @current_policy = current_price_policies.detect{|p| p["price_group_id"]==new_price_policy.price_group_id}
+        if @current_policy.nil?
+          @map_group_id.each do |key, value|
+
+            new_additional_price_policy = AdditionalPricePolicy.new
+            new_additional_price_policy.price_policy_id = new_price_policy.id
+            new_additional_price_policy.cost = 0
+            new_additional_price_policy.additional_price_group_id = value
+            new_additional_price_policy.created_at = Time.zone.now
+            new_additional_price_policy.updated_at = Time.zone.now
+            new_additional_price_policy.created_by = current_user
+            new_additional_price_policy.save
+          end
+        else
+          @additional_price_policies = AdditionalPricePolicy.where(price_policy_id: @current_policy.id, deleted_at: nil)
+          @additional_price_policies.each do |additional_price_policy|
+            new_additional_price_policy(additional_price_policy, current_user, new_price_policy.id).save!
+          end
+          @new_additional_price_policies.all?(&:save) || raise(ActiveRecord::Rollback)
+        end
+      end
+
     end
   end
 
