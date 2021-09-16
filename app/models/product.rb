@@ -36,11 +36,11 @@ class Product < ApplicationRecord
   validates :user_notes_field_mode, presence: true, inclusion: Products::UserNoteMode.all
   validates :user_notes_label, length: { maximum: 255 }
 
-  validates :order_notification_recipient,
-            email_format: true,
-            allow_blank: true
+#  validates :order_notification_recipient,
+#            email_format: true,
+#            allow_blank: true
 
-            
+
   # validates(
   #   :account,
   #   presence: true,
