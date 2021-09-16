@@ -36,7 +36,7 @@ class Reservation < ApplicationRecord
   # requirements of order_completeable?, e.g. the reservation time isn't over yet.
   attr_accessor :force_completion
 
-  attr_accessor :select_addition_price_policy
+  attr_accessor :select_additional_price_policy
 
   # Delegations
   #####
@@ -127,8 +127,8 @@ class Reservation < ApplicationRecord
       .delete_if { |reservation| reservation.reserve_end_at < t }
   end
 
-  def select_addition_price_policy?
-    @select_addition_price_policy
+  def select_additional_price_policy?
+    @select_additional_price_policy
   end
 
   def self.overlapping(start_at, end_at)

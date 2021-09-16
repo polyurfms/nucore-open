@@ -59,6 +59,9 @@ class OrderDetail < ApplicationRecord
   belongs_to :bundle, foreign_key: "bundle_product_id"
   belongs_to :canceled_by_user, foreign_key: :canceled_by, class_name: "User"
   belongs_to :problem_resolved_by, class_name: "User"
+
+  belongs_to :additional_price_group
+
   has_one    :reservation, inverse_of: :order_detail
   # for some reason, dependent: :delete on reservation isn't working with paranoia, hitting foreign key constraints
   before_destroy { reservation.try(:really_destroy!) }
@@ -668,7 +671,6 @@ class OrderDetail < ApplicationRecord
 
     # is account valid for facility
     return if account && !product.facility.can_pay_with_account?(account)
-
     @estimated_price_policy = product.cheapest_price_policy(self, date)
     assign_estimated_price_from_policy @estimated_price_policy
   end
@@ -680,7 +682,6 @@ class OrderDetail < ApplicationRecord
 
   def assign_estimated_price_from_policy(price_policy)
     return unless price_policy
-
     costs = price_policy.estimate_cost_and_subsidy_from_order_detail(self)
     return unless costs
 

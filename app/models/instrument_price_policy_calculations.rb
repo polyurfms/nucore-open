@@ -4,7 +4,11 @@ module InstrumentPricePolicyCalculations
 
   def estimate_cost_and_subsidy_from_order_detail(order_detail)
     reservation = order_detail.reservation
-    estimate_cost_and_subsidy reservation.reserve_start_at, reservation.reserve_end_at, order_detail.addition_price_policy_type if reservation
+    if order_detail.additional_price_group.nil?
+      estimate_cost_and_subsidy reservation.reserve_start_at, reservation.reserve_end_at, "" if reservation
+    else
+      estimate_cost_and_subsidy reservation.reserve_start_at, reservation.reserve_end_at, order_detail.additional_price_group_id if reservation
+    end
   end
 
   def calculate_cost_and_subsidy_from_order_detail(order_detail)
@@ -58,13 +62,13 @@ module InstrumentPricePolicyCalculations
   def calculate_reservation(reservation)
     # One or both of these could be blank if we parse an invalid date in a form
     return unless reservation.has_reserved_times?
-    calculate_for_time(reservation.reserve_start_at, reservation.reserve_end_at, reservation.order_detail.addition_price_policy_type)
+    calculate_for_time(reservation.reserve_start_at, reservation.reserve_end_at, reservation.order_detail.additional_price_group_id)
   end
 
   # CHARGE_FOR[:usage] uses the actual start/end times for calculation
   def calculate_usage(reservation)
     return unless reservation.has_actual_times?
-    calculate_for_time(reservation.actual_start_at, reservation.actual_end_at, reservation.order_detail.addition_price_policy_type)
+    calculate_for_time(reservation.actual_start_at, reservation.actual_end_at, reservation.order_detail.additional_price_group_id)
   end
 
   # CHARGE_FOR[:overage] charges for all the time that was initially reserved,
@@ -72,7 +76,7 @@ module InstrumentPricePolicyCalculations
   def calculate_overage(reservation)
     return unless reservation.has_reserved_times? && reservation.has_actual_times?
     end_at = [reservation.reserve_end_at, reservation.actual_end_at].max
-    calculate_for_time(reservation.reserve_start_at, end_at, reservation.order_detail.addition_price_policy_type)
+    calculate_for_time(reservation.reserve_start_at, end_at, reservation.order_detail.additional_price_group_id)
   end
 
   def calculate_for_time(start_at, end_at, type="")

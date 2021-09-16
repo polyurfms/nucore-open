@@ -27,7 +27,7 @@ class OrderManagement::OrderDetailsController < ApplicationController
   # PUT /facilities/:facility_id/orders/:order_id/order_details/:id/manage
   def update
     @active_tab = "admin_orders"
-    @order_detail.addition_price_policy_type = params[:addition_price_policy]
+    @order_detail.additional_price_group_id = params[:additional_price_policy]
     updater = OrderDetails::ParamUpdater.new(@order_detail, user: session_user, cancel_fee: params[:with_cancel_fee] == "1")
 
     if updater.update_attributes(params[:order_detail] || empty_params)
@@ -48,10 +48,10 @@ class OrderManagement::OrderDetailsController < ApplicationController
   end
 
   # GET /facilities/:facility_id/orders/:order_id/order_details/:id/pricing
-  def pricing   
-    @order_detail.addition_price_policy_type = params[:addition_price_policy]
+  def pricing
+    @order_detail.additional_price_group_id = params[:additional_price_policy]
     checker = OrderDetails::PriceChecker.new(@order_detail)
-    @prices = checker.prices_from_params(params[:order_detail] || empty_params, params[:addition_price_policy]|| "")
+    @prices = checker.prices_from_params(params[:order_detail] || empty_params, params[:additional_price_policy]|| "")
 
     render json: @prices.to_json
   end

@@ -7,12 +7,12 @@ class SingleReservationsController < ApplicationController
   before_action :build_order
   before_action { @submit_action = facility_instrument_single_reservations_path }
 
-  
+
 
   def new
     @reservation = NextAvailableReservationFinder.new(@instrument).next_available_for(current_user, acting_user)
     @reservation.order_detail = @order_detail
-    
+
     authorize! :new, @reservation
 
     unless @instrument.can_be_used_by?(acting_user)
@@ -28,7 +28,7 @@ class SingleReservationsController < ApplicationController
     @account = Account.find_by("id = #{params["order_account"].to_i} AND expires_at >= '#{@reservation.reserve_end_at}'")
 
     set_windows
-    
+
     if(!@account.nil?)
       if creator.save(session_user, session[:acting_user_id] || 0)
         # @reservation = creator.reservation
@@ -42,7 +42,7 @@ class SingleReservationsController < ApplicationController
         # set_windows
         render "reservations/new"
       end
-    else 
+    else
       flash.now[:error] = I18n.t("controllers.reservations.create.null_payment_source") if params["order_account"].to_i == 0
       flash.now[:error] = I18n.t("controllers.reservations.create.expires_at") unless params["order_account"].to_i == 0
       # set_windows
@@ -70,9 +70,9 @@ class SingleReservationsController < ApplicationController
   end
 
   def set_windows
-    @addition_price_policy = @order_detail.product.price_policies.get_addition_price_policy_list
-    # @select_addition_price_policy = params[:addition_price_policy] if params[:addition_price_policy].nil?
-    @select_addition_price_policy = @reservation.select_addition_price_policy? unless @reservation.select_addition_price_policy?.nil?
+    @additional_price_policy = @order_detail.product.price_policies.get_additional_price_policy_list
+    # @select_additional_price_policy = params[:additional_price_policy] if params[:additional_price_policy].nil?
+    @select_additional_price_policy = @reservation.select_additional_price_policy? unless @reservation.select_additional_price_policy?.nil?
     @reservation_window = ReservationWindow.new(@reservation, current_user)
   end
 

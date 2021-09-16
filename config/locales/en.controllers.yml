@@ -157,7 +157,7 @@ en:
       update:
         success: Price Rules were successfully updated.
 
-    addition_price_policies:
+    additional_price_policies:
       destroy:
         success: Addition Price Rules were successfully removed.
         failure: An error was encountered while trying to remove the Addition Price Rules

@@ -57,6 +57,7 @@ class ReservationsController < ApplicationController
     end
 
     @show_details = params[:with_details] == "true" && (@instrument.show_details? || can?(:administer, Reservation))
+
     respond_to do |format|
       as_calendar_object_options = { start_date: @start_at.beginning_of_day, with_details: @show_details }
       format.js do
@@ -247,14 +248,16 @@ class ReservationsController < ApplicationController
           flash[:error] = "Payment source expired"
           raise ActiveRecord::Rollback
         end
-        
-        @order_detail.addition_price_policy_type = params[:addition_price_policy] unless params[:addition_price_policy].nil?
+
+        #@order_detail.additional_price_policy_name = params[:additional_price_policy] unless params[:additional_price_policy].nil?
+        @order_detail.additional_price_group_id = params[:additional_price_policy] unless params[:additional_price_policy].nil?
         @old_order_detail_estimated_cost = @order_detail.estimated_cost
 
         # @account_user = AccountUser.find_by(account_id: @order_detail.account_id, deleted_at: nil, user_id: session_user.id)
 
         # merge state can change after call to #save! due to OrderDetailObserver#before_save
         mergeable = @order_detail.order.to_be_merged?
+
         save_reservation_and_order_detail
 
         if(@account.allows_allocation == true)
@@ -262,7 +265,7 @@ class ReservationsController < ApplicationController
 
           if(@account_user.user_role != "Owner")
             if(@account_user.quota_balance < 0)
-              flash.now[:error] = "Payment source insuffici ent fund"
+              flash.now[:error] = "Payment source insufficient fund"
               raise ActiveRecord::Rollback
             end
           end
@@ -449,9 +452,11 @@ class ReservationsController < ApplicationController
   end
 
   def set_windows
-    @select_addition_price_policy = @order_detail.addition_price_policy_type
-    @addition_price_policy = @order_detail.product.price_policies.get_addition_price_policy_list
-    @select_addition_price_policy = @reservation.select_addition_price_policy? unless @reservation.select_addition_price_policy?.nil?
+
+    #@select_additional_price_policy = @order_detail.additional_price_policy_name
+    @additional_price_group_id = @order_detail.additional_price_group_id
+    @additional_price_policy = @order_detail.product.price_policies.get_additional_price_policy_list
+    @select_additional_price_policy = params[:additional_price_policy] unless params[:additional_price_policy].nil?
     @reservation_window = ReservationWindow.new(@reservation, current_user)
   end
 

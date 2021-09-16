@@ -12,13 +12,16 @@
       .span5.js--pricingUpdate
         = account_input(f)
 
-        - @addition_price_policy = @order_detail.product.price_policies.get_addition_price_policy_list
-        - @select_addition_price_policy = @order_detail.addition_price_policy_type 
+        - @additional_price_policy = @order_detail.product.price_policies.get_additional_price_policy_list
+        - @select_additional_price_policy = @order_detail.additional_price_group_id
 
       -# .span5.js--additionTypeUpdate
       .span5.js--pricingUpdate
-        = f.input :addition_price_policy_type, collection: @addition_price_policy, input_html: { name: "addition_price_policy" }, selected: @select_addition_price_policy
-      
+        = f.input :additional_price_group_id, collection: AdditionalPriceGroup.select_additional_price_groups(@order_detail.product_id),
+            input_html: { name: "additional_price_policy" },
+            selected: @select_additional_price_policy,
+            include_blank: true
+
       .span5
         - if @order_statuses
           = f.association :order_status, collection: @order_statuses, label_method: :name_with_level, include_blank: false
@@ -31,7 +34,7 @@
                 data: { min_date: ValidFulfilledAtDate.min.iso8601,
                   max_date: ValidFulfilledAtDate.max.iso8601,
                   complete_target: "#order_detail_order_status_id"}}
-            
+
 
 
         - else
@@ -94,7 +97,7 @@
     .hidden.updating-message= t("facility_order_details.edit.label.updating")
     = f.submit "Save", class: ["btn", "btn-primary"]
     = modal_cancel_button
-    
+
 :javascript
   $(".datepicker").datepicker({ dateFormat: 'd M yy' });
 

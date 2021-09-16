@@ -1,0 +1,42 @@
+= content_for :h1 do
+  = current_facility
+
+= content_for :sidebar do
+  = render "admin/shared/sidenav_product", sidenav_tab: @product.product_type
+
+= content_for :tabnav do
+  = render "admin/shared/tabnav_product", secondary_tab: "addition_pricing_rules"
+
+%h2= @product
+
+%h3= text("views.additional_price_policies.index.add")
+
+%h4= text("views.additional_price_policies.index.dates", start: human_date(@current_start_date), expires: human_date(@current_expires_date)) unless @price_policies.nil?
+
+= modelless_form_for url:facility_instrument_additional_price_policies_path do |f|
+  - @additional_price_policies.each do |additional_price_policy|
+    = error_messages_for additional_price_policy
+
+  = f.input :addition_price_name, input_html: { value: @addition_price_name }, label: PricePolicy.human_attribute_name(:name), required: true
+  = f.input :startdate, as: :hidden, input_html: { value: @price_policy_date }
+  %table.table.table-striped.table-hover.price-policy-table
+    %thead
+      %tr
+        %th= PriceGroup.model_name.human
+        %th= AdditionalPricePolicy.human_attribute_name(:cost)
+    %tbody
+      - @additional_price_policies.each do |additional_price_policy|
+        - price_group = additional_price_policy.price_policy.price_group
+        = fields_for "price_policy_#{additional_price_policy.price_policy.id}", additional_price_policy do |pp|
+          - row_class = []
+          - row_class << "js--masterInternalRow" if price_group.master_internal?
+          - row_class << "js--adjustmentRow" unless price_group.external? || price_group.master_internal?
+          %tr{class: row_class}
+            %td= price_group.name
+            %td
+              = pp.text_field :cost, value: additional_price_policy.cost,
+                  size: 8
+
+  %ul.inline
+    %li= submit_tag text("views.additional_price_policies.index.add"), class: "btn btn-primary submit_addition"
+    %li= link_to text("shared.cancel"), facility_instrument_additional_price_policies_path
