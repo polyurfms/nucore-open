@@ -31,15 +31,22 @@ class ReservationCreator
 
         @order.dept_abbrev = session_user.dept_abbrev
 
+        #@order_detail.additional_price_policy_name = params[:additional_price_policy] unless params[:additional_price_policy].blank?
+
+        unless params[:additional_price_policy].blank?
+            @order_detail.additional_price_group_id = params[:additional_price_policy]
+        end
         # merge state can change after call to #save! due to OrderDetailObserver#before_save
         to_be_merged = @order_detail.order.to_be_merged?
 
         raise ActiveRecord::RecordInvalid, @order_detail unless reservation_and_order_valid?(session_user)
 
         validator = OrderPurchaseValidator.new(@order_detail)
+
         raise ActiveRecord::RecordInvalid, @order_detail if validator.invalid?
 
         save_reservation_and_order_detail(session_user)
+
 
         # When allows_allocation is true, free_balance must more than that stimated_cost
         not_enough = ""
@@ -95,6 +102,7 @@ class ReservationCreator
     @reservation = @order_detail.build_reservation
     @reservation.assign_attributes(reservation_create_params)
     @reservation.assign_times_from_params(reservation_create_params)
+    @reservation.select_additional_price_policy = params[:additional_price_policy] unless params[:additional_price_policy].blank?
     @reservation
   end
 

@@ -115,6 +115,7 @@ class UserDelegationsController < ApplicationController
       @is_assigned ||= true if @assigned_list.count > 0
       @user_delegation = UserDelegation.new
       @user_delegation.delegatee = @delegate_info["delegatee"].strip
+      puts "has errorrrr//////////"
       render action: :index
     end
   end

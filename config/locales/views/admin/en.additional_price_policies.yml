@@ -1,0 +1,24 @@
+en:
+  views:
+    additional_price_policies:
+      index:
+        description: Addition pricing rules determine the specific rate applied to each price group.
+        add: Add Addition Pricing Rules
+        update: Update Addition Pricing Rules
+        none: You must add current pricing rules before you may bill for this item.
+        no_addition: No addition pricing rules.
+        current: Addition Pricing Rules
+        upcoming: Upcoming Pricing Rules
+        past: Past Pricing Rules
+        dates: "Effective: %{start}, Expires: %{expires}"
+        charges_for: "Charges for %{charge_for}"
+        note: "Note: %{note}"
+        delete_msg: "Confirm to delete addition pricing rule?"
+      edit:
+        instructional_text: |
+          All users must be charged the same base rate. You may define adjustments
+          to this rate for individual internal price groups.
+        edit: Edit Pricing Rules
+        save: Save Rules
+      add:
+        name: Name

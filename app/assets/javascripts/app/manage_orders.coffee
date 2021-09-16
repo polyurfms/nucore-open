@@ -64,6 +64,7 @@ class OrderDetailManagement
   updatePricing: (e) ->
     self = this
     url = @$element.attr('action').replace('/manage', '/pricing')
+    
     @disableSubmit()
 
     $.ajax {

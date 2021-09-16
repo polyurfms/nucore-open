@@ -40,6 +40,8 @@
         %td= link_to(order_detail, [order_detail.order, order_detail])
         %td
           = order_detail.description_as_html
+          - unless order_detail.additional_price_group_id.blank?
+            = " (#{order_detail.additional_price_group.name})" 
           - if order_detail.reservation
             %br
             = order_detail.reservation

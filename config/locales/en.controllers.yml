@@ -157,6 +157,21 @@ en:
       update:
         success: Price Rules were successfully updated.
 
+    additional_price_policies:
+      destroy:
+        success: Addition Price Rules were successfully removed.
+        failure: An error was encountered while trying to remove the Addition Price Rules
+      errors:
+        null_name: Please input name of addition pricing rules
+        duplcation_name: Duplcation addition price name
+        remove_active_policy: "Sorry, but you cannot remove an active addition price policy. If you really want to do so move the start date to the future and try again."
+        save: There was an error saving the policy
+        same_start_date: "You have chosen a start date that matches an active policy with existing orders. Please choose another start date."
+      create:
+        success: Addition Price Rules were successfully created.
+      update:
+        success: Addition Price Rules were successfully updated.
+
     product_users:
       new:
         success: The user has been successfully authorized for this %{model}
