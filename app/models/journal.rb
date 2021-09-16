@@ -140,6 +140,10 @@ class Journal < ApplicationRecord
     end
   end
 
+  def total_transactions
+    order_details.count
+  end
+
   def reconciled?
     if is_successful.nil?
       false

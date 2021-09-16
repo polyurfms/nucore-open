@@ -157,6 +157,12 @@ end
   # GET /facilities/journals/:id
   def show
     @journal_rows = @journal.journal_rows
+        
+    if params[:sort].nil?
+      @order_details = @journal.order_details
+    else 
+      @order_details = @journal.order_details.joins(:account).reorder(sort_clause)
+    end
     respond_to do |format|
       format.html {}
 
@@ -247,7 +253,7 @@ end
       "fulfilled_date" => "order_details.fulfilled_at",
       "product_name" => "products.name",
       "ordered_for" => ["#{User.table_name}.last_name", "#{User.table_name}.first_name"],
-      "payment_source" => "accounts.description",
+      "payment_source" => "accounts.account_number",
       # "actual_subsidy" => "order_details.actual_subsidy",
       "actual_subsidy" => "order_details.actual_cost",
       "state" => "order_details.state",
