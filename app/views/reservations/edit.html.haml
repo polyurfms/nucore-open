@@ -41,6 +41,9 @@
               hint: t("reservations.account_field.note_hint")
 
   = render "reservation_fields", f: f
+  - unless @additional_price_policy.nil?
+    = render "reservations/additional_price_policy_field", f: f 
+
 
   %ul.inline
     %li= f.submit 'Save', class: 'btn'

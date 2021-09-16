@@ -378,6 +378,7 @@ en:
         created_by_user: Created By
         journal_date: Journal Date
         status_string: Journal Status
+        total_transactions: Total number of transactions
       relay:
         type: Relay Type
         ip: Relay IP Address
