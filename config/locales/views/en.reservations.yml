@@ -8,7 +8,7 @@ en:
       list:
         none: "You have not made any reservations."
       my_table:
-        actions: Actions
+        actions: Action
         # reservation: "Reservation (Edit/Extend)"
         reservation: "Reservation Period (Edit/Extend)"
         short_reservation: "Reservation"

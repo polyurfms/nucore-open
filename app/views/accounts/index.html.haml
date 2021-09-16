@@ -1,5 +1,6 @@
 = content_for :h1 do
-  = t_my(Account)
+  -# = t_my(Account)
+  = I18n.t("pages.my_payment_sources")
 
 - if @account_users.empty?
   %p.notice= text("empty", models: Account.model_name.human.pluralize.downcase)
@@ -42,7 +43,7 @@
             %td= number_to_currency(account.free_balance) || empty_display
             - if !(@is_delegated == true && au.user_role == "Purchaser")
               %td= link_to text("transactions"), transactions_path(search: { accounts: [account] })
-              %td= link_to "Payment Source Users", account_account_users_path(account)
+              %td= link_to "Payment Source User", account_account_users_path(account)
           - else
             %td
             %td
