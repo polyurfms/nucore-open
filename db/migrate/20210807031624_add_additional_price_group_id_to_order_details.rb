@@ -1,4 +1,4 @@
-class AddAdditionalPricePolicyNameToOrderDetails < ActiveRecord::Migration[4.2]
+class AddAdditionalPriceGroupIdToOrderDetails < ActiveRecord::Migration[4.2]
   def change
 
     add_column :order_details, :additional_price_group_id, :string, null: true
