@@ -1,5 +1,28 @@
 %p
   Approval?
-%ul.inline
-  %li= link_to "Approval", supervisor_endorsement_submit_path(token: @token, is_approval: true), :class => ['btn', 'btn-primary', 'pull-left'], method: "POST" 
-  %li= link_to "Reject", supervisor_endorsement_submit_path(token: @token, is_approval: false), :class => ['btn', 'pull-left'], method: "POST" 
+
+</br>
+%input{:id => "is_agree", :type => "checkbox", :style => "margin-top: -0.25em;"}
+%span I agree to the terms and conditions
+</br>
+</br>
+-# %ul.inline
+-#   %li= link_to "Approval", supervisor_endorsement_submit_path(token: @token, is_approval: true), :class => ['btn', 'btn-primary', 'pull-left'], method: "POST" 
+-#   %li= link_to "Reject", supervisor_endorsement_submit_path(token: @token, is_approval: false), :class => ['btn', 'pull-left'], method: "POST", data: { confirm: "Confirm to reject." } 
+
+
+= form_tag( supervisor_endorsement_submit_path(token: @token, is_approval: true), id: "agree_facility_terms", method: :post, enforce_utf8: false) do
+  = submit_tag "Agree", class: ["btn", "btn-primary"], id: "from_submit"
+  = link_to "Reject", supervisor_endorsement_submit_path(token: @token, is_approval: false), :class => ['btn'], method: "POST", data: { confirm: "Confirm to reject." } 
+
+:javascript
+  $( "#agree_facility_terms" ).submit(function( event ) {
+    var is_agreed = document.getElementById("is_agree");
+    if (is_agreed.checked != true)
+    {
+      alert("Please indicate that you have read and agree to the Terms and Conditions.");
+      
+      $("#from_submit").prop('disabled',false); 
+      return false;
+    }
+  });

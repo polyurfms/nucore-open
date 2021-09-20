@@ -21,12 +21,27 @@ class SearchController < ApplicationController
   def supervisor_user_search_results
     @limit = 25
     load_facility
-    @price_group = PriceGroup.find(params[:price_group_id]) if params[:price_group_id].present?
-    @account = Account.find(params[:account_id]) if params[:account_id].present?
-    @product = Product.find(params[:product_id]) if params[:product_id].present?
-    @search_type = valid_search_types.find { |t| t == params[:search_type] }
-    @users, @count = UserFinder.search_with_count(params[:search_term], @limit)
+    @search_team = params[:search_term]
+    @search_dept = params[:search_dept]
+    @result = Array.new
+    if (!@search_team.nil? && !@search_dept.nil? && @search_dept.length > 1 && @search_team.length > 3)
+      @users, @count = SupervisorFinder.search_with_count(@search_team.upcase, @search_dept.upcase, @limit)
+      
+      if @count
+        @users.each do |u|
+          @result << u
+        end      
+      end
 
+      if (@count.nil? || @count == 0)        
+        @ldap_result = LdapAuthentication::SupervisorLookup.new.call(@search_team.upcase, @search_dept.upcase)
+        unless @ldap_result.nil? 
+          @ldap_result.each do |ld|
+            @result << ld
+          end     
+        end
+      end
+    end
     render layout: false
   end
 

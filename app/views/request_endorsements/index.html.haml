@@ -14,16 +14,24 @@
 - if @can_request
   <br>
 
-  %button{:onclick => "show_search_form()", :type => "button", :class => "btn btn-primary", :id => "show_search_btn"} Request Endorsements
+  -# %button{:onclick => "show_search_form()", :type => "button", :class => "btn btn-primary", :id => "show_search_btn"} Request Endorsements
 
-  <div id="search_form" style="display: none;">
+  <div id="search_form" style="display: block;">
   %h2= t(".head.h2")
-  = form_tag supervisor_user_search_results_path, id: "ajax_form", method: :get do
-    = label_tag :search_term, t(".label.search_term")
-    %br
-    = text_field_tag :search_term, nil, size: 30, class: "search-query"
-    = submit_tag "Search", class: "btn"
-  %br
+
+  = form_tag supervisor_user_search_results_path, id: "supervisor_submit_ajax_form", method: :get do
+    = label_tag :search_term, t(".label.search_term"), required: true, id: "search_term_label"
+    = text_field_tag :search_term, nil, size: 30, class: "search-query string required", id: "search_term", required: true
+    <br>
+    <br>
+    = label_tag :search_dept, t(".label.search_dept"), required: true, id: "search_dept_label"
+    = text_field_tag :search_dept, nil, size: 30, class: "search-query string required", id: "search_dept", required: true
+    <br>
+    <br>
+
+    <div id="error_msg"></div>
+    = submit_tag "Search", class: "btn", id: "search_btn"
+
 
   #result
 
@@ -72,7 +80,70 @@
             
 
 :javascript
-  function show_search_form(){
-    document.getElementById("search_form").style.display = "block";
-    document.getElementById("show_search_btn").style.display = "none";
-  }
+  $( "#search_term_label" ).prepend( "<abbr title='required'>*</abbr>" );
+  $( "#search_dept_label" ).prepend( "<abbr title='required'>*</abbr>" );
+  var search_term = false;
+  var search_dept = false;
+
+  $("#search_term").on("input", function() {
+      if ($(this).val().length > 2) {
+        search_term = true
+      } else {
+        search_term = false
+      }
+  });
+  $("#search_dept").on("input", function() {
+      if ($(this).val().length > 1) {
+        search_dept = true
+      } else {
+        search_dept = false
+      }
+  });
+
+
+  $('form#supervisor_submit_ajax_form').submit(function(e){
+    e.preventDefault(); //Prevent the normal submission action
+  
+    $( "#error_msg" ).empty();
+    if (search_term == true && search_dept == true) {
+      
+      var form = $(this);
+      var submit = $("input[type='submit']",form);
+      var submit_val = submit.val();
+      submit.val("Please Wait...");
+      submit.attr("disabled", true);
+      jQuery.ajax({
+        type: "get",
+        data: form.serialize(),
+        url:  form.attr('action'),
+        timeout: 25000,
+        success: function(r) {
+          $('#result').html(r);
+          submit.val(submit_val);
+          submit.attr("disabled", false);
+        },
+        error: function() {
+          $('#result').html('<p>There was an error retrieving results.  Please try again.</p>');
+          submit.val(submit_val);
+          submit.attr("disabled", false);
+        }
+      });
+    } else {
+      let msg = ""
+      setTimeout(function (){
+        if(!search_term) {
+          msg = msg + "Search supervior's First name, Last name, NetID, or username that are at least 3 characters long";
+        }
+        if(!search_dept) {
+          msg = msg + "Search dept that are at least 2 characters long";
+        }
+        if (msg.length > 0) {
+          $( "#error_msg" ).append( "<p style='color:red;'> " + msg + "</p>" )          
+        }
+        $('#result').empty();
+        $("#search_btn").removeAttr("disabled");
+      }, 200);
+      
+    }
+
+  });

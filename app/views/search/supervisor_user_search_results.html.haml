@@ -1,4 +1,4 @@
-- if @users.length> 0
+- if @result.length> 0
   %table.table.table-striped.table-hover
     %thead
       %tr
@@ -6,14 +6,17 @@
         %th= t(".name")
         %th= t(".username")
         %th= t(".email")
+        %th= t(".dept_abbrev")
     %tbody
-      - @users.each do |user|
+      - @result.each do |user|
         %tr
           %td
-            %p= link_to t(".request_btn"), request_endorsement_make_request_path(request_endorsement_id: session[:acting_user_id] || session_user[:id], supervisor_id: user.username), method: :post, data: { confirm: "Confirm to make endorsement" } 
+          
+            %p= link_to t(".request_btn"), request_endorsement_make_request_path(request_endorsement_id: session[:acting_user_id] || session_user[:id], first_name: user.first_name, last_name: user.last_name, email: user.email, dept_abbrev: user.dept_abbrev, username: user.username), method: :post, data: { confirm: "Confirm to make endorsement" } 
           %td= user.last_name + "." + user.first_name
           %td= user.username
           %td= user.email
+          %td= user.dept_abbrev
           = render_view_hook "extra_columns", user: user
 - else 
   %p= t(".no_user")

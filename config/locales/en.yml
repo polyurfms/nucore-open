@@ -948,6 +948,7 @@ en:
       name: "Full Name"
       username: "NetID"
       email: "Email"
+      dept_abbrev: "Department"
     results_table:
       order_for: Order For
       name: Name
@@ -1275,7 +1276,8 @@ en:
       head:
         h2: "Search Supervisor"
       label:
-        search_term: "Search by supervior's name, NetID, or username"
+        search_term: "Supervior's First name, Last name, NetID, or username:"
+        search_dept: "Dept:"
       
 
   instruments:

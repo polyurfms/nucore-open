@@ -4,6 +4,17 @@ module LdapAuthentication
 
   class UserEntry
 
+
+    # Returns a single LdapAuthentication::UserEntry
+    def self.find(uid)
+      search(uid).first
+    end
+
+    def self.find(uid, dept)
+      search_by_Dept(uid, dept)
+    end
+
+    
     # Returns an Array of `LdapAuthentication::UserEntry`s
     def self.search(uid)
       return [] unless uid
@@ -18,9 +29,25 @@ module LdapAuthentication
       ldap_entries.map { |entry| new(entry) }
     end
 
-    # Returns a single LdapAuthentication::UserEntry
-    def self.find(uid)
-      search(uid).first
+    def self.search_by_Dept(uid, dept)
+      return [] unless uid
+      return [] unless dept
+      
+      ldap_entries = nil
+      # ldap_entries_username = nil
+      # ldap_entries_sn = nil
+      # ldap_entries_givename = nil
+      ActiveSupport::Notifications.instrument "search.ldap_authentication" do |payload|
+        ldap_entries = with_retry { admin_ldap.search(filter: 
+          (Net::LDAP::Filter.eq(LdapAuthentication.attribute_field, uid) & Net::LDAP::Filter.eq("departmentNumber", dept)) |
+          (Net::LDAP::Filter.eq("givenname", uid) & Net::LDAP::Filter.eq("departmentNumber", dept)) |
+          (Net::LDAP::Filter.eq("sn", uid) & Net::LDAP::Filter.eq("departmentNumber", dept))
+          
+          ) }
+        payload[:uid] = uid
+        payload[:results] = ldap_entries
+      end
+      ldap_entries.map { |entry| new(entry) }
     end
 
     def self.admin_ldap

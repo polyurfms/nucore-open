@@ -5,41 +5,52 @@ class RequestEndorsementsController < ApplicationController
     before_action :check_acting_as
 
     def index    
+        @user_id = session[:acting_user_id] || session_user[:id]
         @count = User.check_academic_user_and_payment_source(session[:acting_user_id] || session_user[:id]).count
         @current_type = "request_endorsements"
         @request_endorsement = RequestEndorsement.where(user_id: session[:acting_user_id] || session_user[:id]).order(created_at: :desc)
         @can_request = true
+        
+        @result = Array.new
         @request_endorsement.each do |request|
             @can_request =false if request.deleted_at.nil? && request.created_at.to_datetime + 1.days > Time.zone.now.to_datetime && (request.is_accepted.nil? || request.is_accepted == true)
         end
     end
     
     def make_request
-        @supervisor =  User.find_by(email: params[:supervisor_id])
+        @user_id = session[:acting_user_id] || session_user[:id]
         @current_user = User.find(params[:request_endorsement_id])
-        
+        @first_name = params[:first_name]
+        @last_name = params[:last_name]
+        @email = params[:email]
+        @dept_abbrev =  params[:dept_abbrev]
+        @supervisor =  params[:username]
 
         @request_endorsement = RequestEndorsement.where(user_id: @user_id).where("deleted_at IS NOT NULL AND DATE_FORMAT(created_at,'%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(:created_at,'%Y-%m-%d %H:%i:%s')", created_at: (Time.zone.now + 1.days).strftime("%Y-%m-%d %H:%M:%S"))
         return "/" unless session[:acting_user_id] || session_user[:id] == current_user.id  || @request_endorsement.count == 0 || @supervisor.length == 0 
-        update(@current_user, @supervisor)
+        update(@current_user, @supervisor, @email, @first_name, @last_name, @dept_abbrev)
 
         redirect_to request_endorsements_path()
     end
 
-    def update(requester, supervisor)
+    def update(requester, supervisor, email, first_name, last_name, dept_abbrev)
         @date = Time.zone.now
-        @token = generateToken(requester.username, supervisor.username, @date)
+        @token = generateToken(requester.username, supervisor, @date)
         @request_endorsement = RequestEndorsement.new
         @request_endorsement.user_id = requester.id
         @request_endorsement.token = @token  
-        @request_endorsement.supervisor = supervisor.username
+        @request_endorsement.supervisor = supervisor
         @request_endorsement.created_at = @date
         @request_endorsement.updated_at = @date
         @request_endorsement.created_by = session[:acting_user_id] || session_user[:id]
         @request_endorsement.updated_by = session[:acting_user_id] || session_user[:id]
+        @request_endorsement.email = email
+        @request_endorsement.first_name = first_name
+        @request_endorsement.last_name = last_name
+        @request_endorsement.dept_abbrev = dept_abbrev
 
         if @request_endorsement.save
-            RequsetEndorsementMailer.notify(supervisor, requester, @request_endorsement).deliver_later
+            RequsetEndorsementMailer.notify(email, requester, @request_endorsement, first_name, last_name).deliver_later
             flash[:notice] = "Success"
         else
             flash[:error] = "Fail to make request"
@@ -85,19 +96,5 @@ class RequestEndorsementsController < ApplicationController
         end
         
         redirect_to request_endorsements_path()
-    end
-
-    def service_username_lookup(username)
-        LdapAuthentication::UserLookup.new.call(username)
-      end
-    
-      def username_lookup(username)
-        return nil if username.blank?
-        # || service_username_lookup(username.strip)
-        username_database_lookup(username.strip) 
-      end
-    
-      def username_database_lookup(username)
-        User.find_by("LOWER(username) = ?", username.downcase)
-      end
+    end   
 end

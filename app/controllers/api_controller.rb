@@ -23,12 +23,12 @@ class ApiController < ApplicationController
     return true unless @date.eql?(@request_endorsement[0].created_at.to_datetime.strftime("%Y%m%d%H%M"))
     # return redirect_to facilities_path unless @date.eql?(@request_endorsement[0].created_at.to_datetime.strftime("%Y%m%d%H%M"))
 
-    # @user = get_user(@user_netid).sub('#', '')
+    @user = get_user(@user_netid).sub('#', '')
     # @supervisor = get_user(@supervisor_netid).sub('#', '')
-    @user = get_user("testing@example.com")
-    @supervisor = get_user("ppi123@example.com")    
+    # @user = get_user("testing@example.com")
+    # @supervisor = get_user("ppi123@example.com")    
 
-    return true if @user.nil? || @supervisor.nil?
+    return true if @user.nil?
     # return redirect_to facilities_path if @user.nil? || @supervisor.nil?
 
     false
@@ -63,10 +63,13 @@ class ApiController < ApplicationController
       ActiveRecord::Base.transaction do
         begin
           @date = Time.zone.now
-          update_request_endorsemets(@supervisor, @request_endorsement, @date, @action)
+          request_endorsement = @request_endorsement[0]
+          update_request_endorsemets(request_endorsement, @date, @action)
 
-          @to = @user.email + ", " + @supervisor.email
-          RequsetEndorsementMailer.confirm_notify(@to, @supervisor, @status).deliver_later
+          @to = @user.email + ", " + request_endorsement.email
+
+          
+          RequsetEndorsementMailer.confirm_notify(@to, request_endorsement, @status).deliver_later
         rescue ActiveRecord::RecordInvalid => e
           raise ActiveRecord::Rollback
         end
@@ -80,16 +83,16 @@ class ApiController < ApplicationController
     User.find_by("LOWER(username) = ?", netid.downcase)
   end
 
-  def update_request_endorsemets(supervisor, request_endorsement, date, action)
-    if request_endorsement.update(is_accepted: action, updated_by: supervisor.id, updated_at: date)
-      update_supervisor_of_requester(@user, @supervisor, @date) if action.eql?("true") 
+  def update_request_endorsemets(request_endorsement, date, action)
+    if request_endorsement.update(is_accepted: action, updated_by: request_endorsement.user_id, updated_at: date)
+      update_supervisor_of_requester(@user, request_endorsement, @date) if action.eql?("true") 
     else  
       raise(ActiveRecord::Rollback)
     end
   end
 
-  def update_supervisor_of_requester(user, supervisor, date)
-    creator = SupervisorCreator.create(user, supervisor.last_name, supervisor.first_name, supervisor.email)
+  def update_supervisor_of_requester(user, request_endorsement, date)
+    creator = SupervisorCreator.create(user, request_endorsement.last_name, request_endorsement.first_name, request_endorsement.email, request_endorsement.supervisor, request_endorsement.dept_abbrev)
     unless creator.save()
       raise(ActiveRecord::Rollback)
     end
