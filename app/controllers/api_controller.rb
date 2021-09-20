@@ -23,7 +23,7 @@ class ApiController < ApplicationController
     return true unless @date.eql?(@request_endorsement[0].created_at.to_datetime.strftime("%Y%m%d%H%M"))
     # return redirect_to facilities_path unless @date.eql?(@request_endorsement[0].created_at.to_datetime.strftime("%Y%m%d%H%M"))
 
-    @user = get_user(@user_netid.sub('#', ''))
+    @user = get_user(@user_netid.gsub('#', '')  )
     # @supervisor = get_user(@supervisor_netid).sub('#', '')
     # @user = get_user("testing@example.com")
     # @supervisor = get_user("ppi123@example.com")    
