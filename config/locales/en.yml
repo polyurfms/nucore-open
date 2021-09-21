@@ -96,6 +96,7 @@ en:
     payment_source_requests: Request Payment Source
     transactions_in_review: My Transaction In Review (%{count})
     user_delegations: My Assistant
+    request_endorsements: Request Endorsement
     user_profile: My Profile
     my_items: My Item
     notices: Notices
@@ -957,6 +958,13 @@ en:
         search_term: "Search by name, NetID, or username"
 
   search:
+    supervisor_user_search_results:
+      no_user: "No existing users found."
+      request_btn: "Requset"
+      name: "Full Name"
+      username: "NetID"
+      email: "Email"
+      dept_abbrev: "Department"
     results_table:
       order_for: Order For
       name: Name
@@ -1279,6 +1287,14 @@ en:
     new:
       no_transactions: There are no transactions requiring statements matching the search parameters.
 
+  request_endorsements:
+    index:
+      head:
+        h2: "Search Supervisor"
+      label:
+        search_term: "Supervior's First name, Last name, NetID, or username:"
+        search_dept: "Dept:"
+      
 
   instruments:
     manage:

@@ -15,8 +15,13 @@ class ApplicationController < ActionController::Base
   helper_method :current_facility, :session_user, :manageable_facilities, :operable_facilities, :acting_user, :acting_as?, :check_acting_as, :current_cart, :backend?, :has_delegated?
   helper_method :open_or_facility_path
 
-  before_action :set_paper_trail_whodunnit,:check_supervisor, :check_agreement
+  # before_action :set_paper_trail_whodunnit, :check_agreement
+  
+  before_action :set_paper_trail_whodunnit
+  
   before_action :check_delegations
+  # before_action :set_paper_trail_whodunnit,:check_supervisor, :check_agreement
+  before_action :check_supervisor_and_phone
 
   before_action :get_facility_agreement_list
 
@@ -84,25 +89,63 @@ class ApplicationController < ActionController::Base
 #    '/orders/pending'
 #  end
 
-  def check_supervisor
+  def check_supervisor_and_phone
+    if request.env['PATH_INFO'].eql?('/facilities')
+      unless session_user.nil? 
+        if session_user.is_normal_user?
+          @is_requested = false
+          @has_phone = !session_user.phone.nil? && !session_user.phone.blank?
+          msg = ""
+          session[:had_supervisor] = session_user.has_supervisor? ? 1 : 0
+          if session[:had_supervisor] == 0
+            if (session_user.is_academic == true)
+              @is_requested = true
+              session_user.create_default_supervisor!                
+              session[:had_supervisor] = 1
+              @has_phone = true
+            else
+              @request_endorsement = RequestEndorsement.where(user_id: session[:acting_user_id] || session_user[:id]) 
+              @request_endorsement.each do |request|
+                @is_requested = true if request.deleted_at.nil? && request.created_at.to_datetime + 1.days > Time.zone.now.to_datetime && (request.is_accepted.nil? || request.is_accepted == true)
+                (!request.is_accepted.nil? && request.is_accepted == true)
+              end              
+              msg = "No Supervisor. Please go to #{view_context.link_to("here", request_endorsements_path)} to make endorsement. " unless @is_requested
+            end
+          else
+            @is_requested = true
+          end
 
-    if !session_user.blank? && !request.env['PATH_INFO'].eql?('/users/sign_out') && !request.env['PATH_INFO'].eql?('/users/sign_in') && session_user.is_normal_user?
-      session[:had_supervisor] = session_user.has_supervisor? ? 1 : 0
-
-      if session[:had_supervisor] == 0
-        #Check role
-        if (session_user.is_academic == true)
-          #@user = User.find(session_user[:id])
-          #@user.update_attributes(supervisor: @user.username)
-          session_user.create_default_supervisor!                
-          session[:had_supervisor] = 1
-          redirect_to '/facilities'
-        else
-          redirect_to '/no_supervisor' unless request.env['PATH_INFO'].eql?('/no_supervisor')
+          # msg = msg + ", " if !@is_requested && !@has_phone
+          
+          msg = msg + "No phone number. Please go to  #{view_context.link_to("here", edit_current_profile_path)} to edit it. ".html_safe unless @has_phone
+          # msg = msg + "No phone number. Please go to <a href='#{url_for(request_endorsements_path)}'></a>".html_safe unless @has_phone
+          # msg = msg + "No phone number. Please go to 'My Profile' -> 'My Assistant' to add phone number " unless @has_phone
+          
+          flash.now[:warning] = msg unless msg.blank?
         end
       end
     end
   end
+
+  # def check_supervisor
+
+  #   if !session_user.blank? && !request.env['PATH_INFO'].eql?('/users/sign_out') && !request.env['PATH_INFO'].eql?('/users/sign_in') && session_user.is_normal_user?
+  #     session[:had_supervisor] = session_user.has_supervisor? ? 1 : 0
+
+  #     if session[:had_supervisor] == 0
+  #       #Check role
+  #       if (session_user.is_academic == true)
+  #         #@user = User.find(session_user[:id])
+  #         #@user.update_attributes(supervisor: @user.username)
+  #         session_user.create_default_supervisor!                
+  #         session[:had_supervisor] = 1
+  #         redirect_to '/facilities'
+  #       else
+  #         redirect_to '/no_supervisor' unless request.env['PATH_INFO'].eql?('/no_supervisor')
+  #       end
+  #     end
+  #   end
+  # end
 
   def check_agreement
 

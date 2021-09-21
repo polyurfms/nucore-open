@@ -18,6 +18,33 @@ class SearchController < ApplicationController
     render layout: false
   end
 
+  def supervisor_user_search_results
+    @limit = 25
+    load_facility
+    @search_team = params[:search_term]
+    @search_dept = params[:search_dept]
+    @result = Array.new
+    if (!@search_team.nil? && !@search_dept.nil? && @search_dept.length > 1 && @search_team.length > 3)
+      @users, @count = SupervisorFinder.search_with_count(@search_team.upcase, @search_dept.upcase, @limit)
+      
+      if @count
+        @users.each do |u|
+          @result << u
+        end      
+      end
+
+      if (@count.nil? || @count == 0)        
+        @ldap_result = LdapAuthentication::SupervisorLookup.new.call(@search_team.upcase, @search_dept.upcase)
+        unless @ldap_result.nil? 
+          @ldap_result.each do |ld|
+            @result << ld
+          end     
+        end
+      end
+    end
+    render layout: false
+  end
+
   # ApplicationController#current_ability depends on current_facility being set
   # correctly. Since ApplicationController#current_facility loads based on the
   # facility's url_name, we need to override to load it through its id instead.

@@ -1,0 +1,22 @@
+en:
+  views:
+    request_endorsements:
+      subject: "%{requester_name} request endorsement"
+      body: |
+        Dear %{to_fullname},
+
+        Link: [link](%{link})
+              
+        Thank you,
+
+        University Research Facility Management System
+    confirm_request_endorsements:
+      subject: "%{supervisor_fullname} %{status}"
+      body: |
+        Dear All,
+
+          %{supervisor_fullname} %{status}
+          
+        Thank you,
+
+        University Research Facility Management System

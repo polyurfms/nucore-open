@@ -1,0 +1,18 @@
+en:
+  views:
+    request_endorsements:
+      header: "Request Endorsements"
+      date: "Request date"
+      remove: "Remove"
+      status: "Status"
+      supervisor: "Supervisor"
+      message: "confirm to remove?"
+      table_name: "Request Endorsements List"
+      user_table_header: "Select an Existing User"
+      request_button: "Request Endorsement"
+      no_user: "There are no active users "
+      delete_msg: "Confirm to delete request?"
+      results_table:
+        name: "Full name"
+        username: "NetId"
+        email: "Email"
