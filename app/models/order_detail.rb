@@ -703,8 +703,17 @@ class OrderDetail < ApplicationRecord
     return unless pp
     costs = pp.calculate_cost_and_subsidy_from_order_detail(self)
     return unless costs
+
     self.price_policy_id = pp.id
     self.actual_cost     = costs[:cost]
+
+    unless costs[:penalty].nil?
+      self.penalty = costs[:penalty]
+    end
+    unless costs[:early_end_discount].nil?
+      self.early_end_discount = costs[:early_end_discount]
+    end
+
     #self.actual_adjustment = costs[:adjust]
     #self.actual_adjustment = 0
     self.actual_subsidy  = costs[:subsidy]
@@ -972,6 +981,28 @@ class OrderDetail < ApplicationRecord
     "From #{card_start} to #{card_end} (#{reservation.card_duration_mins})"
   end
 
+  def policy_charge_for
+    unless price_policy.nil?
+      price_policy.charge_for
+    end
+  end
+
+  def charge_for_penalty?
+    unless price_policy.nil?
+      price_policy.charge_for == InstrumentPricePolicy::CHARGE_FOR.fetch(:overage_penalty) || price_policy.charge_for == InstrumentPricePolicy::CHARGE_FOR.fetch(:overage_penalty_and_end_early_discount)
+    else
+      false
+    end
+  end
+
+  def charge_for_early_end_discount?
+    unless price_policy.nil?
+      price_policy.charge_for == InstrumentPricePolicy::CHARGE_FOR.fetch(:overage_penalty_and_end_early_discount)
+    else
+      false
+    end
+  end
+
   private
 
   # Is there enough information to move an associated order to complete/problem?
@@ -1073,4 +1104,5 @@ class OrderDetail < ApplicationRecord
   def update_billable_minutes_on_reservation
     reservation.update_billable_minutes
   end
+
 end

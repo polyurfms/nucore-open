@@ -7,3 +7,9 @@ en:
         error: Error while updating order
       remove_from_journal:
         notice: The order has been removed from its journal
+  charge_for:
+    reservation: Reservation
+    usage: Usage
+    overage: Overage
+    overage_penalty: Overage with Penalty
+    overage_penalty_and_end_early_discount: End Early Discount and Overage with Penalty

@@ -64,21 +64,28 @@ class OrderDetailManagement
   updatePricing: (e) ->
     self = this
     url = @$element.attr('action').replace('/manage', '/pricing')
-    
     @disableSubmit()
 
     $.ajax {
       url: url,
       data: @$element.serialize(),
       type: 'get',
+
       success: (result, status) ->
         # Update price group text
         self.$element.find('.subsidy .help-block').text(result['price_group'])
         subsidy = result['actual_subsidy'] || result['estimated_subsidy']
         self.$element.find('.subsidy input').prop('disabled', subsidy <= 0).css('backgroundColor', '')
 
+        penalty_field = self.$element.find("[name='order_detail[penalty]']")
+        penalty_field.val(result["penalty"])
+
+        early_end_discount_field = self.$element.find("[name='order_detail[early_end_discount]']")
+        early_end_discount_field.val(result["early_end_discount"])
+
         for field in ['cost', 'subsidy', 'total']
           input_field = self.$element.find("[name='order_detail[estimated_#{field}]'],[name='order_detail[actual_#{field}]']")
+
 
           old_val = input_field.val()
           new_val = result["actual_#{field}"] || result["estimated_#{field}"]
@@ -92,10 +99,10 @@ class OrderDetailManagement
     self = this
     $('.cost-table .cost, .cost-table .subsidy, .cost-table .adjust').change ->
       row = $(this).closest('.cost-table')
-      
+
       if !(row.find('.adjust input').val())
         row.find('.adjust input').val(0.00)
-      
+
       total = (row.find('.cost input').val() - row.find('.subsidy input').val()) + parseFloat( row.find('.adjust input').val())
       row.find('.total input').val(total.toFixed(2))
       self.notify_of_update $(row).find('input[name*=total]')

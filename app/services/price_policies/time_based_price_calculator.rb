@@ -91,7 +91,7 @@ module PricePolicies
         normal_cost = normal_duration * usage_rate * discount_multiplier
         penalty_cost = penalty_duration * usage_rate * 1.5 * discount_multiplier
 
-        costs = { cost: normal_cost + penalty_cost }
+        costs = { cost: normal_cost + penalty_cost, penalty: penalty_cost }
 
         if costs[:cost] < minimum_cost.to_f
           { cost: minimum_cost, subsidy: minimum_cost_subsidy }
@@ -105,10 +105,10 @@ module PricePolicies
         normal_cost = normal_duration * usage_rate * discount_multiplier
         discount_cost = discount_duration * usage_rate * discount_multiplier * 0.75
 
-        costs = {cost: normal_cost + discount_cost }
+        costs = {cost: normal_cost + discount_cost, early_end_discount: discount_cost }
 
         if costs[:cost] < minimum_cost.to_f
-          { cost: minimum_cost, subsidy: minimum_cost_subsidy }
+          { cost: minimum_cost, subsidy: minimum_cost_subsidy}
         else
           costs.merge(subsidy: normal_duration * usage_subsidy * discount_multiplier)
         end
@@ -117,7 +117,6 @@ module PricePolicies
     end
 
     def cost_and_subsidy_with_penalty(reserve_duration, actual_duration, discount_multiplier)
-
       # actual larger than reserve, charge penalty
       if actual_duration >= reserve_duration
 
@@ -132,7 +131,7 @@ module PricePolicies
         normal_cost = normal_duration * usage_rate * discount_multiplier
         penalty_cost = penalty_duration * usage_rate * 1.5 * discount_multiplier
 
-        costs = { cost: normal_cost + penalty_cost }
+        costs = { cost: normal_cost + penalty_cost, penalty: penalty_cost }
 
         if costs[:cost] < minimum_cost.to_f
           { cost: minimum_cost, subsidy: minimum_cost_subsidy }
