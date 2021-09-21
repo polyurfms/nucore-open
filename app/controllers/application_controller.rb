@@ -109,15 +109,15 @@ class ApplicationController < ActionController::Base
                 @is_requested = true if request.deleted_at.nil? && request.created_at.to_datetime + 1.days > Time.zone.now.to_datetime && (request.is_accepted.nil? || request.is_accepted == true)
                 (!request.is_accepted.nil? && request.is_accepted == true)
               end              
-              msg = "No Supervisor. Please go to #{view_context.link_to("here", request_endorsements_path)} to make endorsement." unless @is_requested
+              msg = "No Supervisor. Please go to #{view_context.link_to("here", request_endorsements_path)} to make endorsement. " unless @is_requested
             end
           else
             @is_requested = true
           end
 
-          msg = msg + ", " if !@is_requested && !@has_phone
+          # msg = msg + ", " if !@is_requested && !@has_phone
           
-          msg = msg + "No phone number. Please go to  #{view_context.link_to("here", edit_current_profile_path)} to edit it.".html_safe unless @has_phone
+          msg = msg + "No phone number. Please go to  #{view_context.link_to("here", edit_current_profile_path)} to edit it. ".html_safe unless @has_phone
           # msg = msg + "No phone number. Please go to <a href='#{url_for(request_endorsements_path)}'></a>".html_safe unless @has_phone
           # msg = msg + "No phone number. Please go to 'My Profile' -> 'My Assistant' to add phone number " unless @has_phone
           

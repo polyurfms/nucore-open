@@ -132,10 +132,10 @@
       let msg = ""
       setTimeout(function (){
         if(!search_term) {
-          msg = msg + "Search supervior's First name, Last name, NetID, or username that are at least 3 characters long";
+          msg = msg + "Search supervior's First name, Last name, NetID, or username that are at least 3 characters long. ";
         }
         if(!search_dept) {
-          msg = msg + "Search dept that are at least 2 characters long";
+          msg = msg + "Search dept that are at least 2 characters long. ";
         }
         if (msg.length > 0) {
           $( "#error_msg" ).append( "<p style='color:red;'> " + msg + "</p>" )          
