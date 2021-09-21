@@ -15,12 +15,17 @@
         - @additional_price_policy = @order_detail.product.price_policies.get_additional_price_policy_list
         - @select_additional_price_policy = @order_detail.additional_price_group_id
 
+      - if !@order_detail.policy_charge_for.nil? && @order_detail.reservation.present?
+        .span5
+          = f.input :policy_charge_for, input_html: { value: t("charge_for.#{@order_detail.policy_charge_for}")}, label:"Charge for", as: :readonly
+
       -# .span5.js--additionTypeUpdate
-      .span5.js--pricingUpdate
-        = f.input :additional_price_group_id, collection: AdditionalPriceGroup.select_additional_price_groups(@order_detail.product_id),
-            input_html: { name: "additional_price_policy" },
-            selected: @select_additional_price_policy,
-            include_blank: true
+      - unless @order_detail.additional_price_group_id.nil?
+        .span5.js--pricingUpdate
+          = f.input :additional_price_group_id, collection: AdditionalPriceGroup.select_additional_price_groups(@order_detail.product_id),
+              input_html: { name: "additional_price_policy" },
+              selected: @select_additional_price_policy,
+              include_blank: true
 
       .span5
         - if @order_statuses
