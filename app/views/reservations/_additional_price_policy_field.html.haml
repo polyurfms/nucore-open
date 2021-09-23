@@ -6,5 +6,4 @@
           = ad.input t(".label"),
             collection: AdditionalPriceGroup.select_additional_price_groups(@order_detail.product_id),
             input_html: { name: "additional_price_policy" },
-            selected: @additional_price_group_id,
-            include_blank: true
+            selected: @additional_price_group_id
