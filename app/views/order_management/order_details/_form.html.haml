@@ -24,8 +24,7 @@
         .span5.js--pricingUpdate
           = f.input :additional_price_group_id, collection: AdditionalPriceGroup.select_additional_price_groups(@order_detail.product_id),
               input_html: { name: "additional_price_policy" },
-              selected: @select_additional_price_policy,
-              include_blank: true
+              selected: @select_additional_price_policy
 
       .span5
         - if @order_statuses

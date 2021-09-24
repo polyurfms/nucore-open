@@ -24,27 +24,27 @@ module PricePolicies
       end
     end
 
-    def calculate_overage_penalty_and_end_early_discount(reserve_start, reserve_end, start_at, end_at)
+    def calculate_overage_penalty_and_end_early_discount(reserve_start, reserve_end, start_at, end_at, type)
       return if start_at > end_at
       reserve_duration = TimeRange.new(reserve_start, reserve_end).duration_mins
       duration_mins = TimeRange.new(start_at, end_at).duration_mins
       discount_multiplier = calculate_discount(start_at, end_at)
       if (!maximum_cost.nil? && maximum_cost > 0)
-        cost_and_subsidy_with_max(start_at, end_at, discount_multiplier)
+        cost_and_subsidy_with_max(start_at, end_at, discount_multiplier, type)
       else
-        cost_and_subsidy_with_penalty_and_discount(reserve_duration, duration_mins, discount_multiplier)
+        cost_and_subsidy_with_penalty_and_discount(reserve_duration, duration_mins, discount_multiplier, type)
       end
     end
 
-    def calculate_overage_penalty(reserve_start, reserve_end, start_at, end_at)
+    def calculate_overage_penalty(reserve_start, reserve_end, start_at, end_at, type)
       return if start_at > end_at
       reserve_duration = TimeRange.new(reserve_start, reserve_end).duration_mins
       duration_mins = TimeRange.new(start_at, end_at).duration_mins
       discount_multiplier = calculate_discount(start_at, end_at)
       if (!maximum_cost.nil? && maximum_cost > 0)
-        cost_and_subsidy_with_max(start_at, end_at, discount_multiplier)
+        cost_and_subsidy_with_max(start_at, end_at, discount_multiplier, type)
       else
-        cost_and_subsidy_with_penalty(reserve_duration, duration_mins, discount_multiplier)
+        cost_and_subsidy_with_penalty(reserve_duration, duration_mins, discount_multiplier, type)
       end
     end
 
@@ -75,7 +75,14 @@ module PricePolicies
       end
     end
 
-    def cost_and_subsidy_with_penalty_and_discount(reserve_duration, actual_duration, discount_multiplier)
+    def cost_and_subsidy_with_penalty_and_discount(reserve_duration, actual_duration, discount_multiplier, type="")
+
+      addition_cost = 0;
+      unless additional_price_policy.nil? && type.eql?("")
+        additional_price_policy.each do |ad|
+          addition_cost = ad.cost/60 if ad.additional_price_group_id.eql?(type)
+        end
+      end
 
       # actual larger than reserve, charge penalty
       if actual_duration >= reserve_duration
@@ -88,8 +95,8 @@ module PricePolicies
           penalty_duration = actual_duration - normal_duration
         end
 
-        normal_cost = normal_duration * usage_rate * discount_multiplier
-        penalty_cost = penalty_duration * usage_rate * 1.5 * discount_multiplier
+        normal_cost = normal_duration * (usage_rate + addition_cost) * discount_multiplier
+        penalty_cost = penalty_duration * (usage_rate + addition_cost) * 1.5 * discount_multiplier
 
         costs = { cost: normal_cost + penalty_cost, penalty: penalty_cost }
 
@@ -102,8 +109,8 @@ module PricePolicies
         normal_duration = actual_duration
         discount_duration = reserve_duration - normal_duration
 
-        normal_cost = normal_duration * usage_rate * discount_multiplier
-        discount_cost = discount_duration * usage_rate * discount_multiplier * 0.75
+        normal_cost = normal_duration * (usage_rate + addition_cost) * discount_multiplier
+        discount_cost = discount_duration * (usage_rate + addition_cost) * discount_multiplier * 0.75
 
         costs = {cost: normal_cost + discount_cost, early_end_discount: discount_cost }
 
@@ -116,7 +123,15 @@ module PricePolicies
       end
     end
 
-    def cost_and_subsidy_with_penalty(reserve_duration, actual_duration, discount_multiplier)
+    def cost_and_subsidy_with_penalty(reserve_duration, actual_duration, discount_multiplier, type="")
+
+      addition_cost = 0;
+      unless additional_price_policy.nil? && type.eql?("")
+        additional_price_policy.each do |ad|
+          addition_cost = ad.cost/60 if ad.additional_price_group_id.eql?(type)
+        end
+      end
+
       # actual larger than reserve, charge penalty
       if actual_duration >= reserve_duration
 
@@ -128,8 +143,8 @@ module PricePolicies
           penalty_duration = actual_duration - normal_duration
         end
 
-        normal_cost = normal_duration * usage_rate * discount_multiplier
-        penalty_cost = penalty_duration * usage_rate * 1.5 * discount_multiplier
+        normal_cost = normal_duration * (usage_rate + addition_cost) * discount_multiplier
+        penalty_cost = penalty_duration * (usage_rate + addition_cost) * 1.5 * discount_multiplier
 
         costs = { cost: normal_cost + penalty_cost, penalty: penalty_cost }
 

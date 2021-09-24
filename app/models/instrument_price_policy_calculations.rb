@@ -86,24 +86,24 @@ module InstrumentPricePolicyCalculations
 
   def calculate_overage_penalty_and_end_early_discount(reservation)
     return unless reservation.has_actual_times?
-    calculate_for_overage_penalty_and_end_early_discount(reservation.reserve_start_at, reservation.reserve_end_at, reservation.actual_start_at, reservation.actual_end_at)
+    calculate_for_overage_penalty_and_end_early_discount(reservation.reserve_start_at, reservation.reserve_end_at, reservation.actual_start_at, reservation.actual_end_at, reservation.order_detail.additional_price_group_id )
   end
 
   def calculate_overage_penalty(reservation)
     return unless reservation.has_actual_times?
-    calculate_for_overage_penalty(reservation.reserve_start_at, reservation.reserve_end_at, reservation.actual_start_at, reservation.actual_end_at)
+    calculate_for_overage_penalty(reservation.reserve_start_at, reservation.reserve_end_at, reservation.actual_start_at, reservation.actual_end_at, reservation.order_detail.additional_price_group_id)
   end
 
   def calculate_for_time(start_at, end_at, type="")
     PricePolicies::TimeBasedPriceCalculator.new(self).calculate(start_at, end_at, type)
   end
 
-  def calculate_for_overage_penalty_and_end_early_discount(reserve_start, reserve_end, start_at, end_at)
-    PricePolicies::TimeBasedPriceCalculator.new(self).calculate_overage_penalty_and_end_early_discount(reserve_start, reserve_end, start_at, end_at)
+  def calculate_for_overage_penalty_and_end_early_discount(reserve_start, reserve_end, start_at, end_at, type="")
+    PricePolicies::TimeBasedPriceCalculator.new(self).calculate_overage_penalty_and_end_early_discount(reserve_start, reserve_end, start_at, end_at, type)
   end
 
-  def calculate_for_overage_penalty(reserve_start, reserve_end, start_at, end_at)
-    PricePolicies::TimeBasedPriceCalculator.new(self).calculate_overage_penalty(reserve_start, reserve_end, start_at, end_at)
+  def calculate_for_overage_penalty(reserve_start, reserve_end, start_at, end_at, type="")
+    PricePolicies::TimeBasedPriceCalculator.new(self).calculate_overage_penalty(reserve_start, reserve_end, start_at, end_at, type)
   end
 
 
