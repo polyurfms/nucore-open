@@ -97,8 +97,8 @@ class ExampleStatementPdf < StatementPdf
     pdf.move_down(5)
 
     table_data = [
-                  ["To:  " + @account.remittance_information , "Invoice No.: " + @invoice_number],
-                  ["Attn: " + "#{@account.attention}", "Date: " + "#{date}"]]
+                  ["To", ":", "#{@account.remittance_information}" , "Invoice No.",":", "#{@invoice_number}"],
+                  ["Attn", ":", "#{@account.attention}", "Date", ":", "#{date}"]]
 
 
     # if @account.remittance_information.present?
@@ -111,8 +111,21 @@ class ExampleStatementPdf < StatementPdf
     #               ["To:  " + @bill_to , "Invoice No.: " + @invoice_number],
     #               ["Attn: " + "#{@account.owner.user.full_name(suspended_label: false)}", "Date: " + "#{date}"]]
 
-    pdf.table(table_data, :width => 500, :cell_style => { :inline_format => true }) do
-      style(rows(0..-1), :padding => [0, 0, 0, 0], :borders => [])
+    pdf.table(table_data, :width => 700, :cell_style => { :inline_format => true }) do
+      style(rows(0..-1), :padding => [2, 2, 2, 2], :borders => [])
+
+      column(0).width = 30
+      column(0).style(align: :right)
+      column(1).width = 10
+      column(2).width = 310
+      column(3).width = 70
+      column(3).style(align: :right)
+
+      column(4).width = 10
+
+      column(5).width = 270
+      column(5).style(align: :left)
+
     end
     pdf.move_down(15)
     pdf.text "Dear #{@account.owner.user.full_name(suspended_label: false)}"
@@ -135,7 +148,10 @@ class ExampleStatementPdf < StatementPdf
       column(3).style(align: :right)
     end
     pdf.move_down(10)
-    pdf.text "Total: HKD "+number_to_currency(@statement.total_cost), align: :right
+
+    pdf.draw_text  "Total : #{number_to_currency(@statement.total_cost)}" , at: [398, pdf.cursor]
+#    pdf.text "Total: "+number_to_currency(@statement.total_cost), align: :right
+#    pdf.text "Total: "+number_to_currency(@statement.total_cost), align: :right
 
   end
 
@@ -146,7 +162,7 @@ class ExampleStatementPdf < StatementPdf
 #  end
 
   def order_detail_headers
-    ["Fulfillment Date", "Order", "Amount"]
+    ["Fulfillment Date", "Order", "Amount (HKD)"]
     # ["Fulfillment Date", "Order", "Quantity", "Amount"]
     # ["Item", "Booking ID", "User", "Description", "Date", "Subtotal (HKD)"]
   end
