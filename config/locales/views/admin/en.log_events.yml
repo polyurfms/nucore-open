@@ -18,6 +18,8 @@ en:
         account_user:
           create: Payment Source User added
           delete: Payment Source User removed
+        funding_request:
+          create: Funding request created
         journal:
           create: Journal created
         statement:
