@@ -10,7 +10,7 @@ module LdapAuthentication
       search(uid).first
     end
 
-    def self.find(uid, dept)
+    def self.find_by_dept(uid, dept)
       search_by_Dept(uid, dept)
     end
 
