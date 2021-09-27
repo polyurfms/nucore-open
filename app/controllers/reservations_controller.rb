@@ -29,7 +29,6 @@ class ReservationsController < ApplicationController
 
   # GET /facilities/1/instruments/1/reservations.js?_=1279579838269&start=1279429200&end=1280034000
   def index
-
     @facility = Facility.find_by!(url_name: params[:facility_id])
     @instrument = @facility.instruments.find_by!(url_name: params[:instrument_id])
 
@@ -250,6 +249,8 @@ class ReservationsController < ApplicationController
           raise ActiveRecord::Rollback
         end
 
+        #@order_detail.additional_price_policy_name = params[:additional_price_policy] unless params[:additional_price_policy].nil?
+        @order_detail.additional_price_group_id = params[:additional_price_policy] unless params[:additional_price_policy].nil?
         @old_order_detail_estimated_cost = @order_detail.estimated_cost
 
         # @account_user = AccountUser.find_by(account_id: @order_detail.account_id, deleted_at: nil, user_id: session_user.id)
@@ -451,6 +452,11 @@ class ReservationsController < ApplicationController
   end
 
   def set_windows
+
+    #@select_additional_price_policy = @order_detail.additional_price_policy_name
+    @additional_price_group_id = @order_detail.additional_price_group_id
+    @additional_price_policy = @order_detail.product.price_policies.get_additional_price_policy_list
+    @select_additional_price_policy = params[:additional_price_policy] unless params[:additional_price_policy].nil?
     @reservation_window = ReservationWindow.new(@reservation, current_user)
   end
 

@@ -99,7 +99,7 @@ class ProductsCommonController < ApplicationController
     else
       flash[:error] = "There was a problem deleting the #{@product.class.name.to_lower}"
     end
-    redirect_to [current_facility, plural_object_name]
+    redirect_to [current_facility, plural_object_name.to_sym]
   end
 
   def manage
@@ -113,7 +113,7 @@ class ProductsCommonController < ApplicationController
     params.require(:"#{singular_object_name}").permit(:name, :url_name, :contact_email, :description,
                                                       :facility_account_id, :account, :initial_order_status_id,
                                                       :requires_approval, :allows_training_requests, :is_archived, :is_hidden, :email_purchasers_on_order_status_changes,
-                                                      :user_notes_field_mode, :user_notes_label, :show_details,
+                                                      :user_notes_field_mode, :user_notes_label, :show_details, :show_details_with_access,
                                                       :schedule_id, :control_mechanism, :reserve_interval,
                                                       :min_reserve_mins, :max_reserve_mins, :min_cancel_hours,
                                                       :session_mins,

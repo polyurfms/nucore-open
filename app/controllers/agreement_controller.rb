@@ -16,6 +16,9 @@ class AgreementController <  ApplicationController
     if session[:facility_url_name].nil? || session[:product_url_name].nil?
       raise ActiveRecord::RecordNotFound
     else
+
+      check_supervisor()
+      
       @product = Product.find_by(url_name:session[:product_url_name])
       @facility = Facility.find_by(id: @product.facility_id)
       is_agree = UserAgreementFinder.new(session[:acting_user_id] || session_user.id, session[:facility_url_name], session[:product_url_name]).check_agreement
@@ -104,6 +107,19 @@ class AgreementController <  ApplicationController
     end
     return is_agreed
 
+  end
+
+  private
+  def check_supervisor
+    if !session_user.blank? && !request.env['PATH_INFO'].eql?('/users/sign_out') && !request.env['PATH_INFO'].eql?('/users/sign_in') && session_user.is_normal_user?
+      session[:had_supervisor] = session_user.has_supervisor? ? 1 : 0
+
+      if session[:had_supervisor] == 0
+        unless (session_user.is_academic == true)
+          return redirect_to '/no_supervisor' unless request.env['PATH_INFO'].eql?('/no_supervisor')
+        end
+      end
+    end
   end
 
  end

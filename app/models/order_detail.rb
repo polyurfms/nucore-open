@@ -60,6 +60,9 @@ class OrderDetail < ApplicationRecord
   belongs_to :bundle, foreign_key: "bundle_product_id"
   belongs_to :canceled_by_user, foreign_key: :canceled_by, class_name: "User"
   belongs_to :problem_resolved_by, class_name: "User"
+
+  belongs_to :additional_price_group
+
   has_one    :reservation, inverse_of: :order_detail
   # for some reason, dependent: :delete on reservation isn't working with paranoia, hitting foreign key constraints
   before_destroy { reservation.try(:really_destroy!) }
@@ -669,7 +672,6 @@ class OrderDetail < ApplicationRecord
 
     # is account valid for facility
     return if account && !product.facility.can_pay_with_account?(account)
-
     @estimated_price_policy = product.cheapest_price_policy(self, date)
     assign_estimated_price_from_policy @estimated_price_policy
   end
@@ -681,7 +683,6 @@ class OrderDetail < ApplicationRecord
 
   def assign_estimated_price_from_policy(price_policy)
     return unless price_policy
-
     costs = price_policy.estimate_cost_and_subsidy_from_order_detail(self)
     return unless costs
 
@@ -702,9 +703,19 @@ class OrderDetail < ApplicationRecord
     return unless pp
     costs = pp.calculate_cost_and_subsidy_from_order_detail(self)
     return unless costs
+
     self.price_policy_id = pp.id
     self.actual_cost     = costs[:cost]
-    self.actual_adjustment     = costs[:adjust]
+
+    unless costs[:penalty].nil?
+      self.penalty = costs[:penalty]
+    end
+    unless costs[:early_end_discount].nil?
+      self.early_end_discount = costs[:early_end_discount]
+    end
+
+    #self.actual_adjustment = costs[:adjust]
+    #self.actual_adjustment = 0
     self.actual_subsidy  = costs[:subsidy]
     pp
   end
@@ -965,10 +976,30 @@ class OrderDetail < ApplicationRecord
   end
 
   def sign_in_out_time
-    if reservation.card_start_at.nil?
-      "-"
+    card_start = reservation.card_start_at.nil? ? "---" : human_date(reservation.card_start_at) + " " + human_time(reservation.card_start_at)
+    card_end = reservation.card_end_at.nil? ? "---" : human_date(reservation.card_end_at) + " " + human_time(reservation.card_end_at)
+    "From #{card_start} to #{card_end} (#{reservation.card_duration_mins})"
+  end
+
+  def policy_charge_for
+    unless price_policy.nil?
+      price_policy.charge_for
+    end
+  end
+
+  def charge_for_penalty?
+    unless price_policy.nil?
+      price_policy.charge_for == InstrumentPricePolicy::CHARGE_FOR.fetch(:overage_penalty) || price_policy.charge_for == InstrumentPricePolicy::CHARGE_FOR.fetch(:overage_penalty_and_end_early_discount)
     else
-      "From #{human_date(reservation.card_start_at)} #{human_time(reservation.card_start_at)} to #{human_date(reservation.card_end_at)} #{human_time(reservation.card_end_at)} (#{reservation.card_duration_mins})"
+      false
+    end
+  end
+
+  def charge_for_early_end_discount?
+    unless price_policy.nil?
+      price_policy.charge_for == InstrumentPricePolicy::CHARGE_FOR.fetch(:overage_penalty_and_end_early_discount)
+    else
+      false
     end
   end
 
@@ -1002,7 +1033,6 @@ class OrderDetail < ApplicationRecord
     assign_price_policy unless price_policy
 
     calculator = CancellationFeeCalculator.new(self)
-
     change_status!(calculator.total_cost > 0 ? OrderStatus.complete : order_status)
 
     if calculator.costs.present?
@@ -1030,7 +1060,7 @@ class OrderDetail < ApplicationRecord
 
   def clear_costs
     self.actual_cost     = nil
-    self.actual_adjustment     = nil
+    #self.actual_adjustment     = nil
     self.actual_subsidy  = nil
     self.price_policy_id = nil
   end
@@ -1065,13 +1095,14 @@ class OrderDetail < ApplicationRecord
   def pricing_note_required?
     return false unless @manually_priced && SettingsHelper.feature_on?(:price_change_reason_required)
     return false if cost_estimated? || canceled_at?
-    
+
     return ( actual_adjustment == 0.0 || actual_adjustment == 0 ) ? false : true
-    
+
     !actual_costs_match_calculated?
   end
 
   def update_billable_minutes_on_reservation
     reservation.update_billable_minutes
   end
+
 end

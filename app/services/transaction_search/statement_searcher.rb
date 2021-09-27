@@ -22,6 +22,10 @@ module TransactionSearch
       :invoice_number
     end
 
+    def label_name
+      :invoice_number
+    end
+
   end
 
 end

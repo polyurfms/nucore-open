@@ -22,6 +22,10 @@ module TransactionSearch
       Order.human_attribute_name(:user)
     end
 
+    def label_name
+      I18n.t("search_field.order_for")
+    end
+
   end
 
 end

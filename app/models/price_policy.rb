@@ -9,6 +9,8 @@ class PricePolicy < ApplicationRecord
   belongs_to :created_by, class_name: "User"
   has_many :order_details
 
+  has_many :additional_price_policy
+
   validates :start_date, :expire_date, presence: true
   validates :price_group_id, :type, presence: true
   validate :start_date_is_unique, if: :start_date?
@@ -46,6 +48,28 @@ class PricePolicy < ApplicationRecord
     # TODO: Fix bug that allows overlapping price policies (in truncate_existing_policies)
     # This method returns the newest price policy for when price policies accidentally overlap.
     current.newest
+  end
+
+  def self.get_additional_price_policy_list
+    @price_policy = current.newest
+    @additional_price_policy = Array.new()
+
+    @price_policy.each do |pp|
+      unless pp.additional_price_policy.nil?
+        pp.additional_price_policy.each do |ad|
+         
+          unless ad.nil?
+            if ad.deleted_at.nil? || ad.deleted_at.blank?
+              @additional_price_policy.push(" ") if @additional_price_policy.empty?
+              @additional_price_policy.push(ad.name) unless @additional_price_policy.include?(ad.name)
+            end            
+          end
+        end
+        # @additional_price_policy.push(pp.additional_price_policy[0].name) unless @additional_price_policy.include?(pp.additional_price_policy[0].name)
+      end
+    end
+      
+    return @additional_price_policy
   end
 
   def self.newest

@@ -54,6 +54,10 @@ module TransactionSearch
       FIELDS.include?(field.to_s) ? field.to_s : "fulfilled_at"
     end
 
+    def label_name
+      I18n.t("search_field.date_range")
+    end
+
   end
 
 end

@@ -13,7 +13,7 @@ Rails.application.routes.draw do
     match "/users/password/reset", to: "user_password#reset", as: "reset_password", via: [:get, :post]
   end
 
- 
+
   if SettingsHelper.feature_on?(:profile_update)
     match "/users/profile", to: "user_profile#edit_current", as: "edit_current_profile", via: [:get, :post]
     match "/users/profile/update_mobile", to: "user_profile#update_mobile", as: "update_mobile", via: [:post]
@@ -21,12 +21,17 @@ Rails.application.routes.draw do
   # root route
   root to: "public#index"
 
-  
+
   get "/no_supervisor", to: "no_supervisors#index"
 
   post "agree_terms" , to: "user_agreements#agree"
   post "get_is_agree_terms" , to: "user_agreements#get_is_agree_terms"
   post "agree_facility_terms" , to: "agreement#agree"
+
+  # API
+  get "api/supervisor_endorsement?token=:token", to: "api#supervisor_endorsement", as: "supervisor_endorsement"
+  get "api/supervisor_endorsement", to: "api#supervisor_endorsement"
+  post "api/supervisor_endorsement_submit", to: "api#supervisor_endorsement_submit" , as: "supervisor_endorsement_submit"
 
   resources :agreement, controller: "agreement", only: [:index, :update, :show] do
   end
@@ -37,10 +42,10 @@ Rails.application.routes.draw do
 
   # shared searches
   get "/user_search_results", to: "search#user_search_results"
+  get "/supervisor_user_search_results", to: "search#supervisor_user_search_results"
   get "/#{I18n.t('facilities_downcase')}/:facility_id/price_group/:price_group_id/account_price_group_members/search_results", to: "account_price_group_members#search_results"
 
   post "global_search" => "global_search#index", as: "global_search"
-
   resources :users, only: [] do
     resources :user_preferences, only: [:index, :edit, :update], shallow: true
   end
@@ -143,6 +148,13 @@ Rails.application.routes.draw do
       resources :schedule_rules, except: [:show]
       resources :product_access_groups
       resources :price_policies, controller: "instrument_price_policies", except: [:show]
+      resources :additional_price_policies, except: [:show, :new, :edit, :update, :destroy] do
+        get "add", to:"additional_price_policies#add"
+        post "update", to: "additional_price_policies#update"
+        get "/edit/:id", to: "additional_price_policies#edit", as: :additional_price_policies
+        get "/delete/:id", to: "additional_price_policies#delete", as: :additional_price_policies_delete
+      end
+
       resources :reservations, only: [:new, :create, :destroy], controller: "facility_reservations" do
         get "edit_admin", to: "facility_reservations#edit_admin"
         patch "update_admin", to: "facility_reservations#update_admin"
@@ -453,6 +465,10 @@ Rails.application.routes.draw do
 
   resources :user_delegations, users_options do
     get "switch_to",    to: "user_delegations#switch_to"
+  end
+
+  resources :request_endorsements, except: [:update, :new, :create, :edit, :show], controller: "request_endorsements" do
+    post "make_request", to: "request_endorsements#make_request"
   end
 
   # file upload routes

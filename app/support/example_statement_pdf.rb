@@ -96,22 +96,19 @@ class ExampleStatementPdf < StatementPdf
     pdf.text "INVOICE", size: 13, font_style: :bold, align: :center
     pdf.move_down(5)
 
+    table_data = [
+                  ["To:  " + @account.remittance_information , "Invoice No.: " + @invoice_number],
+                  ["Attn: " + "#{@account.attention}", "Date: " + "#{date}"]]
+
     if @account.remittance_information.present?
-      @bill_to = @account.remittance_information
+       @bill_to = @account.remittance_information
     else
-      @bill_to = @account.owner.user.full_name(suspended_label: false)
+       @bill_to = @account.owner.user.full_name(suspended_label: false)
     end
 
     table_data = [
                   ["To", ":", "#{@account.remittance_information}" , "Invoice No.",":", "#{@invoice_number}"],
                   ["Attn", ":", "#{@account.attention}", "Date", ":", "#{date}"]]
-
-
-    # if @account.remittance_information.present?
-    #   @bill_to = @account.remittance_information
-    # else
-    #   @bill_to = @account.owner.user.full_name(suspended_label: false)
-    # end
 
     # table_data = [["From:  " + @facility.name , ""],
     #               ["To:  " + @bill_to , "Invoice No.: " + @invoice_number],

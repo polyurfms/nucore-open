@@ -1,7 +1,11 @@
 - f.object.send(:extend, PriceDisplayment)
 - if f.object.actual_cost?
   .cost-table
-    .cost= f.input :actual_cost, as: :currency
+    - if f.object.charge_for_penalty?
+      .penalty= f.input :penalty, as: :currency, disabled:true
+    - if f.object.charge_for_early_end_discount?
+      .early_end_discount= f.input :early_end_discount, as: :currency, disabled:true
+    .cost= f.input :actual_cost, as: :currency, disabled: true
     -#.subsidy= f.input :actual_subsidy, as: :currency, disabled: !f.object.price_policy.try(:has_subsidy?), hint: "#{f.object.price_policy.try(:price_group)}"
     .subsidy= f.hidden_field :actual_subsidy, as: :currency
     .adjust= f.input :actual_adjustment, as: :currency

@@ -22,6 +22,9 @@ module TransactionSearch
       Account.human_attribute_name(:owner).pluralize
     end
 
+    def label_name
+      I18n.t("search_field.owner")
+    end
   end
 
 end

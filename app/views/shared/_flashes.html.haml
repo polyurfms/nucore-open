@@ -6,5 +6,7 @@
   .alert.alert-info= flash[:info]
 - if flash[:alert]
   .alert.alert-error= flash[:alert]
+- if flash[:warning]
+  .alert.alert-warning= flash[:warning].html_safe
 
 #js--flash= # for us in AJAXY flashes

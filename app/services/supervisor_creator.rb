@@ -21,11 +21,13 @@ class SupervisorCreator
 
   end
 
-  def self.create(user, last_name, first_name, email)
+  def self.create(user, last_name, first_name, email, net_id, dept_abbrev)
     @user = user
-    @last_name = last_name
-    @first_name = first_name
+    @last_name = last_name || ""
+    @first_name = first_name || ""
     @email = email
+    @net_id = net_id
+    @dept_abbrev = dept_abbrev || ""
 
     @supervisor = Supervisor.new(
         user_id: @user.id,
@@ -33,7 +35,9 @@ class SupervisorCreator
         first_name: @first_name,
         email: @email,
         created_by: @user.id,
-        updated_by: @user.id
+        updated_by: @user.id,
+        net_id: @net_id, 
+        dept_abbrev: @dept_abbrev
     )
   end
 
@@ -53,7 +57,7 @@ class SupervisorCreator
   end
 
   def supervisor_params
-      @params.require(:supervisor).permit(:user_id, :last_name, :first_name, :email)
+      @params.require(:supervisor).permit(:user_id, :last_name, :first_name, :email, :net_id, :dept_abbrev)
   end
 
 

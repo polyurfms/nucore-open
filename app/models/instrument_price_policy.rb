@@ -9,6 +9,8 @@ class InstrumentPricePolicy < PricePolicy
     usage: "usage",
     overage: "overage",
     reservation: "reservation",
+    overage_penalty: "overage_penalty",
+    overage_penalty_and_end_early_discount: "overage_penalty_and_end_early_discount"
   }.freeze
 
   validates :cancellation_cost, numericality: { allow_blank: true, greater_than_or_equal_to: 0 }
