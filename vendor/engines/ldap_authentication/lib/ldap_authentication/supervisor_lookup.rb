@@ -3,7 +3,7 @@ module LdapAuthentication
   class SupervisorLookup
 
     def call(username, dept)
-      entry = UserEntry.find_by_dept(username, dept)
+      entry = UserEntry.find(username, dept)
       # entry.to_user if entry
       result = Array.new
       if (!entry.nil? && entry.length > 0)
