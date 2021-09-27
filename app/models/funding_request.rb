@@ -34,5 +34,9 @@ class FundingRequest < ApplicationRecord
       end
     end
 
+    def to_s
+      "Ref. No. #{id}, #{request_type}"
+    end
+
 
 end
