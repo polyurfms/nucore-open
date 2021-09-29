@@ -32,5 +32,8 @@
           %td.currency= s.order_details.count
           %td.currency= number_to_currency(s.total_cost)
           %td= t("statements.reconciled.#{s.reconciled?}")
+  %table{style: "width: 100%"}
+    %tbody
+      %td{style: "text-align:right"}= "Total no. of invoice: #{@statements.length}"
 
   = will_paginate(@statements)
