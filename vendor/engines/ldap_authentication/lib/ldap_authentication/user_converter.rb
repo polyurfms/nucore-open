@@ -4,7 +4,7 @@ module LdapAuthentication
 
   class UserConverter
 
-    CONVERTABLE_ATTRIBUTES = [:username, :first_name, :last_name, :email, :user_type, :dept_abbrev].freeze
+    CONVERTABLE_ATTRIBUTES = [:username, :first_name, :last_name, :email, :user_type, :dept_abbrev, :is_academic].freeze
 
     def initialize(user_entry)
       @user_entry = user_entry

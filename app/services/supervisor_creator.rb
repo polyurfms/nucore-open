@@ -21,13 +21,14 @@ class SupervisorCreator
 
   end
 
-  def self.create(user, last_name, first_name, email, net_id, dept_abbrev)
+  def self.create(user, last_name, first_name, email, net_id, dept_abbrev, is_academic)
     @user = user
     @last_name = last_name || ""
     @first_name = first_name || ""
     @email = email
     @net_id = net_id
     @dept_abbrev = dept_abbrev || ""
+    @is_academic = is_academic
 
     @supervisor = Supervisor.new(
         user_id: @user.id,
@@ -36,8 +37,9 @@ class SupervisorCreator
         email: @email,
         created_by: @user.id,
         updated_by: @user.id,
-        net_id: @net_id, 
-        dept_abbrev: @dept_abbrev
+        net_id: @net_id,
+        dept_abbrev: @dept_abbrev,
+        is_academic: @is_academic
     )
   end
 

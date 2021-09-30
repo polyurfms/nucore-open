@@ -14,7 +14,7 @@ module LdapAuthentication
       search_by_Dept(uid, dept)
     end
 
-    
+
     # Returns an Array of `LdapAuthentication::UserEntry`s
     def self.search(uid)
       return [] unless uid
@@ -32,17 +32,17 @@ module LdapAuthentication
     def self.search_by_Dept(uid, dept)
       return [] unless uid
       return [] unless dept
-      
+
       ldap_entries = nil
       # ldap_entries_username = nil
       # ldap_entries_sn = nil
       # ldap_entries_givename = nil
       ActiveSupport::Notifications.instrument "search.ldap_authentication" do |payload|
-        ldap_entries = with_retry { admin_ldap.search(filter: 
-          (Net::LDAP::Filter.eq(LdapAuthentication.attribute_field, uid) & Net::LDAP::Filter.eq("departmentNumber", dept)) |
-          (Net::LDAP::Filter.eq("givenname", uid) & Net::LDAP::Filter.eq("departmentNumber", dept)) |
-          (Net::LDAP::Filter.eq("sn", uid) & Net::LDAP::Filter.eq("departmentNumber", dept))
-          
+        ldap_entries = with_retry { admin_ldap.search(filter:
+          (Net::LDAP::Filter.eq(LdapAuthentication.attribute_field, uid) & Net::LDAP::Filter.eq("departmentNumber", dept) & Net::LDAP::Filter.eq("polyuUserType", "Staff")) |
+          (Net::LDAP::Filter.eq("givenname", uid) & Net::LDAP::Filter.eq("departmentNumber", dept) & Net::LDAP::Filter.eq("polyuUserType", "Staff")) |
+          (Net::LDAP::Filter.eq("sn", uid) & Net::LDAP::Filter.eq("departmentNumber", dept) & Net::LDAP::Filter.eq("polyuUserType", "Staff"))
+
           ) }
         payload[:uid] = uid
         payload[:results] = ldap_entries
@@ -91,6 +91,21 @@ module LdapAuthentication
 
     def to_user
       UserConverter.new(self).to_user
+    end
+
+    def is_academic
+      if Settings.saml.academic_member.present?
+        @academic_member = Settings.saml.academic_member
+        @academic_member.each do |am|
+          @ldap_entry.memberof.each do |m|
+            if m.include? am
+              return true
+            end
+          end
+        end
+      else
+        false
+      end
     end
 
     def self.with_retry(max_attempts = 3)

@@ -10,7 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< Updated upstream
 ActiveRecord::Schema.define(version: 2021_09_13_095606) do
+=======
+ActiveRecord::Schema.define(version: 2021_09_30_063832) do
+>>>>>>> Stashed changes
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -692,6 +696,28 @@ ActiveRecord::Schema.define(version: 2021_09_13_095606) do
     t.index ["instrument_id"], name: "index_relays_on_instrument_id"
   end
 
+<<<<<<< Updated upstream
+=======
+  create_table "request_endorsements", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "supervisor", limit: 50, null: false
+    t.string "token", null: false
+    t.boolean "is_accepted"
+    t.datetime "deleted_at"
+    t.integer "deleted_by"
+    t.integer "created_by", null: false
+    t.integer "updated_by", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "first_name", limit: 200
+    t.string "last_name", limit: 200
+    t.string "email", limit: 200
+    t.string "dept_abbrev", limit: 10
+    t.boolean "is_academic"
+    t.index ["user_id"], name: "fk_user_id"
+  end
+
+>>>>>>> Stashed changes
   create_table "research_project_members", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "research_project_id", null: false
     t.string "username", null: false
@@ -914,6 +940,12 @@ ActiveRecord::Schema.define(version: 2021_09_13_095606) do
     t.datetime "updated_at", null: false
     t.integer "created_by"
     t.integer "updated_by"
+<<<<<<< Updated upstream
+=======
+    t.string "net_id", limit: 200
+    t.string "dept_abbrev", limit: 10
+    t.boolean "is_academic"
+>>>>>>> Stashed changes
   end
 
   create_table "training_requests", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

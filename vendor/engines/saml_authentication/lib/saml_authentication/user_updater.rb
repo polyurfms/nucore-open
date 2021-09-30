@@ -21,7 +21,7 @@ module SamlAuthentication
       @is_academic = false;
 
       if Settings.saml.academic_member.present?
-        @cat = Settings.saml.academic_member;
+        @cat = Settings.saml.academic_member
         @cat.each do |v|
           if @member_of.include?(v)
             @is_academic = true;
