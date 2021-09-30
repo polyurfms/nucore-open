@@ -34,7 +34,7 @@ class RequestEndorsementsController < ApplicationController
         redirect_to request_endorsements_path()
     end
 
-    def update(requester, supervisor, email, first_name, last_name, dept_abbrev)
+    def update(requester, supervisor, email, first_name, last_name, dept_abbrev, is_academic)
         @date = Time.zone.now
         @token = generateToken(requester.username, supervisor, @date)
         @request_endorsement = RequestEndorsement.new
@@ -49,7 +49,7 @@ class RequestEndorsementsController < ApplicationController
         @request_endorsement.first_name = first_name
         @request_endorsement.last_name = last_name
         @request_endorsement.dept_abbrev = dept_abbrev
-        @request_endorsement.is_academic = @is_academic
+        @request_endorsement.is_academic = is_academic
 
         if @request_endorsement.save
             RequsetEndorsementMailer.notify(email, requester, @request_endorsement, first_name, last_name).deliver_later
