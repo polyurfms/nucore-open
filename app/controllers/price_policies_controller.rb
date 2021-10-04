@@ -54,6 +54,8 @@ class PricePoliciesController < ApplicationController
   # PUT /facilities/:facility_id/{product_type}/:product_id/price_policies/:id
   def update
     if update_policies_from_params
+      additional_price_policy_creator("create", current_user.id)
+
       redirect_to facility_product_price_policies_path, notice: text("update.success")
     else
       flash.now[:error] = text("errors.save")
@@ -69,15 +71,14 @@ class PricePoliciesController < ApplicationController
   # DELETE /facilities/:facility_id/{product_type}/:product_id/price_policies/:id
   def destroy
     #return flash_remove_active_policy_warning_and_redirect if @start_date <= Date.today
-
     begin
       #create addition pricing rule
-      additional_price_policy_creator("delete", current_user.id, )
+      # additional_price_policy_creator("delete", current_user.id, )
+      
+      additional_price_policy_creator("delete", current_user.id)
       if PricePolicyUpdater.destroy_all_for_product!(@product, @start_date)
         flash[:notice] = text("destroy.success")
-
         #create addition pricing rule
-        additional_price_policy_creator("delete", current_user.id)
       else
         flash[:error] = text("destroy.failure")
       end
