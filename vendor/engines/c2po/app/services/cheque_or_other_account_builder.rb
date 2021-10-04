@@ -16,6 +16,7 @@ class ChequeOrOtherAccountBuilder < AccountBuilder
       :formatted_expires_at,
       :name_on_card,
       :remittance_information,
+      :attention
     ]
   end
 
@@ -24,7 +25,8 @@ class ChequeOrOtherAccountBuilder < AccountBuilder
     [
       :description,
       :formatted_expires_at,
-      :remittance_information
+      :remittance_information,
+      :attention
     ]
   end
   # Hooks into superclass's `build` method.
