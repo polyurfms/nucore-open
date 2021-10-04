@@ -62,7 +62,7 @@ class FundingRequestCreator
   end
 
   def funding_request_params
-      @params.require(:funding_request).permit(:request_type, :credit_amt, :debit_amt, :account_id, :request_amount)
+      @params.require(:funding_request).permit(:request_type, :credit_amt, :debit_amt, :account_id, :request_amount, :note)
   end
 
 

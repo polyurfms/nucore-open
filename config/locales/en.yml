@@ -66,7 +66,7 @@ en:
     order_status: Order Status
     product: Product
     owner: Owner
-    faclicy: facilities 
+    faclicy: facilities
     order_for: Ordered For
 
   pages:
@@ -212,6 +212,7 @@ en:
         affiliate_display_name: "Affiliate/Category"
         affiliate: "Name" # used for labeling affiliate_other field in forms
         remit: "Bill To"
+        attn: "Attention"
         all_instruct: "Enter a text description to help you and the user identify this payment source."
     account_table:
       notice: "No payment sources found."
@@ -274,6 +275,7 @@ en:
         # amount: Amount
         amount: Amount (HKD)
         remark : Remark
+        note: Note
       total_locked_amount: Total committed amount
       new_request : "New Request"
   facility_accounts_reconciliation:
@@ -732,7 +734,7 @@ en:
         type : "Top Up / Release"
         status : "Status"
         # Amount : "Amount"
-        Amount : "Amount (HKD)"
+        amount : "Amount (HKD)"
         remark : Remark
       message:
         in_progress : "You cannot make new requests when the funding request is in progress."
@@ -766,7 +768,7 @@ en:
         type : "Top Up / Release"
         status : "Status"
         # Amount : "Amount"
-        Amount : "Amount (HKD)"
+        amount : "Amount (HKD)"
         remark : Remark
       message:
         # in_progress : "Cannot submit new request until existing request executed."
@@ -1020,7 +1022,7 @@ en:
       main_html: "You may add a new external user by clicking <a href=\"%{link}\">Add a new external user</a>."
       netid_not_found: "The user could not be located in the university database.  Please make sure you typed the NetID correctly."
       email_not_found: "No user information was found in the university databases."
-      found: "The following user was found.  Click \"Add User\" to allow this user access to system."
+      found: "The following user was found.  Click \"Add User\" to add this user as member."
       user_already_exists: "The user %{username} already exists in system"
 
     create_user:
@@ -1294,7 +1296,7 @@ en:
       label:
         search_term: "Supervior's First name, Last name, NetID, or username:"
         search_dept: "Dept:"
-      
+
 
   instruments:
     manage:
