@@ -74,7 +74,7 @@ class ApiController < ApplicationController
           raise ActiveRecord::Rollback
         end
       end
-      redirect_to facilities_path
+    render :supervisor_submitted
     end
   end
 
