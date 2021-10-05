@@ -44,14 +44,15 @@
         %tr
           - if journal_is_submittable
             %th
-          %th= t(".th.order")
-          %th= t(".th.fulfilled")
-          %th= t(".th.account")
+          %th= sortable "order_number", t(".th.order")
+          %th= sortable "fulfilled_date", t(".th.fulfilled")
+          %th= sortable "payment_source", t(".th.account")
           %th= t(".th.total")
           %th= t(".th.reconciled")
           %th= t(".th.status")
       %tbody
-        - @journal.order_details.each do |order_detail|
+        -# @journal.order_details.each do |order_detail|
+        - @order_details.each do |order_detail|
           - disable = order_detail.reconciled? || @journal.open?
           %tr
             - if journal_is_submittable

@@ -23,7 +23,8 @@
             - path = current_facility ? statement_path(s) : account_statement_path(s.account, s, format: :pdf)
             = link_to t("statements.pdf.download"), path
           %td= format_usa_datetime(s.created_at)
-          %td= s.account.notify_users.map(&:full_name).join(', ')
+          -# %td= s.account.notify_users.map(&:full_name).join(', ')
+          %td= link_to s.account.notify_users.map(&:full_name).join(', '), "", title:  s.account.notify_users.map(&:email).join(', ')
           - unless @account
             %td= link_to s.account, facility_account_path(current_facility, s.account)
           - if current_facility&.cross_facility?
@@ -31,5 +32,9 @@
           %td.currency= s.order_details.count
           %td.currency= number_to_currency(s.total_cost)
           %td= t("statements.reconciled.#{s.reconciled?}")
+
+  %table{style: "width: 100%"}
+    %tbody
+      %td{style: "text-align:right"}= "Total no. of invoice: #{@statements.length}"
 
   = will_paginate(@statements)
