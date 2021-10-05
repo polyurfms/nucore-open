@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_29_041118) do
+ActiveRecord::Schema.define(version: 2021_09_30_063832) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -711,6 +711,7 @@ ActiveRecord::Schema.define(version: 2021_09_29_041118) do
     t.string "last_name", limit: 200
     t.string "email", limit: 200
     t.string "dept_abbrev", limit: 10
+    t.boolean "is_academic"
     t.index ["user_id"], name: "fk_user_id"
   end
 
@@ -936,9 +937,9 @@ ActiveRecord::Schema.define(version: 2021_09_29_041118) do
     t.datetime "updated_at", null: false
     t.integer "created_by"
     t.integer "updated_by"
-    t.boolean "need_attention", default: false
     t.string "net_id", limit: 200
     t.string "dept_abbrev", limit: 10
+    t.boolean "is_academic"
   end
 
   create_table "training_requests", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

@@ -93,6 +93,21 @@ module LdapAuthentication
       UserConverter.new(self).to_user
     end
 
+    def is_academic
+      if Settings.saml.academic_member.present?
+        @academic_member = Settings.saml.academic_member
+        @academic_member.each do |am|
+          @ldap_entry.memberof.each do |m|
+            if m.include? am
+              return true
+            end
+          end
+        end
+      else
+        false
+      end
+    end
+
     def self.with_retry(max_attempts = 3)
       tries = 0
       begin
