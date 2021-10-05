@@ -796,7 +796,7 @@ class OrderDetail < ApplicationRecord
   end
 
   def ready_for_statement?
-    reviewed? && statement_id.blank? && Account.config.using_statements?(account.type)
+    reviewed? && statement_id.blank? && Account.config.using_statements?(account.type) && !reconciled?
   end
 
   def ready_for_journal?
