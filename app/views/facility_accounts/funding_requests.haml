@@ -19,6 +19,7 @@
   = simple_form_for(@funding_request, url: facility_account_create_funding_request_path(current_facility, @account)) do |f|
     = f.input :request_type, collection: FundingRequest.request_types, label_method: ->(type) { t(type, scope: "funding_requests.request_type.") }
     = f.input :request_amount
+    = f.input :note
     = f.hidden_field :account_id ,  value: @account.id
     = f.submit t(".new_request"), class: "btn btn-primary"
 -else
@@ -37,13 +38,16 @@
       %th= t(".table.type")
       %th= t(".table.status")
       %th= t(".table.amount")
-      %th= t(".table.remark")
+      %th= t(".table.note")
   %tbody
     - @funding_requests.each  do |at|
       %tr
         %td= at.id
         %td= format_usa_datetime(at.created_at)
         %td= t("funding_requests.request_type.#{at.request_type}")
-        %td= t("funding_requests.status.#{at.status}")
+        %td
+          = t("funding_requests.status.#{at.status}")
+          - unless at.remarks.nil?
+            = tooltip_icon "fa fa-question-circle-o", at.remarks
         %td= at.request_amount
-        %td= at.remarks
+        %td= at.note

@@ -10,11 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< Updated upstream
-ActiveRecord::Schema.define(version: 2021_09_13_095606) do
-=======
 ActiveRecord::Schema.define(version: 2021_09_30_063832) do
->>>>>>> Stashed changes
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -62,18 +58,26 @@ ActiveRecord::Schema.define(version: 2021_09_30_063832) do
     t.string "project_title", limit: 1000
     t.decimal "alert_threshold", precision: 10, scale: 2, default: "0.0"
     t.boolean "is_auto_top_up", default: false, null: false
+    t.string "attention", limit: 50
     t.index ["affiliate_id"], name: "index_accounts_on_affiliate_id"
   end
 
+  create_table "additional_price_groups", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "product_id"
+    t.string "name", limit: 50, null: false
+    t.datetime "deleted_at"
+    t.integer "deleted_by"
+  end
+
   create_table "additional_price_policies", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "price_policy_id", null: false
-    t.integer "additional_price_group_id", null: false
     t.decimal "cost", precision: 13, scale: 2, null: false
+    t.integer "price_policy_id", null: false
     t.integer "created_by", null: false
     t.datetime "deleted_at"
     t.integer "deleted_by"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer "additional_price_group_id"
     t.index ["price_policy_id"], name: "fk_price_policy_id"
   end
 
@@ -259,6 +263,7 @@ ActiveRecord::Schema.define(version: 2021_09_30_063832) do
     t.datetime "updated_at"
     t.string "remarks", limit: 100
     t.integer "fo_journal_id"
+    t.string "note", limit: 200
   end
 
   create_table "instrument_alerts", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -406,6 +411,8 @@ ActiveRecord::Schema.define(version: 2021_09_30_063832) do
     t.integer "fo_journal_id"
     t.decimal "actual_adjustment", precision: 10, scale: 2, default: "0.0"
     t.integer "additional_price_group_id"
+    t.decimal "penalty", precision: 13, scale: 2, default: "0.0", null: false
+    t.decimal "early_end_discount", precision: 13, scale: 2, default: "0.0", null: false
     t.index ["account_id"], name: "fk_od_accounts"
     t.index ["assigned_user_id"], name: "index_order_details_on_assigned_user_id"
     t.index ["bundle_product_id"], name: "fk_bundle_prod_id"
@@ -601,13 +608,6 @@ ActiveRecord::Schema.define(version: 2021_09_30_063832) do
     t.index ["facility_id"], name: "index_product_display_groups_on_facility_id"
   end
 
-  create_table "additional_price_groups", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "product_id"
-    t.string "name", limit: 100, null: false
-    t.datetime "deleted_at"
-    t.integer "deleted_by"
-  end
-
   create_table "product_users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "product_id", null: false
     t.integer "user_id", null: false
@@ -696,8 +696,6 @@ ActiveRecord::Schema.define(version: 2021_09_30_063832) do
     t.index ["instrument_id"], name: "index_relays_on_instrument_id"
   end
 
-<<<<<<< Updated upstream
-=======
   create_table "request_endorsements", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "supervisor", limit: 50, null: false
@@ -717,7 +715,6 @@ ActiveRecord::Schema.define(version: 2021_09_30_063832) do
     t.index ["user_id"], name: "fk_user_id"
   end
 
->>>>>>> Stashed changes
   create_table "research_project_members", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "research_project_id", null: false
     t.string "username", null: false
@@ -940,12 +937,9 @@ ActiveRecord::Schema.define(version: 2021_09_30_063832) do
     t.datetime "updated_at", null: false
     t.integer "created_by"
     t.integer "updated_by"
-<<<<<<< Updated upstream
-=======
     t.string "net_id", limit: 200
     t.string "dept_abbrev", limit: 10
     t.boolean "is_academic"
->>>>>>> Stashed changes
   end
 
   create_table "training_requests", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -1136,6 +1130,7 @@ ActiveRecord::Schema.define(version: 2021_09_30_063832) do
   add_foreign_key "products", "facility_accounts", name: "fk_facility_accounts"
   add_foreign_key "products", "schedules", name: "fk_instruments_schedule"
   add_foreign_key "projects", "facilities"
+  add_foreign_key "request_endorsements", "users", name: "fk_user_id"
   add_foreign_key "research_project_members", "research_projects"
   add_foreign_key "reservations", "order_details"
   add_foreign_key "reservations", "products", name: "reservations_instrument_id_fk"

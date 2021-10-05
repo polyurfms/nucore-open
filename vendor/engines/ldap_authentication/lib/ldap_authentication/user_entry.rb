@@ -10,7 +10,7 @@ module LdapAuthentication
       search(uid).first
     end
 
-    def self.find(uid, dept)
+    def self.find_by_dept(uid, dept)
       search_by_Dept(uid, dept)
     end
 
@@ -39,9 +39,9 @@ module LdapAuthentication
       # ldap_entries_givename = nil
       ActiveSupport::Notifications.instrument "search.ldap_authentication" do |payload|
         ldap_entries = with_retry { admin_ldap.search(filter:
-          (Net::LDAP::Filter.eq(LdapAuthentication.attribute_field, uid) & Net::LDAP::Filter.eq("departmentNumber", dept) & Net::LDAP::Filter.eq("polyuUserType", "Staff")) |
-          (Net::LDAP::Filter.eq("givenname", uid) & Net::LDAP::Filter.eq("departmentNumber", dept) & Net::LDAP::Filter.eq("polyuUserType", "Staff")) |
-          (Net::LDAP::Filter.eq("sn", uid) & Net::LDAP::Filter.eq("departmentNumber", dept) & Net::LDAP::Filter.eq("polyuUserType", "Staff"))
+          (Net::LDAP::Filter.eq(LdapAuthentication.attribute_field, uid) & Net::LDAP::Filter.eq("departmentNumber", dept)) |
+          (Net::LDAP::Filter.eq("givenname", uid) & Net::LDAP::Filter.eq("departmentNumber", dept)) |
+          (Net::LDAP::Filter.eq("sn", uid) & Net::LDAP::Filter.eq("departmentNumber", dept))
 
           ) }
         payload[:uid] = uid
