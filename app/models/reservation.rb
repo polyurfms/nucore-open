@@ -35,6 +35,8 @@ class Reservation < ApplicationRecord
   # Used when we want to force the order to complete even if it doesn't meet the
   # requirements of order_completeable?, e.g. the reservation time isn't over yet.
   attr_accessor :force_completion
+  
+  attr_accessor :currDatetime
 
   # Delegations
   #####
@@ -188,7 +190,8 @@ class Reservation < ApplicationRecord
       # not start.
       MoveToProblemQueue.move!(reservation.order_detail, user: reservation.user, cause: :reservation_started)
     end
-    update!(actual_start_at: Time.current)
+    update!(actual_start_at: currDatetime?)
+    # update!(actual_start_at: Time.current)
   end
 
   def end_reservation!
@@ -377,6 +380,11 @@ class Reservation < ApplicationRecord
 
   def set_billable_minutes
     self.billable_minutes = calculated_billable_minutes
+  end
+
+  def currDatetime?
+    @currDatetime = Time.current if @currDatetime.nil?
+    @currDatetime
   end
 
   # FIXME: Temporary override to include reconciled orders, so we can backfill them

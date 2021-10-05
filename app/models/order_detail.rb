@@ -306,6 +306,25 @@ class OrderDetail < ApplicationRecord
       .where(account_users: { user_role: AccountUser::ACCOUNT_OWNER,
                               user_id: owners })
   }
+
+  scope :with_upcoming_reservation_by_product, ->(products) {
+    new_or_inprocess
+      purchased.joins(:reservation)
+      .where(reservations: { actual_start_at: nil })
+      .where("order_details.product_id in (?)", products)
+      .merge(Reservation.ends_in_the_future)
+      .order(reserve_start_at: :asc)
+      # .order("reserve_start_at ASC")
+      # .order("reservations.reserve_start_at ASC")
+  }
+
+  scope :next_reservation, ->(products) {
+    new_or_inprocess
+      .where(reservations: { actual_start_at: nil })
+      .where("order_details.product_id in (?)", products)
+      .merge(Reservation.ends_in_the_future)
+      .order(reserve_start_at: :asc).limit(1)
+  }
   scope :for_order_statuses, ->(statuses) { where("order_details.order_status_id in (?)", statuses) unless statuses.nil? || statuses.empty? }
   scope :joins_assigned_users, -> { joins("LEFT OUTER JOIN users assigned_users ON assigned_users.id = order_details.assigned_user_id") }
 
