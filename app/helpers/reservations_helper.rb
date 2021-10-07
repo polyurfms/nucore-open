@@ -29,6 +29,13 @@ module ReservationsHelper
     safe_join(links, delimiter)
   end
 
+  def reservation_admin_actions(reservation)
+    delimiter = "&nbsp;|&nbsp;".html_safe
+    links = ReservationUserActionPresenter.new(self, reservation).admin_actions
+    safe_join(links, delimiter)
+  end
+
+
   def reservation_view_edit_link(reservation)
     ReservationUserActionPresenter.new(self, reservation).view_edit_link
   end

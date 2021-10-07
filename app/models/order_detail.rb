@@ -236,6 +236,10 @@ class OrderDetail < ApplicationRecord
     where.not(state: "reconciled")
   end
 
+  def self.reconciled
+    where(state: "reconciled")
+  end
+
   def self.with_actual_costs
     where.not(actual_cost: nil)
   end
