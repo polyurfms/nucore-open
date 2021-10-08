@@ -107,7 +107,7 @@ feature:
   expense_accounts: true
   edit_accounts: true
   suspend_accounts: true
-  product_specific_contacts: true
+  product_specific_contacts: false
   training_requests: true
   daily_view: true
   split_accounts: true
