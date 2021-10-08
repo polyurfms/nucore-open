@@ -1492,7 +1492,7 @@ en:
       committed_amt: "Committed Amount (HKD)"
       total_expense: "Total Expense Amount (HKD)"
       free_balance: "Free Balance (HKD)"
-      allows_allocation: "Allows Allocation"
+      allows_allocation: "Enable quota allocation for members"
       alert_threshold: "Alert Threshold"
       alert_threshold_input: "Alert Threshold (input 0 for no alert)"
       is_auto_top_up: "Auto Top up"
