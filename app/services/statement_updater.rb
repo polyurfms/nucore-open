@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class StatementDestroyer
+class StatementUpdater
 
   attr_accessor :statement_id, :errors, :session_user, :facility_id
 
@@ -9,10 +9,10 @@ class StatementDestroyer
     @facility_id = params[:facility_id]
   end
 
-  def rollback
+  def rollback_statement
     @has_error = false
     OrderDetail.transaction do
-      @has_error = delete_statement
+      @has_error = remove_order_detail_from_statement
       raise ActiveRecord::Rollback if @has_error
     end
 
@@ -25,7 +25,7 @@ class StatementDestroyer
 
   private
 
-  def delete_statement
+  def remove_order_detail_from_statement
     statement = Statement.find_by_id(@statement_id)
     order_details = OrderDetail.where(statement_id: @statement_id)
 

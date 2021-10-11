@@ -97,8 +97,8 @@ class FacilityStatementsController < ApplicationController
   end
 
   def rollback_statement
-    @remove_statement = StatementDestroyer.new(params)
-    if @remove_statement.rollback
+    @remove_statement = StatementUpdater.new(params)
+    if @remove_statement.rollback_statement
       flash[:notice] = "Invoice rolled back success"
     else
       flash[:error] = "Invoice rolled failed"
