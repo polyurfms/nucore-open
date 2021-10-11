@@ -31,7 +31,11 @@
             %td= s.facility.name
           %td.currency= s.order_details.count
           %td.currency= number_to_currency(s.total_cost)
-          %td= t("statements.reconciled.#{s.reconciled?}")
+          %td.centered
+            = t("statements.reconciled.#{s.reconciled?}")
+            - if s.no_reconciled?
+              - rollback_path = statement_rollback_path(s)
+              = link_to "rollback", rollback_path, :data => {:confirm => 'Are you sure?'}
   %table{style: "width: 100%"}
     %tbody
       %td{style: "text-align:right"}= "Total no. of invoice: #{@statements.length}"

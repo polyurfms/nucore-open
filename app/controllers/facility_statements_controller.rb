@@ -27,7 +27,7 @@ class FacilityStatementsController < ApplicationController
     search_params = permitted_search_params.merge(current_facility: current_facility)
 
     @search_form = StatementSearchForm.new(search_params)
-    
+
     start_date_str = @search_form.date_range_start
     end_date_str = @search_form.date_range_end
     @search_form.date_range_start = @search_form.date_range_start unless @search_form.date_range_start.nil?
@@ -35,13 +35,13 @@ class FacilityStatementsController < ApplicationController
 
     if params[:sort].nil?
       @statements = @search_form.search.order(created_at: :desc)
-    else 
+    else
       @statements = @search_form.search.reorder(sort_clause)
     end
-    
+
 
     @search_form.date_range_start = start_date_str
-    @search_form.date_range_end = end_date_str 
+    @search_form.date_range_end = end_date_str
 
     respond_to do |format|
       format.html { @statements = @statements.paginate(page: params[:page]) }
@@ -63,7 +63,7 @@ class FacilityStatementsController < ApplicationController
     @order_detail_action = :create
 
     defaults = SettingsHelper.feature_on?(:set_statement_search_start_date) ? { date_range_start: format_usa_date(1.month.ago.beginning_of_month) } : {}
-    
+
     @search_form = TransactionSearch::SearchForm.new(params[:search], defaults: defaults)
 
     @search_form.date_range_start = @search_form.date_range_start unless @search_form.date_range_start.nil?
@@ -96,20 +96,30 @@ class FacilityStatementsController < ApplicationController
     @statement = Statement.find(params[:id])
   end
 
+  def rollback_statement
+    @remove_statement = StatementUpdater.new(params)
+    if @remove_statement.rollback_statement
+      flash[:notice] = "Invoice rolled back success"
+    else
+      flash[:error] = "Invoice rolled failed"
+    end
+    redirect_to facility_statements_path
+  end
+
   private
 
   def success_message
     SettingsHelper.feature_on?(:send_statement_emails) ? "success_with_email_html" : "success_html"
-  end  
+  end
 
   def sort_lookup_hash
-    {      
+    {
       "order_number" => "order_details.order_id",
       "fulfilled_date" => "order_details.fulfilled_at",
       "product_name" => "products.name",
       "ordered_for" => ["#{User.table_name}.last_name", "#{User.table_name}.first_name"],
       "payment_source" => "accounts.description",
-      "actual_subsidy" => "order_details.actual_cost", 
+      "actual_subsidy" => "order_details.actual_cost",
       # "actual_subsidy" => "order_details.actual_subsidy",
       "state" => "order_details.state",
     }

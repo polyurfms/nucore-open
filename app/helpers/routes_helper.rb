@@ -23,6 +23,10 @@ module RoutesHelper
     facility_account_statement_path(statement.facility, statement.account_id, statement, format: :pdf)
   end
 
+  def statement_rollback_path(statement)
+    facility_statement_rollback_path(statement.facility, statement.id)
+  end
+
   def product_file_path(file)
     [
       file.product.facility,
