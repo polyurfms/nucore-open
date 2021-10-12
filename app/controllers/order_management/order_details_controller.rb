@@ -28,23 +28,33 @@ class OrderManagement::OrderDetailsController < ApplicationController
   def update
     @active_tab = "admin_orders"
     @order_detail.additional_price_group_id = params[:additional_price_policy]
-    updater = OrderDetails::ParamUpdater.new(@order_detail, user: session_user, cancel_fee: params[:with_cancel_fee] == "1")
-
-    if updater.update_attributes(params[:order_detail] || empty_params)
-      flash[:notice] = text("update.success")
-      if @order_detail.updated_children.any?
-        flash[:notice] = text("update.success_with_auto_scaled")
-        flash[:updated_order_details] = @order_detail.updated_children.map(&:id)
-      end
-      if modal?
-        head :ok
+    
+    is_exist_addtion_item = check_addition_item()
+    if is_exist_addtion_item
+      updater = OrderDetails::ParamUpdater.new(@order_detail, user: session_user, cancel_fee: params[:with_cancel_fee] == "1")
+      if updater.update_attributes(params[:order_detail] || empty_params)
+        flash[:notice] = text("update.success")
+        if @order_detail.updated_children.any?
+          flash[:notice] = text("update.success_with_auto_scaled")
+          flash[:updated_order_details] = @order_detail.updated_children.map(&:id)
+        end
+        if modal?
+          head :ok
+        else
+          redirect_to [current_facility, @order]
+        end
       else
-        redirect_to [current_facility, @order]
+        flash.now[:error] = text("update.error")
+        render :edit, layout: !modal?, status: 406
       end
-    else
-      flash.now[:error] = text("update.error")
+    else 
+      price_policy_id = AdditionalPricePolicy.joins("INNER JOIN additional_price_groups ON additional_price_policies.additional_price_group_id = additional_price_groups.id")
+      .where("additional_price_groups.id = :id", id: params[:additional_price_policy]).joins(:price_policy).uniq.pluck :price_policy_id
+      start_date = PricePolicy.where("id IN (?)", price_policy_id).where("price_policies.start_date > :now", now: format_usa_date(params[:order_detail][:reservation][:actual_start_date])).order("price_policies.start_date ASC").uniq.pluck :start_date 
+      @additional_error = "Save Error: The addition item start on #{format_usa_date(start_date.first)}"
       render :edit, layout: !modal?, status: 406
     end
+    
   end
 
   # GET /facilities/:facility_id/orders/:order_id/order_details/:id/pricing
@@ -109,6 +119,24 @@ class OrderManagement::OrderDetailsController < ApplicationController
 
   def edit_disabled?
     @order_detail.in_open_journal? || @order_detail.reconciled?
+  end
+
+  def check_addition_item
+    unless params[:additional_price_policy].blank?
+      actual_start_date = parse_usa_date(params[:order_detail][:reservation][:actual_start_date], "#{params[:order_detail][:reservation][:actual_start_hour]}:#{params[:order_detail][:reservation][:actual_start_min].to_s.rjust(2, '0')} #{params[:order_detail][:reservation][:actual_start_meridian]}")
+      addition_price_policy_list = AdditionalPricePolicy.joins("INNER JOIN additional_price_groups ON additional_price_policies.additional_price_group_id = additional_price_groups.id")
+        .where("additional_price_groups.id = :id", id: params[:additional_price_policy])
+        .joins(:price_policy).where("start_date <= :now AND expire_date > :now", now: actual_start_date).uniq
+
+
+        is_exist_addition_item = addition_price_policy_list.count > 0 ? true : false
+        
+        unless is_exist_addition_item
+          return false
+        end
+    end
+
+    return true
   end
 
 end
