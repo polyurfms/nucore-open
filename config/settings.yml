@@ -130,7 +130,7 @@ feature:
   use_manage: false
   facility_banner_notice: true
   charge_full_price_on_cancellation: true
-  price_policy_requires_note: true
+  price_policy_requires_note: false
   multi_facility_accounts: true
   facility_directors_can_manage_price_groups: true
   account_reference_field: false
