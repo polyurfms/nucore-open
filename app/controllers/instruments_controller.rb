@@ -7,6 +7,7 @@ class InstrumentsController < ProductsCommonController
   before_action :store_fullpath_in_session, only: [:index, :show]
   before_action :set_default_lock_window, only: [:create, :update]
   before_action :public_flag_checked?, only: [:public_schedule]
+  before_action :check_supervisor, only: [:show]
 
   # public_schedule does not require login
   skip_before_action :authenticate_user!, only: [:public_list, :public_schedule]
@@ -112,6 +113,13 @@ class InstrumentsController < ProductsCommonController
       # raise ActiveRecord::RecordNotFound
     end
     render json: @status
+  end
+
+  private 
+  def check_supervisor 
+    if session[:had_supervisor] == 0 
+      return redirect_to '/no_supervisor'
+    end
   end
 
 end
