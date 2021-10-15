@@ -27,7 +27,7 @@
       %th.time Reserved
       %th.time Actual
       %th.currency Cost
-      %th.currency Subsidy
+      -# %th.currency Subsidy
       %th.currency Total
       %th.badges
 
@@ -65,7 +65,7 @@
         - else
           %td.currency= od.quantity
         %td.currency= od.wrapped_cost
-        %td.currency= od.wrapped_subsidy
+        -# %td.currency= od.wrapped_subsidy
         %td.currency= od.wrapped_total
         %td.badges= order_detail_badges(od)
   %tfoot
@@ -79,9 +79,9 @@
       %td.currency
         %strong
           = number_to_currency @order.cost
-      %td.currency
-        %strong
-          = number_to_currency @order.subsidy
+      -# %td.currency
+      -#   %strong
+      -#     = number_to_currency @order.subsidy
       %td.currency
         %strong
           = number_to_currency @order.total
