@@ -100,7 +100,8 @@ class UsersController < ApplicationController
     @facility = current_facility
     @products_by_type = Product.for_facility(@facility).requiring_approval_by_type
     @training_requested_product_ids = @user.training_requests.pluck(:product_id)
-    @user_approved_at_for_product_id = @user.approval_dates_by_product
+    @user_approved_at_for_product_id = @user.approval_dates_by_product 
+    @user_approval_remark_by_product = @user.approval_remark_by_product   
   end
 
   # POST /facilities/:facility_id/users/:user_id/access_list/approvals
@@ -212,6 +213,22 @@ class UsersController < ApplicationController
       add_flash(:notice,
                 I18n.t("controllers.users.access_list.scheduling_group_update.notice",
                        update_count: update_approvals.access_groups_changed))
+    end
+
+    update_remark(approved_products_from_params)
+  end
+
+  def update_remark(approved_products_from_params)
+    if params[:approved_products].present?
+      approved_products_from_params = params[:approved_products]
+      approved_products_from_params.each do |id|
+        product = Product.find(id)
+        product_user = product.find_product_user(@user) || return
+        return if id.blank?
+        remark = params["remark_#{id}"]
+        product_user.remark = remark
+        product_user.save
+      end
     end
   end
 
