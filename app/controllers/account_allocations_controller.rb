@@ -5,7 +5,7 @@ class AccountAllocationsController < ApplicationController
   customer_tab  :all
   before_action :authenticate_user!
   before_action :check_acting_as
-#  before_action :init_account_allocation
+  before_action :init_account
 
   def initialize
     @active_tab = "accounts"
@@ -14,8 +14,7 @@ class AccountAllocationsController < ApplicationController
 
   # GET /accounts/:account_id/account_users/new
   def new
-    puts "new start"
-    @account = session_user.accounts.find(params[:account_id])
+    #@account = session_user.accounts.find(params[:account_id])
   end
 
   def show
@@ -27,32 +26,31 @@ class AccountAllocationsController < ApplicationController
 
   # GET /accounts/:account_id/account_user_allocations
   def index
-    @account = session_user.accounts.find(params[:account_id])
+    #@account = session_user.accounts.find(params[:account_id])
 
     @account_users ||= AccountUser.where(account_id: @account.id, deleted_at: nil).where.not(user_role: "Owner")
-    
+
     @account_user_import = AccountUser.new
     # if @account.can_allocate?
     #   render :new
     # else
     #   redirect_to account_path(@account)
     # end
-    
+
     render :new
   end
 
   def update_allocation
-    puts "update allocation"
-    
+
     #load account info before update attribute
-    @account = session_user.accounts.find(params[:account_id])
+    #@account = session_user.accounts.find(params[:account_id])
 
     if (!@account.allows_allocation.nil? && @account.allows_allocation == true)
       au = params[:account_user]
       auv = au.values
       @id = params[:account_id]
-  
-  
+
+
       #load form field to model
       @account.assign_attributes(account_users_attributes: auv)
       if @account.save
@@ -61,16 +59,16 @@ class AccountAllocationsController < ApplicationController
         flash.now[:error] = text("errors")
       end
     end
-    
+
     #load model for form display
     @account_users = @account.account_users
 
     render :new
   end
 
-  def export_user 
-    @account = Account.find(params[:account_id])
-    unless @account.nil? 
+  def export_user
+    #@account = Account.find(params[:account_id])
+    unless @account.nil?
       @csv = Reports::PaymentSourceUserImport.new(nil, @account, session_user)
       respond_to do |format|
         format.html
@@ -80,25 +78,25 @@ class AccountAllocationsController < ApplicationController
     end
   end
 
-  def import_user 
+  def import_user
 
     begin
       raise "Please upload a valid import file" unless params[:account_user].present?
 
-      @account = session_user.accounts.find(params[:account_id])
-  
+      #@account = session_user.accounts.find(params[:account_id])
+
       if (!@account.allows_allocation.nil? && @account.allows_allocation == true)
         @account = Account.find(params[:account_id])
-        unless @account.nil? 
+        unless @account.nil?
           @csv = Reports::PaymentSourceUserImport.new(params[:account_user][:file], @account, session_user)
           @csv.import("Update")
-          flash.now[:notice] = "Save success" 
+          flash.now[:notice] = "Save success"
         end
       end
     rescue => e
       import_exception_alert(e)
     end
-    
+
     redirect_to account_account_allocations_path
   end
 
@@ -106,11 +104,16 @@ class AccountAllocationsController < ApplicationController
     Rails.logger.error "#{exception.message}\n#{exception.backtrace.join("\n")}"
     flash[:error] = import_exception_message(exception)
   end
-  
+
   def import_exception_message(exception)
     I18n.t("controllers.order_imports.create.error", error: exception.message)
   end
 
   protected
+
+  def init_account
+    @user = session[:acting_user_id] || session_user.id
+    @account = Account.find_by(id: params[:account_id])
+  end
 
 end
