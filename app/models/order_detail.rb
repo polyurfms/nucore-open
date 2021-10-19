@@ -514,7 +514,7 @@ class OrderDetail < ApplicationRecord
   end
 
   def estimated_total
-    estimated_cost - estimated_subsidy + actual_adjustment if estimated_cost && estimated_subsidy && actual_adjustment
+    estimated_cost - estimated_subsidy if estimated_cost && estimated_subsidy
   end
 
   def total
