@@ -16,9 +16,9 @@ class ApplicationController < ActionController::Base
   helper_method :open_or_facility_path
 
   # before_action :set_paper_trail_whodunnit, :check_agreement
-  
+
   before_action :set_paper_trail_whodunnit
-  
+
   before_action :check_delegations
   # before_action :set_paper_trail_whodunnit,:check_supervisor, :check_agreement
   before_action :check_supervisor_and_phone
@@ -91,7 +91,7 @@ class ApplicationController < ActionController::Base
 
   def check_supervisor_and_phone
     if request.env['PATH_INFO'].eql?('/facilities')
-      unless session_user.nil? 
+      unless session_user.nil?
         if session_user.is_normal_user?
           @is_requested = false
           @has_phone = !session_user.phone.nil? && !session_user.phone.blank?
@@ -100,27 +100,27 @@ class ApplicationController < ActionController::Base
           if session[:had_supervisor] == 0
             if (session_user.is_academic == true)
               @is_requested = true
-              session_user.create_default_supervisor!                
+              session_user.create_default_supervisor!
               session[:had_supervisor] = 1
               @has_phone = true
             else
-              @request_endorsement = RequestEndorsement.where(user_id: session[:acting_user_id] || session_user[:id]) 
+              @request_endorsement = RequestEndorsement.where(user_id: session[:acting_user_id] || session_user[:id])
               @request_endorsement.each do |request|
                 @is_requested = true if request.deleted_at.nil? && request.created_at.to_datetime + 1.days > Time.zone.now.to_datetime && (request.is_accepted.nil? || request.is_accepted == true)
                 (!request.is_accepted.nil? && request.is_accepted == true)
-              end              
-              msg = "No Supervisor. Please go to #{view_context.link_to("here", request_endorsements_path)} to make endorsement. " unless @is_requested
+              end
+              msg = "No supervisor info found. Please click #{view_context.link_to("here", request_endorsements_path)} to request supervisor endorsement. " unless @is_requested
             end
           else
             @is_requested = true
           end
 
           # msg = msg + ", " if !@is_requested && !@has_phone
-          
-          msg = msg + "No phone number. Please go to  #{view_context.link_to("here", edit_current_profile_path)} to edit it. ".html_safe unless @has_phone
+
+          msg = msg + "No phone number found. Please click  #{view_context.link_to("here", edit_current_profile_path)} to edit it. ".html_safe unless @has_phone
           # msg = msg + "No phone number. Please go to <a href='#{url_for(request_endorsements_path)}'></a>".html_safe unless @has_phone
           # msg = msg + "No phone number. Please go to 'My Profile' -> 'My Assistant' to add phone number " unless @has_phone
-          
+
           flash.now[:warning] = msg unless msg.blank?
         end
       end
@@ -137,7 +137,7 @@ class ApplicationController < ActionController::Base
   #       if (session_user.is_academic == true)
   #         #@user = User.find(session_user[:id])
   #         #@user.update_attributes(supervisor: @user.username)
-  #         session_user.create_default_supervisor!                
+  #         session_user.create_default_supervisor!
   #         session[:had_supervisor] = 1
   #         redirect_to '/facilities'
   #       else
@@ -251,7 +251,7 @@ class ApplicationController < ActionController::Base
   end
 
   def init_current_facility
-    
+
     raise ActiveRecord::RecordNotFound unless current_facility
   end
 
