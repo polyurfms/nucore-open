@@ -25,7 +25,8 @@
           = f.input :additional_price_group_id, collection: AdditionalPriceGroup.select_additional_price_groups(@order_detail.product_id),
               input_html: { name: "additional_price_policy" },
               selected: @select_additional_price_policy
-
+          - unless @additional_error.nil?
+            %p.additional_error{ :style => "color: red" }= @additional_error
       .span5
         - if @order_statuses
           = f.association :order_status, collection: @order_statuses, label_method: :name_with_level, include_blank: false
@@ -121,3 +122,7 @@
     var reserve_start_date_str = new Date($("#order_detail_reservation_reserve_start_date").val());
     $("#order_detail_reservation_reserve_start_date").val(reserve_start_date_str.getDate() + " " + Date.shortMonths[reserve_start_date_str.getMonth()] + " " + reserve_start_date_str.getFullYear())
   }
+
+  $("#order_detail_additional_price_group_id").change(function() {
+    $(".additional_error").text("");
+  });
