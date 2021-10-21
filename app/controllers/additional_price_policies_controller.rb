@@ -34,20 +34,29 @@ class AdditionalPricePoliciesController < ApplicationController
       end
     end
 
-    # @current_price_policies = @product.price_policies.where("start_date <= :now AND expire_date > :now", now: parse_usa_date(@date_range_start)).joins(:additional_price_policy).order(name: :asc)
+    @current_price_policies = @product.price_policies.current_and_newest
+    @current_start_date = @current_price_policies.first.try(:start_date)
+    @past_price_policies_by_date = @product.past_price_policies_grouped_by_start_date
+    @next_price_policies_by_date = @product.upcoming_price_policies_grouped_by_start_date
 
-    @current_price_policies = @product.price_policies.where("start_date <= :now AND expire_date > :now", now: parse_usa_date(@date_range_start)).order(id: :asc)
-
-    @current_start_date = @current_price_policies.first.try(:start_date) unless @current_price_policies.nil?
-    @current_expires_date = @current_price_policies.first.try(:expire_date) unless @current_price_policies.nil?
-
-    @search_id = @current_price_policies.select(&:can_purchase?).map do |price_policy|
-      price_policy.id
+    @past_additional_price_policies = Array.new
+    @past_price_policies_by_date.each do |date, rules|
+      result = AdditionalPricePolicy.joins("INNER JOIN price_policies on price_policies.id = additional_price_policies.price_policy_id").where("price_policy_id IN (?)", get_price_policy_id(rules)).where("deleted_at IS NULL").order(start_date: :desc, expire_date: :desc, additional_price_group_id: :asc, price_policy_id: :asc)
+      @past_additional_price_policies << {date => result}
     end
 
-    @current_additional_price_policies = AdditionalPricePolicy.where("price_policy_id IN (?)", @search_id).where("deleted_at IS NULL").order(additional_price_group_id: :asc, price_policy_id: :asc)
+    @next_additional_price_policies = Array.new
+    @next_price_policies_by_date.each do |date, rules|
+      result = AdditionalPricePolicy.joins("INNER JOIN price_policies on price_policies.id = additional_price_policies.price_policy_id").where("price_policy_id IN (?)", get_price_policy_id(rules)).where("deleted_at IS NULL").order(start_date: :desc, expire_date: :desc, additional_price_group_id: :asc, price_policy_id: :asc)
+      @next_additional_price_policies << {date => result}
+    end
+    
+    @current_additional_price_policies = AdditionalPricePolicy.where("price_policy_id IN (?)", get_price_policy_id(@current_price_policies)).where("deleted_at IS NULL").order(additional_price_group_id: :asc, price_policy_id: :asc)
+    
     render "additional_price_policies/index"
   end
+
+  # 
 
 
   def add
@@ -56,7 +65,13 @@ class AdditionalPricePoliciesController < ApplicationController
     return redirect_to facility_instrument_additional_price_policies_path if @params[:additional_price_policy_id].blank?
 
     @price_policy_date = @params[:additional_price_policy_id]
-    @price_policies = @product.price_policies.where("start_date <= :now AND expire_date > :now", now: @price_policy_date.to_datetime)
+    # @price_policies = @product.price_policies.where("start_date <= :now AND expire_date > :now", now: @price_policy_date.to_datetime)
+    
+    @price_policies = Array.new
+    search_price_policies = @product.price_policies.where("start_date <= :now AND expire_date > :now", now: @price_policy_date.to_datetime)
+    search_price_policies.each do |price_policy|
+      @price_policies << price_policy if human_date(price_policy.start_date) == human_date(@price_policy_date.to_datetime)
+    end
 
     @current_start_date = @price_policies.first.try(:start_date) unless @price_policies.nil?
     @current_expires_date = @price_policies.first.try(:expire_date) unless @price_policies.nil?
@@ -73,7 +88,14 @@ class AdditionalPricePoliciesController < ApplicationController
     @addition_price_name = @params[:addition_price_name] || ""
     @price_policy_date = @params[:startdate]
 
-    @price_policies = @product.price_policies.where("start_date <= :now AND expire_date > :now", now: @price_policy_date.to_datetime)
+    # @price_policies = @product.price_policies.where("start_date <= :now AND expire_date > :now", now: @price_policy_date.to_datetime)
+    
+    @price_policies = Array.new
+    search_price_policies = @product.price_policies.where("start_date <= :now AND expire_date > :now", now: @price_policy_date.to_datetime)
+    search_price_policies.each do |price_policy|
+      @price_policies << price_policy if human_date(price_policy.start_date) == human_date(@price_policy_date.to_datetime)
+    end
+    
     @additional_price_policies = get_new_additional_price_policies(@price_policies)
 
     @current_start_date = @price_policies.first.try(:start_date) unless @price_policies.nil?
@@ -141,7 +163,12 @@ class AdditionalPricePoliciesController < ApplicationController
 
     @price_policy_date = params[:additional_price_policy_id]
 
-    @price_policies = @product.price_policies.where("start_date <= :now AND expire_date > :now", now: @price_policy_date.to_datetime)
+    @price_policies = Array.new
+    search_price_policies = @product.price_policies.where("start_date <= :now AND expire_date > :now", now: @price_policy_date.to_datetime)
+    search_price_policies.each do |price_policy|
+      @price_policies << price_policy if human_date(price_policy.start_date) == human_date(@price_policy_date.to_datetime)
+    end
+    # @price_policies = @product.price_policies.where("start_date <= :now AND expire_date > :now", now: @price_policy_date.to_datetime)
     @additional_price_policies = get_new_additional_price_policies(@price_policies)
 
     @current_start_date = @price_policies.first.try(:start_date) unless @price_policies.nil?
@@ -177,11 +204,24 @@ class AdditionalPricePoliciesController < ApplicationController
             id = params["price_policy_#{additional_price_policy.price_policy.id}"][:id]
             cost = params["price_policy_#{additional_price_policy.price_policy.id}"][:cost]
 
-            @a = AdditionalPricePolicy.find(id.to_i)
-            unless @a.update(:cost => cost, :updated_at => @date)
-              flash.now[:error] = text("errors")
-              raise(ActiveRecord::Rollback)
+            if id.blank?
+              @date = Time.zone.now
+              additional_price_policy.created_at = @date
+              additional_price_policy.updated_at = @date
+              additional_price_policy.created_by = current_user.id
+              additional_price_policy.cost = cost
+              unless additional_price_policy.save()
+                flash.now[:error] = text("errors")
+                raise(ActiveRecord::Rollback)
+              end
+            else 
+              @a = AdditionalPricePolicy.find(id.to_i)
+              unless @a.update(:cost => cost, :updated_at => @date)
+                flash.now[:error] = text("errors")
+                raise(ActiveRecord::Rollback)
+              end
             end
+           
 
             if @additional_price_group.save
               flash.now[:notice] = "Save success" #text("update.success")
@@ -209,12 +249,15 @@ class AdditionalPricePoliciesController < ApplicationController
 #    @addition_price_name = @params[:name]
 
     additional_price_group_id = @params[:id]
-
+    @price_policy_date = @params[:additional_price_policy_id]
     @additional_price_group = AdditionalPriceGroup.find_by(id: additional_price_group_id)
 
-    @price_policy_date = @params[:additional_price_policy_id]
+    @price_policies = Array.new
+    search_price_policies = @product.price_policies.where("start_date <= :now AND expire_date > :now", now: @price_policy_date.to_datetime)
+    search_price_policies.each do |price_policy|
+      @price_policies << price_policy if human_date(price_policy.start_date) == human_date(@price_policy_date.to_datetime)
+    end
 
-    @price_policies = @product.price_policies.where("start_date <= :now AND expire_date > :now", now: @price_policy_date.to_datetime)
     raise ActiveRecord::RecordNotFound if @price_policies.blank?
     @additional_price_policies = get_current_additional_price_policies(@price_policies, @params[:id])
 
@@ -239,7 +282,12 @@ class AdditionalPricePoliciesController < ApplicationController
 #      return  redirect_to facility_instrument_additional_price_policies_path
 #    end
 
-    @price_policies = @product.price_policies.where("start_date <= :now AND expire_date > :now", now: @price_policy_date.to_datetime)
+    @price_policies = Array.new
+    search_price_policies = @product.price_policies.where("start_date <= :now AND expire_date > :now", now: @price_policy_date.to_datetime)
+    search_price_policies.each do |price_policy|
+      @price_policies << price_policy if human_date(price_policy.start_date) == human_date(@price_policy_date.to_datetime)
+    end
+    # @price_policies = @product.price_policies.where("start_date <= :now AND expire_date > :now ", now: @price_policy_date.to_datetime)
     raise ActiveRecord::RecordNotFound unless @price_policies.length > 0
 
     @additional_price_policies = get_current_additional_price_policies(@price_policies, @params[:id])
@@ -304,6 +352,7 @@ class AdditionalPricePoliciesController < ApplicationController
 
   def current_additional_price_policies(price_policy, additional_price_group_id)
     @additional_price_policies = AdditionalPricePolicy.where("price_policy_id = ? AND additional_price_group_id = ? AND deleted_at IS NULL", price_policy.id, additional_price_group_id).order(additional_price_group_id: :asc, price_policy_id: :asc)
+
     "AdditionalPricePolicy".constantize.new(
       id: @additional_price_policies.length > 0 ? @additional_price_policies[0].id : nil,
       #name: name,
@@ -326,4 +375,14 @@ class AdditionalPricePoliciesController < ApplicationController
       @additional_price_policies.all?(&:save) || raise(ActiveRecord::Rollback)
     end
   end
+
+  def get_price_policy_id(price_policies)
+    search_id = Array.new
+    price_policies.each do |p| 
+      search_id << p.id if p.can_purchase
+    end
+    return search_id
+  end
+
+
 end
