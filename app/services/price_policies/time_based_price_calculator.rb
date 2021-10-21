@@ -91,8 +91,10 @@ module PricePolicies
           normal_duration = actual_duration
           penalty_duration = 0
         else
-          normal_duration = reserve_duration + 15
-          penalty_duration = actual_duration - normal_duration
+          #normal_duration = reserve_duration + 15
+          normal_duration = actual_duration
+          #penalty_duration = actual_duration - normal_duration
+          penalty_duration = actual_duration - reserve_duration - 15
         end
 
         normal_cost = normal_duration * (usage_rate + addition_cost) * discount_multiplier
@@ -139,8 +141,10 @@ module PricePolicies
           normal_duration = actual_duration
           penalty_duration = 0
         else
-          normal_duration = reserve_duration + 15
-          penalty_duration = actual_duration - normal_duration
+#          normal_duration = reserve_duration + 15
+#          penalty_duration = actual_duration - normal_duration
+          normal_duration = actual_duration
+          penalty_duration = actual_duration - reserve_duration - 15
         end
 
         normal_cost = normal_duration * (usage_rate + addition_cost) * discount_multiplier
