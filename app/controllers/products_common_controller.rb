@@ -9,6 +9,7 @@ class ProductsCommonController < ApplicationController
   before_action :init_current_facility
   before_action :init_product, except: [:index, :new, :create]
   before_action :store_fullpath_in_session
+  before_action :check_supervisor, only: [:show]
 
   include TranslationHelper
 
@@ -147,5 +148,10 @@ class ProductsCommonController < ApplicationController
     product_class.to_s.underscore
   end
   helper_method :singular_object_name
-
+ 
+  def check_supervisor 
+    if session[:had_supervisor] == 0 
+      return redirect_to '/no_supervisor'
+    end
+  end
 end
