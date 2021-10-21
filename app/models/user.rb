@@ -155,6 +155,10 @@ class User < ApplicationRecord
     product_users.pluck(:product_id, :approved_at).to_h
   end
 
+  def approval_remark_by_product
+    product_users.pluck(:product_id, :remark).to_h
+  end
+
   def administered_order_details(curr_user = self)
     OrderDetail.where(account_id: Account.administered_by(curr_user))
   # def administered_order_details

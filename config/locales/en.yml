@@ -1222,6 +1222,7 @@ en:
       update_approvals:
         submit: "Update Access List"
       date_added: "Date Added"
+      remark: "Remark"
 
     new_external:
       head: "Add External User"

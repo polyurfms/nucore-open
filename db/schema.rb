@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_30_063832) do
+ActiveRecord::Schema.define(version: 2021_10_12_074729) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -618,6 +618,7 @@ ActiveRecord::Schema.define(version: 2021_09_30_063832) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "deleted_at"
+    t.string "remark", limit: 200
     t.index ["product_access_group_id"], name: "index_product_users_on_product_access_group_id"
     t.index ["product_id"], name: "fk_products"
     t.index ["user_id"], name: "index_product_users_on_user_id"
