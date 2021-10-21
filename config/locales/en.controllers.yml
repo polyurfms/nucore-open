@@ -207,6 +207,8 @@ en:
           notice: "Product approvals updated: %{granted} granted, %{revoked} revoked."
         scheduling_group_update:
           notice: "Scheduling groups updated: %{update_count}."
+        remark_update:
+          notice: "Remarks updated"
 
     user_price_group_members:
       create:

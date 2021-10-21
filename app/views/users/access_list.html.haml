@@ -48,10 +48,11 @@
                   = human_date(access_granted_at)
               %td.product-column
                 -# - if access_granted_at.present?
-                = text_area_tag "remark_#{product.id}",
+                = text_field_tag "remark_#{product.id}",
                   remark,
                   disabled: false,
-                  class: "input-xxlarge"
+                  size: "20",
+                  maxlength: "150"
               %td.scheduling-group-column
                 - if product.has_product_access_groups?
                   = scheduling_group_select(product, @user)
