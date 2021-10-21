@@ -22,8 +22,8 @@ class InstrumentsDashboardController < ApplicationController
   private
 
   def init_reservations
-    @reservations = current_facility.reservations      
-      .upcoming_today
+    @reservations = current_facility.reservations
+      .current_and_upcoming_today
       .includes(:product, order: :user)
       .joins(instrument: :schedule)
       .merge(Schedule.positioned)

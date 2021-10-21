@@ -102,7 +102,7 @@ class Reservation < ApplicationRecord
       .where(orders: { state: [nil, :purchased] })
   }
 
-  scope :upcoming_today, lambda {
+  scope :current_and_upcoming_today, lambda {
     not_canceled
       .joins_order
       .ends_in_the_future
