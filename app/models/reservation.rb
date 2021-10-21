@@ -107,7 +107,7 @@ class Reservation < ApplicationRecord
       .joins_order
       .ends_in_the_future
       .not_ended
-      .where("reserve_start_at <= ? OR actual_start_at IS NOT NULL", Time.new.end_of_day)
+      .where("reserve_start_at <= ?", Time.new.end_of_day)
       .where(orders: { state: [nil, :purchased]})
       .order(reserve_start_at: :asc)
   }
