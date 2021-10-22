@@ -27,12 +27,32 @@ class EndNoShowReservation
 
   def end_no_show_reservation(order_detail)
     #MoveToProblemQueue.move!(order_detail, cause: :auto_expire)
+    if overlap_with_long_researvation?(order_detail.reservation)
+      MoveToProblemQueue.move!(order_detail, cause: :auto_overlap)
+    else
+      #complete no show record, charge reserve duration
+      order_detail.backdate_to_complete!
+    end
 
-    order_detail.backdate_to_complete!
   rescue => e
     ActiveSupport::Notifications.instrument("background_error",
                                             exception: e, information: "Failed complete no show reservation order detail ##{order_detail}")
     raise ActiveRecord::Rollback
+  end
+
+  def overlap_with_long_researvation?(reservation)
+    od = OrderDetail.purchased_reservations
+               .joins(:product)
+               .joins_relay
+               .where(product_id: reservation.product_id)
+               .where("actual_start_at <= ?", reservation.reserve_start_at)
+               .where("actual_end_at >= ?", reservation.reserve_start_at)
+               .readonly(true)
+     if od.present?
+       true
+     else
+       false
+     end
   end
 
 end

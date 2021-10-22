@@ -166,6 +166,8 @@ class OrderDetail < ApplicationRecord
 
   scope :purchased_active_reservations, -> { new_or_inprocess.joins(:reservation).merge(Reservation.not_canceled) }
 
+  scope :purchased_reservations, -> { joins(:reservation).merge(Reservation.not_canceled) }
+
   scope :with_price_policy, -> { where.not(price_policy_id: nil) }
 
   scope :not_disputed, lambda {
