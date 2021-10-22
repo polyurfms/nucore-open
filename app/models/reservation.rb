@@ -205,7 +205,9 @@ class Reservation < ApplicationRecord
       MoveToProblemQueue.move!(reservation.order_detail, user: reservation.user, cause: :reservation_started)
     end
     @t = Time.current
-    update!(card_start_at: @t ,actual_start_at: reserve_start_at)
+    # check if pervious affect existing booking start
+    at = ReservationTimeFinder.new(self).actual_start_at
+    update!(card_start_at: @t ,actual_start_at: at)
   end
 
 =begin
