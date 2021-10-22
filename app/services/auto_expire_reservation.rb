@@ -24,6 +24,7 @@ class AutoExpireReservation
     OrderDetail.purchased_active_reservations
                .joins(:product)
                .joins_relay
+               .where("reservations.actual_start_at is not null")
                .where("reservations.reserve_end_at < ?", earliest_allowed_time)
                .readonly(false)
   end
