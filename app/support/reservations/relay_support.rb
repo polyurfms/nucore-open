@@ -4,6 +4,7 @@ module Reservations::RelaySupport
 
   def can_switch_instrument_on?(check_off = true)
     return false if canceled?
+    return false if other_using_relay?
     return false unless product.relay # is relay controlled
     return false if product.offline?
     return false if check_off && can_switch_instrument_off?(false) # mutually exclusive
@@ -38,6 +39,14 @@ module Reservations::RelaySupport
 
   def other_reservation_using_relay?
     !order_detail.reservation.can_switch_instrument_off? || order_detail.reservation.other_reservations_using_relay.count > 0
+  end
+
+  def other_using_relay?
+    product.schedule.reservations
+                .active
+                .relay_in_progress
+                .where(order_details: { state: ["new", "inprocess", nil] })
+                .not_this_reservation(self).count > 0
   end
 
 end
