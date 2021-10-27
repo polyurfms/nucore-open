@@ -52,6 +52,14 @@
   - if @instrument.offline?
     %p.alert.alert-danger= text("instruments.offline.notice")
 
+  - if @instrument.allows_staff_assistance
+    .row
+      .span6.staff_assistance
+        = label_tag :require_staff_assistance, class: "checkbox" do
+          = hidden_field_tag :staff_assistance, 0
+          = check_box_tag :staff_assistance, 1, params[:staff_assistance] == "1"
+          = t(".staff_assistance")
+
   %ul.inline
     %li
       = f.submit t("shared.create"),
