@@ -216,6 +216,17 @@ class Product < ApplicationRecord
     false
   end
 
+  def get_all_product?(order_details) 
+    ids = Facility.find_by_sql(order_details.joins(order: :facility)
+    .select("distinct(facilities.id), facilities.name, facilities.abbreviation")
+    .reorder("facilities.name").to_sql)
+    facility = Facility.where(id: ids)
+
+    @schedules = facility[0].schedules_for_timeline(:facility_instruments)
+    instrument_ids = @schedules.flat_map { |schedule| schedule.facility_instruments.map(&:id) }
+    Product.where(id: instrument_ids).order(:name)
+  end
+
   def can_purchase_order_detail?(order_detail)
     can_purchase? order_detail.price_groups.map(&:id)
   end

@@ -5,6 +5,7 @@ en:
         tabnav_reservation:
           daily_view: Daily View
           dashboard: Dashboard
+          search: Search
           new_in_process: New / In Process
           problem_reservations: Problem Reservations
         tabnav_order:
