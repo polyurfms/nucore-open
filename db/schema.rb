@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_12_074729) do
+ActiveRecord::Schema.define(version: 2021_10_25_090012) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -413,6 +413,7 @@ ActiveRecord::Schema.define(version: 2021_10_12_074729) do
     t.integer "additional_price_group_id"
     t.decimal "penalty", precision: 13, scale: 2, default: "0.0", null: false
     t.decimal "early_end_discount", precision: 13, scale: 2, default: "0.0", null: false
+    t.boolean "staff_assistance", default: false
     t.index ["account_id"], name: "fk_od_accounts"
     t.index ["assigned_user_id"], name: "index_order_details_on_assigned_user_id"
     t.index ["bundle_product_id"], name: "fk_bundle_prod_id"
@@ -588,6 +589,15 @@ ActiveRecord::Schema.define(version: 2021_10_12_074729) do
     t.index ["product_id"], name: "index_product_accessories_on_product_id"
   end
 
+  create_table "product_admins", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "product_id"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_product_admins_on_product_id"
+    t.index ["user_id"], name: "index_product_admins_on_user_id"
+  end
+
   create_table "product_display_group_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "product_display_group_id", null: false
     t.integer "product_id", null: false
@@ -661,6 +671,7 @@ ActiveRecord::Schema.define(version: 2021_10_12_074729) do
     t.string "room_no"
     t.integer "session_mins", default: 0
     t.boolean "show_details_with_access", default: false, null: false
+    t.boolean "allows_staff_assistance"
     t.index ["dashboard_token"], name: "index_products_on_dashboard_token"
     t.index ["facility_account_id"], name: "fk_facility_accounts"
     t.index ["facility_id"], name: "fk_rails_0c9fa1afbe"
@@ -1122,6 +1133,8 @@ ActiveRecord::Schema.define(version: 2021_10_12_074729) do
   add_foreign_key "price_groups", "facilities"
   add_foreign_key "price_policies", "price_groups"
   add_foreign_key "price_policies", "users", column: "created_by_id"
+  add_foreign_key "product_admins", "products"
+  add_foreign_key "product_admins", "users"
   add_foreign_key "product_display_group_products", "product_display_groups"
   add_foreign_key "product_display_group_products", "products"
   add_foreign_key "product_display_groups", "facilities"

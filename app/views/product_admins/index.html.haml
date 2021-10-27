@@ -1,0 +1,39 @@
+= content_for :h1 do
+  = current_facility
+
+= content_for :sidebar do
+  = render "admin/shared/sidenav_product",
+    sidenav_tab: @product.class.name.pluralize.underscore
+
+= content_for :tabnav do
+  = render "admin/shared/tabnav_product", secondary_tab: "admins"
+
+%h2= @product
+%h3= text("header")
+
+-#%p= text("explanation", product_type: @product.model_name.human.downcase)
+
+- if @product_admins.nil?
+- elsif @product_admins.empty?
+  %p.notice= text("none")
+- else
+  = form_for :user, url: [current_facility, @product, :admins] do |form|
+    %table.table.table-striped.table-hover
+      %thead
+        %tr
+          %th.approval-column= Product.human_attribute_name(:can_manage?)
+          %th.product-column= Product.model_name.human
+
+      %tbody
+        - @facility_staffs.each do |user|
+          - selected_item = @product_admin_by_user[user.id]
+          %tr.js--access-list-row
+            %td.approval-column.approval-checkbox
+              = check_box_tag "approved_admins[]",
+                user.id,
+                selected_item.present?,
+                aria: {label: user.full_name}
+            %td.product-column
+              = user
+
+    = submit_tag text("users.product_admin_list.update_product_admin_list.submit"), class: ["btn", "btn-primary"]

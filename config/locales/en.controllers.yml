@@ -209,7 +209,9 @@ en:
           notice: "Scheduling groups updated: %{update_count}."
         remark_update:
           notice: "Remarks updated"
-
+      product_admin_list:
+        assingment_update:
+          notice: "Product assignemnt updated: %{granted} granted, %{revoked} revoked."
     user_price_group_members:
       create:
         notice: "%{full_name} was added to the %{price_group_name} Price Group"

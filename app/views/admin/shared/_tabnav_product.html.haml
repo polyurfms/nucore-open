@@ -30,5 +30,5 @@
   - unless @product.is_a?(Bundle)
     - if ResearchSafetyCertificate.any?
       = tab ProductResearchSafetyCertificationRequirement.model_name.human.pluralize, facility_product_product_research_safety_certification_requirements_path(current_facility, @product), secondary_tab == "certification_reqs"
-
+  = tab "Reponsible Staff", [current_facility, @product, :admins], (secondary_tab == "admins")
   = render_view_hook "additional_tabs", secondary_tab: secondary_tab
