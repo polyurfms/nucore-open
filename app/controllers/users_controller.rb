@@ -248,7 +248,7 @@ class UsersController < ApplicationController
         LogEvent.log(product_admin, :create, current_user)
       end
       update_admin_assignemnts.revoked_product_admins.each do |product_admin|
-        LogEvent.log(product_admin, :delete, current_user)
+        LogEvent.log(product_admin, :delete, current_user, metadata: { user: product_admin.user, facility: product_admin.facility })
       end
     end
   end
