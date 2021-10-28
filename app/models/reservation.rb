@@ -158,6 +158,10 @@ class Reservation < ApplicationRecord
     where("actual_start_at IS NOT NULL AND actual_end_at IS NULL")
   end
 
+  def self.within_reserved_time
+    where("reserve_start_at <= :now and reserve_end_at > :now", now: Time.current)
+  end
+
   def self.upcoming_offline(start_at_limit)
     user
       .where(product_id: OfflineReservation.current.pluck(:product_id))
@@ -202,7 +206,13 @@ class Reservation < ApplicationRecord
       # If we're in the grace period for this reservation, but the other reservation
       # has not finished its reserved time, this will fail and this reservation will
       # not start.
-      MoveToProblemQueue.move!(reservation.order_detail, user: reservation.user, cause: :reservation_started)
+
+      #instead of sending to problem queue, end the unfinished reservation
+      MoveToProblemQueue.move_skip_problem!(reservation.order_detail, user: reservation.user, cause: :reservation_started)
+
+      #reservation.end_reservation
+      #MoveToProblemQueue.move!(reservation.order_detail, user: reservation.user, cause: :reservation_started)
+
     end
     @t = Time.current
     # check if pervious affect existing booking start
