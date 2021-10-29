@@ -59,9 +59,6 @@ class ProductAdminsController < ApplicationController
   end
 
   def update_admin_assignemnts
-    puts "xxxxxxxxxx #{@product.inspect}"
-    puts "xxxxxxxxxx #{@facility_staffs.inspect}"
-
     @update_product_assignment ||= ProductAdminAssigner.new().update_product_administrator(@product, @facility_staffs, approved_admin_from_params)
   end
 
