@@ -4,7 +4,11 @@
       .span6
         = simple_fields_for @order do |order_fields|
           - accounts = @order.user.accounts_for_product(@instrument)
-
+          - accounts = accounts.each do |a| 
+            - role = a.account_users.find_by(user_id: session[:acting_user_id] || session_user.id)
+            - price = role.user_role != "Owner" && (!role.quota_balance.nil? && role.quota_balance > 0) ? " #{number_to_currency(role.quota_balance)} " : " #{number_to_currency(a.free_balance)} "
+            - a.account_number = a.account_number + " (" + price + ") "
+          
           - selected_account_id = @order.account_id || params[:order_account]
           - if selected_account_id.blank? && accounts.count == 1
             - selected_account_id = accounts.first.id
