@@ -3,11 +3,11 @@
 - unless @product.nil?
   = content_for :head_content do
     = render "shared/headers/calendar"
-    = javascript_include_tag "instruments.js"
+    = javascript_include_tag "instruments_min.js"
 
 = content_for :h1 do
   = current_facility
-  
+
 = content_for :tabnav do
   = render partial: "admin/shared/tabnav_reservation", locals: { secondary_tab: "search" }
 
@@ -17,7 +17,7 @@
       %fieldset.span6#search
         - @search.options.reject(&:multipart?).each do |searcher|
           = f.input searcher.key, as: :transaction_chosen, collection: searcher.options, label: searcher.label_name, label_method: searcher.label_method, data_attrs: searcher.method(:data_attrs), input_html: { id: searcher.key}
-      
+
       .submit_button.span12
         = hidden_field_tag :email, current_user.email, disabled: true
         = hidden_field_tag :format, params[:format], disabled: true
@@ -36,9 +36,10 @@
           #calendar
 
 :javascript
+
   $(function() {
     available_drop();
-    
+
     $("#all_products").change(function() {
       var allProductValues = $(this).val();
       if (allProductValues != null && allProductValues.length >= 1){
@@ -76,10 +77,10 @@
           }
         });
       }
-      
+
       $("#all_products").trigger("chosen:updated");
     }
-    
+
     $("#product_groups").change(function() {
       change_select_option();
       available_drop();
@@ -88,6 +89,6 @@
 
 - unless @product.nil?
   :javascript
-    setTimeout(function(){ 
+    setTimeout(function(){
       $( ".fc-month-button" ).click();
     }, 1);
