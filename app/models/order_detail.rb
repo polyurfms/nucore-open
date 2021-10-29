@@ -455,6 +455,20 @@ class OrderDetail < ApplicationRecord
     change_status!(OrderStatus.complete)
   end
 
+  def complete_skip_problem!
+
+    @t = Time.current
+
+    @new_t = round_up_15min(@t)
+
+    @end_diff = TimeRange.new(reservation.reserve_end_at, @new_t).duration_mins
+
+    if reservation.card_end_at.nil?
+      reservation.update!(card_end_at: @new_t)
+    end
+    change_status!(OrderStatus.complete)
+  end
+
   def backdate_to_complete!(event_time = Time.zone.now)
     # if we're setting it to compete, automatically set the actuals for a reservation
     if reservation
