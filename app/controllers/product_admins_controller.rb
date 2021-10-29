@@ -7,8 +7,6 @@ class ProductAdminsController < ApplicationController
 
   admin_tab :index, :new
   before_action :init_current_facility
-#  before_action :init_facility_staff
-
 
   load_and_authorize_resource
 
@@ -26,7 +24,6 @@ class ProductAdminsController < ApplicationController
   def index
     @facility_staffs = User.find_users_by_facility(current_facility)
     @product_admin_by_user = @product.product_admins.pluck(:user_id, :product_id).to_h
-    puts "<<< #{@product_admin_by_user}"
   end
 
   # POST /facilities/:facility_id/instruments/:instrument_id/update_restrictions
@@ -59,19 +56,11 @@ class ProductAdminsController < ApplicationController
   end
 
   def update_admin_assignemnts
-    puts "xxxxxxxxxx #{@product.inspect}"
-    puts "xxxxxxxxxx #{@facility_staffs.inspect}"
-
     @update_product_assignment ||= ProductAdminAssigner.new().update_product_administrator(@product, @facility_staffs, approved_admin_from_params)
   end
 
   def downcase_product_type
     @product.class.model_name.human.downcase
-  end
-
-  def init_facility_staff
-    puts "init facility staff"
-    #@facility_staffs = User.find_users_by_facility(current_facility).build # for CanCan auth
   end
 
 end
