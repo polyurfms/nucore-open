@@ -55,7 +55,6 @@ class ProductAdminAssigner
 
     facility_staffs.each_with_object(Stats.new) do |user, stats|
       @user = user
-      
       if staff_to_assign.include?(user)
         product_user = approve_access(product)
         stats.grant(product_user) if product_user

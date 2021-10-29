@@ -14,10 +14,11 @@ class LogEventSearcher
                     "order_detail.problem_queue", "order_detail.price_change",
                     "order_detail.resolve_from_problem_queue",
                     "product_user.create", "product_user.delete",
+                    "product_admin.create", "product_admin.delete",
                     "price_group_member.create", "price_group_member.delete",
                     "facility.activate", "facility.deactivate",
                     "price_group.create", "price_group.delete",
-                    "user_delegation.create", "user_delegation.delete", 
+                    "user_delegation.create", "user_delegation.delete",
                     ].freeze
 
   def self.beginning_of_time
@@ -72,6 +73,7 @@ class LogEventSearcher
     order_details = OrderDetail.where_order_number(query)
     products = Product.where(Product.arel_table[:name].lower.matches("%#{query.downcase}%"))
     product_users = ProductUser.with_deleted.where(product_id: products).or(ProductUser.with_deleted.where(user_id: users))
+    product_admins = ProductAdmin.where(id: query)
     [
       accounts,
       users,
@@ -82,6 +84,7 @@ class LogEventSearcher
       order_details,
       products,
       product_users,
+      product_admins
     ].compact.map do |filter|
       LogEvent.where(loggable_type: filter.model.name, loggable_id: filter)
     end.inject(&:or)
