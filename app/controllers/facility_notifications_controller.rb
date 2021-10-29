@@ -118,7 +118,9 @@ class FacilityNotificationsController < ApplicationController
   private
 
   def send_notification_success_message(sender)
-    if sender.accounts_notified_size > 10
+    if sender.accounts_notified_size == 0
+      "Orders notification email skipped"
+    elsif sender.accounts_notified_size > 10
       I18n.t("controllers.facility_notifications.send_notifications.success_count", accounts: sender.accounts_notified_size)
     else
       I18n.t("controllers.facility_notifications.send_notifications.success_html", accounts: sender.accounts_notified.map(&:account_list_item).join("<br/>")).html_safe

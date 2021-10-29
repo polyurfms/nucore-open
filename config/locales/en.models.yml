@@ -350,17 +350,17 @@ en:
         journal_or_statement_date: "Journal/Statement Date"
         fo_journal_status: FO Journal Status
         fo_journal_id: FO Journal Ref.
-        note: Note
+        note: Note (to customer)
         order_status: Order Status
         ordered_at: Ordered Date
         ordered_by: Ordered By
         product: Product
-        price_change_reason: Pricing Note
-        price_change_reason_option: Pricing Note
+        price_change_reason: Price Adjustment Reason
+        price_change_reason_option: Price Adjustment Reason
         quantity: Quantity
         reconciled_note: Reconciliation Note
         reconciled_at: Reconciliation Date
-        reference_id: Reference ID
+        reference_id: Reference ID (for internal use)
         reviewed_at: Review Closes
         reviewed_at_past: Review Closed
         status: Status
