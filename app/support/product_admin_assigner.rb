@@ -55,13 +55,11 @@ class ProductAdminAssigner
 
     facility_staffs.each_with_object(Stats.new) do |user, stats|
       @user = user
-      puts "4 : #{user}"
+      
       if staff_to_assign.include?(user)
-        puts "include"
         product_user = approve_access(product)
         stats.grant(product_user) if product_user
       else
-        puts "not include"
         product_user = revoke_access(product)
         stats.revoke(product_user) if product_user
       end
