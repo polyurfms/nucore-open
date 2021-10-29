@@ -227,6 +227,9 @@ Rails.application.routes.draw do
       get "access_list",  to: "users#access_list"
       post "access_list/approvals", to: "users#access_list_approvals"
 
+      get "product_admin_list",  to: "users#product_admin_list"
+      post "product_admin_list/update", to: "users#product_admin_list_update"
+
       resource :accounts, controller: "user_accounts", only: [:show, :edit, :update]
       resources :clone_account_memberships, only: %i[index new create] do
         get :search, on: :collection

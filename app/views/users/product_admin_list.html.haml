@@ -1,0 +1,36 @@
+= content_for :h1 do
+  = current_facility
+
+= content_for :sidebar do
+  = render "admin/shared/sidenav_users", sidenav_tab: "users"
+
+= content_for :tabnav do
+  = render "admin/shared/tabnav_users", secondary_tab: "product_admin_list"
+
+%h1
+  = @user.full_name
+
+- if @facility_products.blank?
+  %p.notice= text("users.access_list.no_products", name: @user.full_name)
+
+- else
+  = form_for :user, url: facility_user_product_admin_list_update_path(@facility, @user) do |form|
+    %table.table.table-striped.table-hover
+      %thead
+        %tr
+          %th.approval-column= Product.human_attribute_name(:can_manage?)
+          %th.product-column= Product.model_name.human
+
+      %tbody
+        - @facility_products.each do |product|
+          - selected_item = @product_admin_by_user[product.id]
+          %tr.js--access-list-row
+            %td.approval-column.approval-checkbox
+              = check_box_tag "approved_products[]",
+                product.id,
+                selected_item.present?,
+                aria: {label: product.name}
+            %td.product-column
+              = product
+
+    = submit_tag text("users.product_admin_list.update_product_admin_list.submit"), class: ["btn", "btn-primary"]

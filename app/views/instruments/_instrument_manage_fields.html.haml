@@ -2,7 +2,8 @@
 
 = f.input :schedule, input_html: { value: @product.schedule.display_name }, hint: false
 
--#= f.input :problems_resolvable_by_user, as: :boolean, hint: false
+= f.input :problems_resolvable_by_user, as: :boolean, hint: false
+= f.input :allows_staff_assistance, as: :boolean, hint: false
 
 = render "relay_manage", f: f
 

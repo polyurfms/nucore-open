@@ -1,0 +1,14 @@
+en:
+  views:
+    product_admins:
+      index:
+        header: Administrator
+        add: Add Administrator
+        explanation: |
+          This %{product_type} requires a user to be approved before they may
+          purchase the %{product_type}.
+        none: No users are currently assigned.
+        update: Update %{plural_label}
+      table:
+        confirm_removal: |
+          Are you sure you wish to remove this user from this %{product_type}?

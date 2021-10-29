@@ -119,7 +119,9 @@ class ProductsCommonController < ApplicationController
                                                       :min_reserve_mins, :max_reserve_mins, :min_cancel_hours,
                                                       :session_mins,
                                                       :auto_cancel_mins, :lock_window, :cutoff_hours,
-                                                      :problems_resolvable_by_user, :room_no,
+                                                      :problems_resolvable_by_user,
+                                                      :allows_staff_assistance,
+                                                      :room_no,
                                                       relay_attributes: [:ip, :ip_port, :outlet, :username, :password, :type,
                                                                          :auto_logout, :auto_logout_minutes, :id])
   end
@@ -148,9 +150,9 @@ class ProductsCommonController < ApplicationController
     product_class.to_s.underscore
   end
   helper_method :singular_object_name
- 
-  def check_supervisor 
-    if session[:had_supervisor] == 0 
+
+  def check_supervisor
+    if session[:had_supervisor] == 0
       return redirect_to '/no_supervisor'
     end
   end

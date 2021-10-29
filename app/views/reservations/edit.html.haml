@@ -41,10 +41,15 @@
               hint: t("reservations.account_field.note_hint")
 
   = render "reservation_fields", f: f
-  - unless @additional_price_policy.nil?
-    = render "reservations/additional_price_policy_field", f: f 
+  - unless @additional_price_policy.blank?
+    = render "reservations/additional_price_policy_field", f: f
 
-
+  - if @instrument.allows_staff_assistance
+    .row
+      .span6.staff_assistance
+        = label_tag :require_staff_assistance, class: "checkbox" do
+          = check_box_tag "staff_assistance",  "1", @order_detail.staff_assistance?
+          = t(".staff_assistance")
   %ul.inline
     %li= f.submit 'Save', class: 'btn'
     - if @order.purchased?

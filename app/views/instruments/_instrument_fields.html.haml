@@ -20,6 +20,8 @@
 
 -#= f.input :problems_resolvable_by_user, as: :boolean, label: false, inline_label: true
 
+= f.input :allows_staff_assistance, as: :boolean, label: false, inline_label: text("instruments.instrument_fields.allows_staff_assistance")
+
 = f.input :control_mechanism,
   collection: options_for_control_mechanism,
   include_blank: false,

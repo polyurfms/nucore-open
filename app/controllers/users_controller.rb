@@ -104,6 +104,16 @@ class UsersController < ApplicationController
     @user_approval_remark_by_product = @user.approval_remark_by_product
   end
 
+  # GET /facilities/:facility_id/users/:user_id/admin_list
+  def product_admin_list
+    # Unsupported in cross-facility mode
+    raise ActiveRecord::RecordNotFound if current_facility.cross_facility?
+    @facility = current_facility
+    @facility_products = Product.for_facility(@facility)
+    @product_admin_by_user = @user.product_admin_by_user
+
+  end
+
   # POST /facilities/:facility_id/users/:user_id/access_list/approvals
   def access_list_approvals
     # Unsupported in cross-facility mode
@@ -112,6 +122,15 @@ class UsersController < ApplicationController
     update_access_list_approvals
     redirect_to facility_user_access_list_path(current_facility, @user)
   end
+
+  # POST /facilities/:facility_id/users/:user_id/product_admin_list/update
+  def product_admin_list_update
+    # Unsupported in cross-facility mode
+    raise ActiveRecord::RecordNotFound if current_facility.cross_facility?
+    assign_product_to_admin_user
+    redirect_to facility_user_product_admin_list_path(current_facility, @user)
+  end
+
 
   # GET /facilities/:facility_id/users/:id/edit
   def edit
@@ -220,6 +239,20 @@ class UsersController < ApplicationController
     update_remark(approved_products_from_params)
   end
 
+  def assign_product_to_admin_user
+
+    if update_admin_assignemnts.grants_changed?
+      flash[:notice] = I18n.t "controllers.users.product_admin_list.assingment_update.notice",
+                              granted: update_admin_assignemnts.granted, revoked: update_admin_assignemnts.revoked
+      update_admin_assignemnts.granted_product_admins.each do |product_admin|
+        LogEvent.log(product_admin, :create, current_user)
+      end
+      update_admin_assignemnts.revoked_product_admins.each do |product_admin|
+        LogEvent.log(product_admin, :delete, current_user)
+      end
+    end
+  end
+
   def update_remark(approved_products_from_params)
     if params[:approved_products].present?
       approved_products_from_params = params[:approved_products]
@@ -240,6 +273,10 @@ class UsersController < ApplicationController
       @user,
       session_user,
     ).update_approvals(approved_products_from_params, params[:product_access_group])
+  end
+
+  def update_admin_assignemnts
+    @update_product_assignment ||= ProductAdminAssigner.new().update_assignments( @user,  Product.for_facility(current_facility), approved_products_from_params)
   end
 
   def approved_products_from_params

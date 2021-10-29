@@ -53,6 +53,7 @@ en:
         reservations: "Reservations"
         accounts: "Payment Sources"
         access_list: "Access List"
+        product_admin_list: "Product Admin List"
       tabnav_payment_method:
         details: Details
         # members: Members
@@ -654,6 +655,7 @@ en:
       label: "Payment source"
       crumb: "Create Reservation"
       notify: Send Notification
+      staff_assistance: "Require Staff Assistance?"
     list:
       status:
         pending: Pending
@@ -668,6 +670,7 @@ en:
     edit:
       link: Edit
       submenu: "Ref. No.%{order_number}"
+      staff_assistance: "Require Staff Assistance?"
     delete:
       confirm: Are you sure you wish to cancel this reservation?
       confirm_with_fee: "Canceling this reservation will incur a %{fee} fee.  Are you sure you wish to cancel this reservation?"
@@ -953,6 +956,13 @@ en:
     table:
       date_added: Date Added
 
+  product_admins:
+    new:
+      label:
+        search_term: "Search by name, NetID, or username"
+    table:
+      date_added: Date Added
+
   user_price_group_members:
     new:
       head: "Add Price Group Member"
@@ -1223,7 +1233,9 @@ en:
         submit: "Update Access List"
       date_added: "Date Added"
       remark: "Remark"
-
+    product_admin_list:
+      update_product_admin_list:
+        submit: Update
     new_external:
       head: "Add External User"
       main: "You may use this to grant !app_name! access to external users. The email address and username must match."
@@ -1337,6 +1349,7 @@ en:
     instrument_fields:
       show_details: "Show reservation details (name, email, etc) on schedule"
       show_details_with_access: "Show reservation details when access right granted"
+      allows_staff_assistance: "Allow reservation request staff assistance"
       relay:
         control_mechanisms:
           manual: Reservation only

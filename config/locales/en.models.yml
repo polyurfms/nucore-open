@@ -273,6 +273,7 @@ en:
         is_active: "Is Active?"
       product:
         can_be_used_by?: Approved?
+        can_manage?: Manage
         url: URL
         url_name: URL Name
         requires_approval: Requires Approval?

@@ -10,6 +10,7 @@ class Product < ApplicationRecord
   belongs_to :initial_order_status, class_name: "OrderStatus"
   belongs_to :facility_account
   has_many :product_users
+  has_many :product_admins
   has_many :order_details
   has_many :stored_files
   has_many :price_group_products
@@ -108,6 +109,10 @@ class Product < ApplicationRecord
 
   def self.requiring_approval_by_type
     requiring_approval.group_by_type
+  end
+
+  def self.by_instrument
+    where(type: "Instrument")
   end
 
   def self.group_by_type
@@ -269,6 +274,10 @@ class Product < ApplicationRecord
 
   def find_product_user(user)
     product_users.find_by(user_id: user.id)
+  end
+
+  def find_product_admin(admin)
+    product_admins.find_by(user_id: user.id)
   end
 
   def visible?

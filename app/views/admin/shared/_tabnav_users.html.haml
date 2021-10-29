@@ -23,6 +23,12 @@
       facility_user_access_list_path(current_facility, @user),
       secondary_tab == "access_list"
 
+  - if current_ability.can?(:product_admin_list, User) && current_facility.single_facility?
+    - unless @user.facility_user_roles(current_facility).blank?
+      = tab t(".product_admin_list"),
+        facility_user_product_admin_list_path(current_facility, @user),
+        secondary_tab == "product_admin_list"
+
   - if ResearchSafetyCertificate.any?
     = tab text("views.user_research_safety_certifications.tab"), facility_user_user_research_safety_certifications_path(current_facility, @user), secondary_tab == "user_certificates"
 

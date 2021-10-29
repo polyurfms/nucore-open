@@ -27,18 +27,18 @@ class ReservationCreator
       return false
     end
 
-    # Check additional price policy exist in current period    
+    # Check additional price policy exist in current period
     unless params[:additional_price_policy].blank?
       is_exist_addition_item = getAdditionalPricePolicy(params[:additional_price_policy], reservation_param[:reserve_start_date])
       unless is_exist_addition_item
         price_policy_id = AdditionalPricePolicy.joins("INNER JOIN additional_price_groups ON additional_price_policies.additional_price_group_id = additional_price_groups.id").where("additional_price_groups.id = :id", id: params[:additional_price_policy]).joins(:price_policy).uniq.pluck :price_policy_id
-        start_date = PricePolicy.where("id IN (?)", price_policy_id).where("price_policies.start_date > :now", now: format_usa_date(reservation_param[:reserve_start_date])).order("price_policies.start_date ASC").uniq.pluck :start_date 
+        start_date = PricePolicy.where("id IN (?)", price_policy_id).where("price_policies.start_date > :now", now: format_usa_date(reservation_param[:reserve_start_date])).order("price_policies.start_date ASC").uniq.pluck :start_date
         addition_item = AdditionalPriceGroup.find(params[:additional_price_policy])
         @error = "#{addition_item.name} start on #{format_usa_date(start_date.first)}"
         return false
       end
     end
-    
+
     Reservation.transaction do
       begin
         update_order_account
@@ -49,6 +49,11 @@ class ReservationCreator
         unless params[:additional_price_policy].blank?
           @order_detail.additional_price_group_id = params[:additional_price_policy]
         end
+
+        unless params[:staff_assistance].blank?
+          @order_detail.staff_assistance = params[:staff_assistance]
+        end
+
         # merge state can change after call to #save! due to OrderDetailObserver#before_save
         to_be_merged = @order_detail.order.to_be_merged?
         raise ActiveRecord::RecordInvalid, @order_detail unless reservation_and_order_valid?(session_user)

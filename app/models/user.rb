@@ -16,6 +16,7 @@ class User < ApplicationRecord
   has_many :price_group_members, class_name: "UserPriceGroupMember", dependent: :destroy
   has_many :price_groups, -> { SettingsHelper.feature_on?(:user_based_price_groups) ? distinct : none }, through: :price_group_members
   has_many :product_users
+  has_many :product_admins
   has_many :products, through: :product_users
   has_many :notifications
   has_many :assigned_order_details, class_name: "OrderDetail", foreign_key: "assigned_user_id"
@@ -157,6 +158,10 @@ class User < ApplicationRecord
 
   def approval_remark_by_product
     product_users.pluck(:product_id, :remark).to_h
+  end
+
+  def product_admin_by_user
+    product_admins.pluck(:product_id, :user_id).to_h
   end
 
   def administered_order_details(curr_user = self)
