@@ -164,6 +164,30 @@ class FacilityReservationsController < ApplicationController
     @reservations_by_instrument = Reservation.for_timeline(@display_datetime, instrument_ids).group_by(&:product)
   end
 
+  def search_schedule
+    @date_range_start = format_usa_date(Time.zone.now)
+    order_details = OrderDetail.for_facility(current_facility)
+
+    products = Product.new.get_all_product?(order_details)
+    @search_form = TransactionSearch::SearchForm.new(
+      params[:search],
+      defaults: {
+        date_range_start: @date_range_start,
+        all_products: products.first.id
+      },
+    )    
+
+    @search = TransactionSearch::Searcher.new(
+      TransactionSearch::ProductGroupSearcher,
+      TransactionSearch::AllProductSearcher,
+    ).search(order_details, @search_form)
+
+    flash[:error] = "Please select one product" if params[:search].present? && !params[:search][:all_products].present?
+    @product = Product.find_by(id: params[:search][:all_products]) if params[:search].present?
+
+    @product = Product.find_by(id: products.first.id) unless params[:search].present?
+  end
+
   protected
 
   def reservation_params

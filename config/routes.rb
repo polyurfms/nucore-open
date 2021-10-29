@@ -281,6 +281,7 @@ Rails.application.routes.draw do
         get "show_problems"
         get "timeline"
         get "tab_counts"
+        get "search_schedule"
       end
     end
 

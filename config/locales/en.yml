@@ -66,6 +66,7 @@ en:
     payment_source: Payment Source
     order_status: Order Status
     product: Product
+    product_group: Product Group
     owner: Owner
     faclicy: facilities
     order_for: Ordered For
@@ -491,6 +492,8 @@ en:
       admin_reservation: Administrative Hold
       offline_reservation: Instrument Offline
       expiration: Expires %{time} prior
+    search_schedule:
+      reservations_calendar: Reservations Calendar
 
   global_user_roles:
     destroy:
