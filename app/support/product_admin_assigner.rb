@@ -39,9 +39,6 @@ class ProductAdminAssigner
     @all_products = all_products
     @user = user
 
-    puts "all xxxxxxxxxxxxxxxxxxxxx #{@all_products.inspect}"
-    puts "2 all xxxxxxxxxxxxxxxxxxxxx #{products_to_assign.inspect}"
-
     @all_products.each_with_object(Stats.new) do |product, stats|
       if products_to_assign.include?(product)
         product_user = approve_access(product)
@@ -54,11 +51,6 @@ class ProductAdminAssigner
   end
 
   def update_product_administrator(product, facility_staffs, staff_to_assign)
-    puts "===========update product administrator"
-    puts "1----#{product.inspect}"
-    puts "2----#{facility_staffs.inspect}"
-    
-    puts "3----#{staff_to_assign.inspect}"
 #    @all_facility_staffs = all_facility_staff
 
     facility_staffs.each_with_object(Stats.new) do |user, stats|
