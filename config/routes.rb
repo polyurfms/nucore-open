@@ -163,6 +163,8 @@ Rails.application.routes.draw do
       resources :reservations, only: [:index]
       put "update_restrictions", to: "product_users#update_restrictions"
 
+      resource :product_admin, controller: "product_admins", only: [:new, :create, :destroy]
+
       resource :alert, controller: "instrument_alerts", only: [:new, :create, :destroy]
     end
 
