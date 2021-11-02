@@ -4,11 +4,15 @@ en:
       facility_account_fields:
         instruct: "Use hyphens to separate Chart String number groups e.g. 123-1234567-12345678"
       edit:
-        main: "You may not edit the chart string from a !activerecord.models.facility_account.one!. If necessary, please deactivate this one and create a new one."
+        header: "Edit Facility Income Account"
+        main: "You may not edit the charge account from a !activerecord.models.facility_account.one!. If necessary, please deactivate this one and create a new one."
       index:
-        main: "Chart Strings that are approved by the Provost for collection of !facility_downcase! revenue."
+        header: "Facility Income Accounts"
+        main: "Charge Accounts that are approved by the Provost for collection of !facility_downcase! revenue."
         notice: "No !activerecord.models.facility_account.other! have been added to this !facility_downcase! yet."
         inactive: "(inactive)"
+        add_facility_income_account: "Add Facility Income Account"
+        charge_account: "Charge Account"
       new:
         head: "Add Recharge Chart String"
 

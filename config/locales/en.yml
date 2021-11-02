@@ -165,6 +165,7 @@ en:
     purchase: Purchase
     sidenav_admin:
       overview: "Overview"
+      facility_account: "Facility Income Accounts"
     tabnav_account:
       details: "Payment Source Detail"
       transact: "Transaction"
@@ -199,6 +200,7 @@ en:
       clear_search: Clear Search
       head: "Recent Payment Sources"
       add_account: "Add Payment Source"
+      add_facility_account: "Add Facility Income Account"
       label:
         search_term: "Search by payment source number or payment source owner's name, NetID, or username"
       search: Search
