@@ -148,14 +148,16 @@ class ExampleStatementPdf < StatementPdf
     pdf.move_down(30)
     pdf.table([order_detail_headers] + order_detail_rows, header: true, width: 510) do
       row(0).style(LABEL_ROW_STYLE)
-      column(0).width = 125
-      column(1).width = 300
+      column(0).width = 70
+      column(1).width = 250
       # column(2).style(align: :right)
-      column(3).style(align: :right)
+      column(2).width = 120
+      column(3).width = 70
+      column(3).style(align: :left)
     end
     pdf.move_down(10)
 
-    pdf.draw_text  "Total : #{number_to_currency(@statement.total_cost)}" , at: [398, pdf.cursor]
+    pdf.draw_text  "Total : #{number_to_currency(@statement.total_cost)}" , at: [412, pdf.cursor]
 #    pdf.text "Total: "+number_to_currency(@statement.total_cost), align: :right
 #    pdf.text "Total: "+number_to_currency(@statement.total_cost), align: :right
 
@@ -168,7 +170,7 @@ class ExampleStatementPdf < StatementPdf
 #  end
 
   def order_detail_headers
-    ["Fulfillment Date", "Order", "Amount \n (HKD)"]
+    ["Date of Use", "Order", "User", "Amount \n (HKD)"]
     # ["Fulfillment Date", "Order", "Quantity", "Amount"]
     # ["Item", "Booking ID", "User", "Description", "Date", "Subtotal (HKD)"]
   end
@@ -176,8 +178,10 @@ class ExampleStatementPdf < StatementPdf
   def order_detail_rows
     @statement.order_details.includes(:product).order("fulfilled_at DESC").map do |order_detail|
       [
-        format_usa_datetime(order_detail.fulfilled_at),
+        #format_usa_datetime(order_detail.fulfilled_at),
+        format_usa_date(order_detail.fulfilled_at),
         "##{order_detail}: #{order_detail.product}" + (order_detail.note.blank? ? "" : "\n#{normalize_whitespace(order_detail.note)}"),
+        order_detail.order.user.to_s,
         # OrderDetailPresenter.new(order_detail).wrapped_quantity,
         number_to_currency(order_detail.actual_total),
       ]
