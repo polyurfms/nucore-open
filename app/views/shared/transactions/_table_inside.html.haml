@@ -25,7 +25,7 @@
         %th.nowrap= sortable "ordered_for", OrderDetail.human_attribute_name("user")
         - unless @account
           %th= sortable "payment_source", Account.model_name.human
-          %th= Account.human_attribute_name("owner")
+          %th= t("shared.payment_source_owner")
         %th.currency= OrderDetail.human_attribute_name("cost")+" (HKD)"
         %th= sortable "status",OrderDetail.human_attribute_name("order_status")
         - if local_assigns[:show_statements]
