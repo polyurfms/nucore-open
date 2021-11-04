@@ -16,9 +16,9 @@
         .span1.select_all_none= select_all_link
         .span5.offset4
           .pull-right
-            = label_tag :notify_zero_dollar_orders, class: "checkbox input-inline" do
-              = check_box_tag :notify_zero_dollar_orders
-              = text("send_zero_dollar_notifications", scope: "admin.transaction_search.actions")
+            -#= label_tag :notify_zero_dollar_orders, class: "checkbox input-inline" do
+            -# = check_box_tag :notify_zero_dollar_orders
+            -# = text("send_zero_dollar_notifications", scope: "admin.transaction_search.actions")
             = label_tag :skip_email, class: "checkbox input-inline" do
               = check_box_tag :skip_email
               = text("skip_email", scope: "admin.transaction_search.actions")
