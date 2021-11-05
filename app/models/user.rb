@@ -269,6 +269,14 @@ class User < ApplicationRecord
     end
   end
 
+  def supervisor_is_acad_staff
+    if supervisor.present? && supervisor.is_academic?
+      "Yes"
+    else
+      "No"
+    end
+  end
+
   def supervisor_first_name
     if supervisor.present?
       supervisor.first_name

@@ -1,6 +1,6 @@
 = html("body",
     user: @user,
     product: @product,
+    supervisor_is_academic: @user.supervisor_is_acad_staff,
     email: @user.email,
     link: facility_user_access_list_url(@product.facility.url_name, @user.id))
-
