@@ -21,7 +21,10 @@
         - requested_at = training_request.created_at
 
         %tr
-          %td= link_to user.to_s, facility_user_access_list_path(current_facility, user)
+          %td
+            = link_to user.to_s, facility_user_access_list_path(current_facility, user)
+            - unless user.supervisor_is_acad_staff?
+              = tooltip_icon "fa fa-exclamation-circle icon-large", "Supervisor is not academic staff"
           %td= mail_to user.email
           %td
             - if product.is_a?(Instrument)
