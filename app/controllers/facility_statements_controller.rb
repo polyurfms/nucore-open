@@ -59,7 +59,7 @@ class FacilityStatementsController < ApplicationController
 
   # GET /facilities/:facility_id/statements/new
   def new
-    order_details = OrderDetail.need_statement(@facility)
+    order_details = OrderDetail.need_statement(@facility || current_facility)
     @order_detail_action = :create
 
     defaults = SettingsHelper.feature_on?(:set_statement_search_start_date) ? { date_range_start: format_usa_date(1.month.ago.beginning_of_month) } : {}
