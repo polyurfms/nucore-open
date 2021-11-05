@@ -20,8 +20,11 @@
 
         %td
           = link_to user.last_first_name, [current_facility, user]
-
-        %td= human_date(product_user.approved_at)
+          - unless user.supervisor_is_acad_staff?
+            = tooltip_icon "fa fa-exclamation-circle icon-large", "Supervisor is not academic staff"
+            
+        %td
+          = human_date(product_user.approved_at)
         %td= user.username
         %td= user.email
         - if local_assigns[:f]

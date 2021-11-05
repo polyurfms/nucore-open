@@ -182,6 +182,7 @@ Rails.application.routes.draw do
 
     resources :items do
       facility_product_routing_concern
+      resource :product_admin, controller: "product_admins", only: [:new, :create, :destroy]
       resources :price_policies, controller: "item_price_policies", except: [:show]
     end
 

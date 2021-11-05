@@ -254,11 +254,27 @@ class User < ApplicationRecord
   end
 
   def update_supervisor(params, created_by)
-    SupervisorCreator.update(self, params[:supervisor_last_name], params[:supervisor_first_name], params[:supervisor_email], created_by)
+    SupervisorCreator.update(self, params[:supervisor_last_name], params[:supervisor_first_name], params[:supervisor_email], params[:supervisor_is_acad_staff], created_by)
   end
 
   def has_supervisor?
     supervisor.present?
+  end
+
+  def supervisor_is_acad_staff?
+    if supervisor.present?
+      supervisor.is_academic?
+    else
+      false
+    end
+  end
+
+  def supervisor_is_acad_staff
+    if supervisor.present? && supervisor.is_academic?
+      "Yes"
+    else
+      "No"
+    end
   end
 
   def supervisor_first_name
