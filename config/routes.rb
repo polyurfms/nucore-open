@@ -493,6 +493,7 @@ Rails.application.routes.draw do
     namespace :services do
       post "process_one_minute_tasks"
       post "process_five_minute_tasks"
+      post "process_daily_delay_email_tasks"
     end
   end
 

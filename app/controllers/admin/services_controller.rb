@@ -5,6 +5,7 @@ module Admin
   class ServicesController < ApplicationController
 
     skip_before_action :verify_authenticity_token
+    http_basic_authenticate_with :name => Settings.basic_authenticate.username, :password => Settings.basic_authenticate.password , only: [:process_daily_delay_email_tasks]
 
     def process_one_minute_tasks
       InstrumentOfflineReservationCanceler.new.cancel!
@@ -16,6 +17,11 @@ module Admin
       self.class.five_minute_tasks.each do |worker|
         worker.new.perform
       end
+      head :ok
+    end
+
+    def process_daily_delay_email_tasks
+      DelayedEmailJobCreator.new.run!
       head :ok
     end
 

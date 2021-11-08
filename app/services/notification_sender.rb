@@ -4,15 +4,16 @@ class NotificationSender
 
   attr_reader :errors, :current_facility
 
-  def initialize(current_facility, params)
+  def initialize(current_facility, params, is_delay = false, start_delay_job = false)
     @current_facility = current_facility
     @order_detail_ids = params[:order_detail_ids]
     @notify_zero_dollar_orders = ActiveModel::Type::Boolean.new.cast(params[:notify_zero_dollar_orders])
     @skip_email = ActiveModel::Type::Boolean.new.cast(params[:skip_email])
-
+    @is_delay = is_delay
+    @start_delay_job = start_delay_job
   end
 
-  def account_ids_to_notify
+def account_ids_to_notify
     to_notify = order_details
     to_notify = to_notify.none unless SettingsHelper.has_review_period?
     if @skip_email
@@ -20,9 +21,7 @@ class NotificationSender
     else
       to_notify = to_notify.where("actual_cost+actual_adjustment > 0") unless @notify_zero_dollar_orders
     end
-
     @account_ids_to_notify ||= to_notify.distinct.pluck(:account_id)
-
   end
 
   def perform
@@ -32,12 +31,35 @@ class NotificationSender
 
     OrderDetail.transaction do
       account_ids_to_notify # needs to be memoized before order_details get reviewed
+      
       mark_order_details_as_reviewed
       if @account_ids_to_notify.present?
-        notify_accounts
+        @is_delay == false ? notify_accounts : delay_email_job
       else
         return true
       end
+    end
+  end
+
+  def delay_email_job
+    now = Time.zone.now 
+    ActiveRecord::Base.transaction do
+      begin
+    
+        order_details.each do |od|
+          delay_job = DelayedEmailJob.new
+          delay_job.refer_id = od.id
+          delay_job.refer_name = od.class.name
+          delay_job.created_at = now
+          delay_job.updated_at = now
+
+          delay_job.save || raise(ActiveRecord::Rollback)
+        end
+      end
+    rescue => e
+      ActiveSupport::Notifications.instrument("background_error",
+        exception: e, information: "Failed to send notification")
+      raise ActiveRecord::Rollback
     end
   end
 
@@ -54,10 +76,19 @@ class NotificationSender
   end
 
   def order_details
-    @order_details ||= OrderDetail.for_facility(current_facility)
-                                  .need_notification
-                                  .where_ids_in(@order_detail_ids)
-                                  .includes(:product, :order, :price_policy, :reservation)
+    unless @start_delay_job 
+      @order_details ||= OrderDetail.for_facility(current_facility)
+        .need_notification 
+        .where_ids_in(@order_detail_ids)
+        .includes(:product, :order, :price_policy, :reservation)
+      return @order_details 
+    else
+      @order_details ||= OrderDetail.for_facility(current_facility)
+        .need_notification_without_reviewed_at 
+        .where_ids_in(@order_detail_ids)
+        .includes(:product, :order, :price_policy, :reservation)
+      return @order_details 
+    end    
   end
 
   private

@@ -183,6 +183,14 @@ class OrderDetail < ApplicationRecord
       .where(problem: false)
   }
 
+  scope :need_notification_without_reviewed_at, lambda {
+    joins(:product)
+      .where(state: "complete")
+      .with_price_policy
+      .not_disputed
+      .where(problem: false)
+  }
+
   scope :with_insufficient_fund, lambda {
     joins(:product)
       .where(state: "complete")
