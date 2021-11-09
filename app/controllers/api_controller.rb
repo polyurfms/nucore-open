@@ -1,29 +1,32 @@
 class ApiController < ApplicationController
 
-  skip_authorize_resource only: [:supervisor_endorsement, :supervisor_endorsement_submit]
+  skip_authorize_resource only: [:supervisor_endorsement, :supervisor_endorsement_submit, :room_access]
   http_basic_authenticate_with :name => Settings.basic_authenticate.username, :password => Settings.basic_authenticate.password , only: [:room_access]
 
   def room_access
-    result = Array.new
-    # reservations = Reservation.where("reserve_end_at <= :now", now: Time.current.end_of_day)
-    reservations = Reservation.where("reserve_start_at >= :now", now: Time.current.beginning_of_day).where("reserve_end_at <= :now", now: Time.current.end_of_day).where(delete_at: nil)
-    if reservations.count > 0
-      reservations.each do |r|
-        start_datetime ||= r.reserve_start_at
-        end_datetime ||= r.reserve_end_at
-        uid ||= "123" 
-        room_no ||= r.product.room_no
-        unless start_datetime.nil? && start_datetime.blank? && end_datetime.nil? && end_datetime.blank? && uid.nil? && uid.blank? && room_no.nil? && room_no.blank?
-          result << {start_datetime: start_datetime, end_datetime: end_datetime, uid: uid, room_no: room_no}
+    ip = request.ip
+    if ip.eql?(Settings.basic_authenticate.room_access.ip) 
+      result = Array.new
+      # reservations = Reservation.where("reserve_end_at <= :now", now: Time.current.end_of_day)
+      reservations = Reservation.where("reserve_start_at >= :start AND reserve_end_at <= :end", start: Time.current.beginning_of_day, end: Time.current.end_of_day)
+      if reservations.count > 0
+        reservations.each do |r|
+          start_datetime ||= r.reserve_start_at
+          end_datetime ||= r.reserve_end_at
+          uid ||= "123" 
+          room_no ||= r.product.room_no
+          unless start_datetime.nil? && start_datetime.blank? && end_datetime.nil? && end_datetime.blank? && uid.nil? && uid.blank? && room_no.nil? && room_no.blank?
+            result << {start_datetime: start_datetime, end_datetime: end_datetime, uid: uid, room_no: room_no}
+          end
+        end
+    
+        unless result.empty?
+          @csv = Reports::DoorAccessExport.new(result)
+          send_data(@csv.export!, filename: "booking_#{Time.current.strftime("%Y-%m-%d %H:%M:%S")}.txt")
         end
       end
-      
-
-      unless result.empty?
-        @csv = Reports::DoorAccessExport.new(result)
-        send_data(@csv.export!, filename: "booking_#{Time.current.strftime("%Y-%m-%d %H:%M:%S")}.txt")
-      end
-    end    
+    end
+    head :ok
   end
 
   def supervisor_endorsement_validation(token)
