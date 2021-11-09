@@ -189,3 +189,7 @@ uat:
 aes:
   key: ~
   iv: ~
+
+basic_authenticate:
+  username: ~
+  password: ~
