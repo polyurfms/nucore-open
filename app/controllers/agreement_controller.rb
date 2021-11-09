@@ -116,7 +116,7 @@ class AgreementController <  ApplicationController
 
       if session[:had_supervisor] == 0
         unless (session_user.is_academic == true)
-          return redirect_to '/no_supervisor' unless request.env['PATH_INFO'].eql?('/no_supervisor')
+          return redirect_to '/no_supervisor_or_phone' unless request.env['PATH_INFO'].eql?('/no_supervisor_or_phone')
         end
       end
     end

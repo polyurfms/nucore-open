@@ -22,7 +22,7 @@ Rails.application.routes.draw do
   root to: "public#index"
 
 
-  get "/no_supervisor", to: "no_supervisors#index"
+  get "/no_supervisor_or_phone", to: "no_supervisors#index"
 
   post "agree_terms" , to: "user_agreements#agree"
   post "get_is_agree_terms" , to: "user_agreements#get_is_agree_terms"
