@@ -20,8 +20,8 @@ class AccountsController < ApplicationController
     # @account_users = session_user.account_users
     # @administered_order_details_in_review = current_user.administered_order_details.in_review
     # @account_users = @acting_user.account_users
-    
-    @is_delegated = false;    
+
+    @is_delegated = false;
     if(!session[:acting_user_id].nil? && !session[:acting_user_id].eql?(""))
       @is_delegated = true
     end
@@ -50,14 +50,15 @@ class AccountsController < ApplicationController
   end
 
   def is_allocation
+
     is_allocation = params.permit(:is_show)["is_show"]
     account_id = params.permit(:id)["id"]
-
     @account = Account.find(account_id);
 
     unless(account_id.nil?)
       unless(@account.nil?)
         @account.update_attributes(allows_allocation: is_allocation)
+        flash[:notice] = I18n.t("controllers.facility_accounts.update")
       end
     end
 
@@ -73,7 +74,7 @@ class AccountsController < ApplicationController
       owner_user: current_user,
       params: params,
     ).update
-    
+
     @account.valid?
     @account.errors.full_messages
 
@@ -110,7 +111,7 @@ class AccountsController < ApplicationController
   def ability_resource
     @account
   end
-  
+
   def account_params
     params.require(AccountBuilder.for(type)).permit(:allows_allocation)
   end
