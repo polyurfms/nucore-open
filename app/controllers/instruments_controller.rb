@@ -8,7 +8,8 @@ class InstrumentsController < ProductsCommonController
   before_action :set_default_lock_window, only: [:create, :update]
   before_action :public_flag_checked?, only: [:public_schedule]
   before_action :check_supervisor, only: [:show]
-
+  before_action :check_phone, only: [:show]
+  
   # public_schedule does not require login
   skip_before_action :authenticate_user!, only: [:public_list, :public_schedule]
   skip_authorize_resource only: [:public_list, :public_schedule]
@@ -119,8 +120,13 @@ class InstrumentsController < ProductsCommonController
   private 
   def check_supervisor 
     if session[:had_supervisor] == 0 
-      return redirect_to '/no_supervisor'
+      return redirect_to '/no_supervisor_or_phone'
     end
   end
 
+  def check_phone 
+    if session_user.phone.nil? 
+      return redirect_to '/no_supervisor_or_phone'
+    end
+  end
 end
