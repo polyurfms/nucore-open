@@ -18,6 +18,10 @@ every 1.minute, roles: [:db] do
   command "curl --silent -X POST #{Rails.application.routes.url_helpers.admin_services_process_one_minute_tasks_url}"
 end
 
+every :day, at: "5:00pm", roles: [:db] do
+  command "curl --silent -X POST #{Rails.application.routes.url_helpers.admin_services_process_daily_delay_email_tasks_url}"
+end
+
 every :day, at: "4:17am", roles: [:db] do
   rake "order_details:remove_merge_orders"
 end
