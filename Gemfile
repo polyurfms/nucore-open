@@ -95,6 +95,7 @@ gem "sanger_sequencing", path: "vendor/engines/sanger_sequencing"
 gem "split_accounts", path: "vendor/engines/split_accounts"
 gem "external_accounts", path: "vendor/engines/external_accounts"
 gem "synaccess_connect"
+gem "sc_relay", path: "vendor/engines/sc_relay"
 
 group :development do
   gem "bcrypt_pbkdf", ">= 1.0", "< 2.0", require: false # Required to support ed25519 SSH keys for capistrano. https://github.com/net-ssh/net-ssh/issues/565
