@@ -26,7 +26,7 @@ class ApiController < ApplicationController
         end
       end
     end
-    head :ok
+    # head :ok
   end
 
   def supervisor_endorsement_validation(token)
