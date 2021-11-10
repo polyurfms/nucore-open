@@ -168,7 +168,7 @@ paperclip:
 #     "User.FirstName": "first_name"
 #     "User.LastName": "last_name"
 #   # user_updating:
-#   #  skip_attributes: email
+#   #  skip_attributes: [email, card_number]
 #   academic_member: []
 
 price_policy_note_options: ~
