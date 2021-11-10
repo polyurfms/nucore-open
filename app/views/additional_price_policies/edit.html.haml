@@ -27,16 +27,15 @@
         - price_group = additional_price_policy.price_policy.price_group
 
         = fields_for "price_policy_#{additional_price_policy.price_policy.id}", additional_price_policy do |pp|
-          - row_class = []
-          - row_class << "js--masterInternalRow" if price_group.master_internal?
-          - row_class << "js--adjustmentRow" unless price_group.external? || price_group.master_internal?
-          %tr{class: row_class}
-            %td= price_group.name
-            %td
-              = pp.text_field :cost, value: additional_price_policy.cost,
-                  size: 8
-            %td
-              = pp.hidden_field :id , value: additional_price_policy.id
+          =pp.hidden_field :id , value: additional_price_policy.id
+          - if additional_price_policy.price_policy.can_purchase?
+            - row_class = []
+            - row_class << "js--masterInternalRow" if price_group.master_internal?
+            - row_class << "js--adjustmentRow" unless price_group.external? || price_group.master_internal?
+            %tr{class: row_class}
+              %td= price_group.name
+              %td= pp.text_field :cost, value: additional_price_policy.cost, size: 8
+              %td= pp.hidden_field :id , value: additional_price_policy.id
 
   %ul.inline
     %li= submit_tag text("views.additional_price_policies.index.update"), class: "btn btn-primary submit_addition"
