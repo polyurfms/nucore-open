@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_25_090012) do
+ActiveRecord::Schema.define(version: 2021_11_04_090154) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -128,6 +128,14 @@ ActiveRecord::Schema.define(version: 2021_10_25_090012) do
     t.integer "quantity", null: false
     t.index ["bundle_product_id"], name: "fk_bundle_prod_prod"
     t.index ["product_id"], name: "fk_bundle_prod_bundle"
+  end
+
+  create_table "delayed_email_jobs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "refer_id", null: false
+    t.string "refer_name", limit: 50, null: false
+    t.datetime "sent_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "delayed_jobs", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
