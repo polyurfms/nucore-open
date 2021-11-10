@@ -51,6 +51,12 @@ PATH
       rails (>= 4.0)
 
 PATH
+  remote: vendor/engines/sc_relay
+  specs:
+    sc_relay (0.0.1)
+      nokogiri (>= 1.6)
+
+PATH
   remote: vendor/engines/split_accounts
   specs:
     split_accounts (0.0.1)
@@ -678,6 +684,7 @@ DEPENDENCIES
   saml_authentication!
   sanger_sequencing!
   sass-rails
+  sc_relay!
   scenic
   scenic-mysql_adapter
   selenium-webdriver
