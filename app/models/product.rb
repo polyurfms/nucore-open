@@ -10,6 +10,7 @@ class Product < ApplicationRecord
   belongs_to :initial_order_status, class_name: "OrderStatus"
   belongs_to :facility_account
   has_many :product_users
+  has_many :product_admins
   has_many :order_details
   has_many :stored_files
   has_many :price_group_products
@@ -36,11 +37,11 @@ class Product < ApplicationRecord
   validates :user_notes_field_mode, presence: true, inclusion: Products::UserNoteMode.all
   validates :user_notes_label, length: { maximum: 255 }
 
-  validates :order_notification_recipient,
-            email_format: true,
-            allow_blank: true
+#  validates :order_notification_recipient,
+#            email_format: true,
+#            allow_blank: true
 
-            
+
   # validates(
   #   :account,
   #   presence: true,
@@ -108,6 +109,10 @@ class Product < ApplicationRecord
 
   def self.requiring_approval_by_type
     requiring_approval.group_by_type
+  end
+
+  def self.by_instrument
+    where(type: "Instrument")
   end
 
   def self.group_by_type
@@ -216,6 +221,17 @@ class Product < ApplicationRecord
     false
   end
 
+  def get_all_product?(order_details) 
+    ids = Facility.find_by_sql(order_details.joins(order: :facility)
+    .select("distinct(facilities.id), facilities.name, facilities.abbreviation")
+    .reorder("facilities.name").to_sql)
+    facility = Facility.where(id: ids)
+
+    @schedules = facility[0].schedules_for_timeline(:facility_instruments)
+    instrument_ids = @schedules.flat_map { |schedule| schedule.facility_instruments.map(&:id) }
+    Product.where(id: instrument_ids).order(:name)
+  end
+
   def can_purchase_order_detail?(order_detail)
     can_purchase? order_detail.price_groups.map(&:id)
   end
@@ -269,6 +285,10 @@ class Product < ApplicationRecord
 
   def find_product_user(user)
     product_users.find_by(user_id: user.id)
+  end
+
+  def find_product_admin(admin)
+    product_admins.find_by(user_id: user.id)
   end
 
   def visible?

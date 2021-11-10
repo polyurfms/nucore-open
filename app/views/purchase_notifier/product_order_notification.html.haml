@@ -16,6 +16,10 @@
     %td
       %strong= Account.model_name.human
     %td= @order.account
+  %tr
+    %td
+      %strong= "Supervisor is academic staff"
+    %td= @order.created_by_user.supervisor_is_acad_staff
 
 %hr
 

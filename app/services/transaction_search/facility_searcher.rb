@@ -13,6 +13,10 @@ module TransactionSearch
     def search(params)
       order_details.for_facilities(params).includes(order: :facility)
     end
+    
+    def label_name
+      I18n.t("search_field.faclicy")
+    end
 
   end
 

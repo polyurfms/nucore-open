@@ -1,0 +1,9 @@
+.well
+  .container
+    .row
+      .span6
+        = simple_fields_for :additional_price_policy do |ad|
+          = ad.input t(".label"),
+            collection: AdditionalPriceGroup.select_additional_price_groups(@order_detail.product_id),
+            input_html: { name: "additional_price_policy" },
+            selected: @additional_price_group_id

@@ -127,6 +127,7 @@ en:
         admin_hold_warning: "Warning: You have scheduled over an administrative hold."
         expires_at: "Payment source expired "
         null_payment_source: "Please select a payment source"
+        invalid_start_end_time: "Warning: invalid reservation start or end time. Please check the booking interval."
       order_detail_removed: |
         The instrument order has been removed from your cart.
         Please add it again to make a reservation.
@@ -155,6 +156,21 @@ en:
         success: Price Rules were successfully created.
       update:
         success: Price Rules were successfully updated.
+
+    additional_price_policies:
+      destroy:
+        success: Addition Price Rules were successfully removed.
+        failure: An error was encountered while trying to remove the Addition Price Rules
+      errors:
+        null_name: Please input name of addition pricing rules
+        duplcation_name: Duplcation addition price name
+        remove_active_policy: "Sorry, but you cannot remove an active addition price policy. If you really want to do so move the start date to the future and try again."
+        save: There was an error saving the policy
+        same_start_date: "You have chosen a start date that matches an active policy with existing orders. Please choose another start date."
+      create:
+        success: Addition Price Rules were successfully created.
+      update:
+        success: Addition Price Rules were successfully updated.
 
     product_users:
       new:
@@ -191,7 +207,11 @@ en:
           notice: "Product approvals updated: %{granted} granted, %{revoked} revoked."
         scheduling_group_update:
           notice: "Scheduling groups updated: %{update_count}."
-
+        remark_update:
+          notice: "Remarks updated"
+      product_admin_list:
+        assingment_update:
+          notice: "Product assignemnt updated: %{granted} granted, %{revoked} revoked."
     user_price_group_members:
       create:
         notice: "%{full_name} was added to the %{price_group_name} Price Group"

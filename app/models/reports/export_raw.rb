@@ -69,6 +69,8 @@ module Reports
         owner_first_name: ->(od) { od.account.owner_user.first_name },
         owner_last_name: ->(od) { od.account.owner_user.last_name },
         owner_email: ->(od) { od.account.owner_user.email },
+        bill_to: -> (od) {od.account.remittance_information},
+        attention: -> (od) {od.account.attention},
         price_group: ->(od) { od.price_policy.try(:price_group).try(:name) },
         charge_for: ->(od) { ChargeMode.for_order_detail(od).to_s.titleize },
         estimated_cost: ->(od) { as_currency(od.estimated_cost) },

@@ -1,5 +1,6 @@
 = content_for :h1 do
-  = t_my(Account)
+  -# = t_my(Account)
+  = I18n.t("pages.my_payment_sources")
 
 - if @account_users.empty?
   %p.notice= text("empty", models: Account.model_name.human.pluralize.downcase)
@@ -25,7 +26,7 @@
           - if au.can_administer? || session_user.administrator?
             - if @is_delegated == true && au.user_role == "Purchaser"
               %td= account.account_number_to_s
-            - else   
+            - else
               %td= link_to account.account_number_to_s, account_path(account), title: account.project_title
           - else
             %td= account.account_number_to_s
@@ -37,14 +38,19 @@
 
 
           - if au.can_administer? || session_user.administrator?
-          
+
             - show_th = true
             %td= number_to_currency(account.free_balance) || empty_display
             - if !(@is_delegated == true && au.user_role == "Purchaser")
               %td= link_to text("transactions"), transactions_path(search: { accounts: [account] })
-              %td= link_to "Payment Source Users", account_account_users_path(account)
+              %td= link_to "Payment Source User", account_account_users_path(account)
           - else
-            %td
+            - if account.can_allocate?
+              - role = account.account_users.find_by(user_id: session[:acting_user_id] || session_user.id)
+              - price = role.user_role != "Owner" && (!role.quota_balance.nil? && role.quota_balance > 0 && account.free_balance > 0) ? role.quota_balance : 0
+              %td= number_to_currency(price) || empty_display
+            - else
+              %td= number_to_currency(account.free_balance) || empty_display
             %td
             %td
     - if show_th

@@ -24,11 +24,15 @@
 - elsif @instrument.alert
   %p.alert.alert-warning= text("instruments.schedule.instrument_alert_is_active", note: @instrument.alert.note)
 
+-#  @additional_price_policy = @order_detail.product.price_policies.get_additional_price_policy_list
+
 = render "products_common/description", product: @instrument
 = simple_form_for [@order, @order_detail, @reservation], html: { class: "js--reservationForm js--reservationUpdateCreateAndStart" }, url: @submit_action do |f|
   = f.error_messages
   = render "reservations/account_field", f: f unless @order_detail.bundled?
   = render "reservations/reservation_fields", f: f
+  - unless @additional_price_policy.blank?
+    = render "reservations/additional_price_policy_field", f: f unless @additional_price_policy.nil?
 
   - unless session_user.is_normal_user?
     .row
@@ -47,6 +51,14 @@
 
   - if @instrument.offline?
     %p.alert.alert-danger= text("instruments.offline.notice")
+
+  - if @instrument.allows_staff_assistance
+    .row
+      .span6.staff_assistance
+        = label_tag :require_staff_assistance, class: "checkbox" do
+          = hidden_field_tag :staff_assistance, 0
+          = check_box_tag :staff_assistance, 1, params[:staff_assistance] == "1"
+          = t(".staff_assistance")
 
   %ul.inline
     %li

@@ -111,6 +111,7 @@ en:
               no_schedule_group: You do not have permission to make a reservation at this time
               too_long: The reservation is too long. It cannot be longer than %{length} minutes.
               too_short: The reservation is too short. It must be at least %{length} minutes.
+              invalid_session_length: The reservation must be a mupliter of %{length} minutes.
             reserve_start_at:
               after_cutoff: must be at least %{hours} hours in the future
               in_past: must be in the future
@@ -272,6 +273,7 @@ en:
         is_active: "Is Active?"
       product:
         can_be_used_by?: Approved?
+        can_manage?: Manage
         url: URL
         url_name: URL Name
         requires_approval: Requires Approval?
@@ -297,6 +299,7 @@ en:
         min_reserve_mins: Minimum Reservation Minutes
         max_reserve_mins: Maximum Reservation Minutes
         min_cancel_hours: Minimum Cancellation Hours
+        session_mins: Session Duration (Minutes)
         auto_cancel_mins: Automatic Cancellation Minutes
       price_group:
         is_internal: Is Internal?
@@ -324,6 +327,10 @@ en:
         actual_subsidy: Subsidy
         actual_max_cost: Maximum Cost/Day
         actual_total: Total
+        actual_adjustment: Adjustment
+        penalty: Penalty
+        early_end_discount: Early End Discount
+        charge_for: Charge For
         assigned_user: Assigned Staff
         created_by_user: Ordered By
         description: Description
@@ -343,17 +350,17 @@ en:
         journal_or_statement_date: "Journal/Statement Date"
         fo_journal_status: FO Journal Status
         fo_journal_id: FO Journal Ref.
-        note: Note
+        note: Note (to customer)
         order_status: Order Status
         ordered_at: Ordered Date
         ordered_by: Ordered By
         product: Product
-        price_change_reason: Pricing Note
-        price_change_reason_option: Pricing Note
+        price_change_reason: Price Adjustment Reason
+        price_change_reason_option: Price Adjustment Reason
         quantity: Quantity
         reconciled_note: Reconciliation Note
         reconciled_at: Reconciliation Date
-        reference_id: Reference ID
+        reference_id: Reference ID (for internal use)
         reviewed_at: Review Closes
         reviewed_at_past: Review Closed
         status: Status
@@ -375,6 +382,7 @@ en:
         created_by_user: Created By
         journal_date: Journal Date
         status_string: Journal Status
+        total_transactions: Total number of transactions
       relay:
         type: Relay Type
         ip: Relay IP Address
@@ -393,6 +401,7 @@ en:
         reserve_end_date: Reserve End
         duration_mins: Duration
         actuals_string: Actual Usage
+        card_string: Sign In/Out Time
         actual_start_date: Actual Start
         actual_duration_mins: Actual Duration
         canceled_by_user: Canceled By

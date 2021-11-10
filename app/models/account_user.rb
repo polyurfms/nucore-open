@@ -60,7 +60,7 @@ class AccountUser < ApplicationRecord
   def self.selectable_user_roles(granting_user = nil, facility = nil)
     case
     when granting_user.blank? || facility.blank?
-      default_roles
+      user_roles - [ACCOUNT_OWNER]
     when granting_user.account_manager? || granting_user.manager_of?(facility)
       user_roles
     else
@@ -80,6 +80,10 @@ class AccountUser < ApplicationRecord
   #   the user who is granting the privilege
   def self.grant(user, role, account, by:)
     AccountRoleGrantor.new(account, by: by).grant(user, role)
+  end
+
+  def self.create_member(quota = 0, user, role, account, by:)
+    AccountRoleGrantor.new(account, by: by).create_member(user, role, quota)
   end
 
   def can_administer?

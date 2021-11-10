@@ -12,6 +12,7 @@ en:
         subhead: You may use this to edit users.
         update: Update
         internal: Internal Pricing
+        supervisor_is_academic: Supervisor is Academic Staff
       show:
         unexpire: Remove Expiration
 

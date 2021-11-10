@@ -12,6 +12,8 @@ en:
 
           **Name**: %{user}
 
+          **Supervisor is academic staff**: %{supervisor_is_academic}
+
           **Email**: %{email}
 
           Visit [here](%{link}) here to give them access.

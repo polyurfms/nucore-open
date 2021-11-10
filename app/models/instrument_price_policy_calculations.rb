@@ -4,19 +4,23 @@ module InstrumentPricePolicyCalculations
 
   def estimate_cost_and_subsidy_from_order_detail(order_detail)
     reservation = order_detail.reservation
-    estimate_cost_and_subsidy reservation.reserve_start_at, reservation.reserve_end_at if reservation
+    if order_detail.additional_price_group.nil?
+      estimate_cost_and_subsidy reservation.reserve_start_at, reservation.reserve_end_at, "" if reservation
+    else
+      estimate_cost_and_subsidy reservation.reserve_start_at, reservation.reserve_end_at, order_detail.additional_price_group_id if reservation
+    end
   end
 
   def calculate_cost_and_subsidy_from_order_detail(order_detail)
     calculate_cost_and_subsidy order_detail.reservation
   end
 
-  def estimate_cost_and_subsidy(start_at, end_at)
+  def estimate_cost_and_subsidy(start_at, end_at, type="")
     return if restrict_purchase?
     return if start_at.blank? || end_at.blank?
     return if end_at <= start_at
 
-    calculate_for_time(start_at, end_at)
+    calculate_for_time(start_at, end_at, type)
   end
 
   def calculate_cost_and_subsidy(reservation)
@@ -32,6 +36,10 @@ module InstrumentPricePolicyCalculations
       calculate_usage(reservation)
     when InstrumentPricePolicy::CHARGE_FOR[:overage]
       calculate_overage(reservation)
+    when InstrumentPricePolicy::CHARGE_FOR[:overage_penalty_and_end_early_discount]
+      calculate_overage_penalty_and_end_early_discount(reservation)
+    when InstrumentPricePolicy::CHARGE_FOR[:overage_penalty]
+      calculate_overage_penalty(reservation)
     end
   end
 
@@ -43,12 +51,13 @@ module InstrumentPricePolicyCalculations
 
   def calculate_cancellation_costs(reservation)
     return unless cancellation_penalty?(reservation)
+
     if charge_full_price_on_cancellation?
       calculate_reservation(reservation)
     else
       # To be consistent with to other calculations, we should return BigDecimals
       # or Integers.
-      { cost: cancellation_cost&.to_d || 0, subsidy: 0 }
+      { cost: cancellation_cost&.to_d || 0, subsidy: 0, adjust: 0}
     end
   end
 
@@ -58,13 +67,13 @@ module InstrumentPricePolicyCalculations
   def calculate_reservation(reservation)
     # One or both of these could be blank if we parse an invalid date in a form
     return unless reservation.has_reserved_times?
-    calculate_for_time(reservation.reserve_start_at, reservation.reserve_end_at)
+    calculate_for_time(reservation.reserve_start_at, reservation.reserve_end_at, reservation.order_detail.additional_price_group_id)
   end
 
   # CHARGE_FOR[:usage] uses the actual start/end times for calculation
   def calculate_usage(reservation)
     return unless reservation.has_actual_times?
-    calculate_for_time(reservation.actual_start_at, reservation.actual_end_at)
+    calculate_for_time(reservation.actual_start_at, reservation.actual_end_at, reservation.order_detail.additional_price_group_id)
   end
 
   # CHARGE_FOR[:overage] charges for all the time that was initially reserved,
@@ -72,11 +81,30 @@ module InstrumentPricePolicyCalculations
   def calculate_overage(reservation)
     return unless reservation.has_reserved_times? && reservation.has_actual_times?
     end_at = [reservation.reserve_end_at, reservation.actual_end_at].max
-    calculate_for_time(reservation.reserve_start_at, end_at)
+    calculate_for_time(reservation.reserve_start_at, end_at, reservation.order_detail.additional_price_group_id)
   end
 
-  def calculate_for_time(start_at, end_at)
-    PricePolicies::TimeBasedPriceCalculator.new(self).calculate(start_at, end_at)
+  def calculate_overage_penalty_and_end_early_discount(reservation)
+    return unless reservation.has_actual_times?
+    calculate_for_overage_penalty_and_end_early_discount(reservation.reserve_start_at, reservation.reserve_end_at, reservation.actual_start_at, reservation.actual_end_at, reservation.order_detail.additional_price_group_id )
   end
+
+  def calculate_overage_penalty(reservation)
+    return unless reservation.has_actual_times?
+    calculate_for_overage_penalty(reservation.reserve_start_at, reservation.reserve_end_at, reservation.actual_start_at, reservation.actual_end_at, reservation.order_detail.additional_price_group_id)
+  end
+
+  def calculate_for_time(start_at, end_at, type="")
+    PricePolicies::TimeBasedPriceCalculator.new(self).calculate(start_at, end_at, type)
+  end
+
+  def calculate_for_overage_penalty_and_end_early_discount(reserve_start, reserve_end, start_at, end_at, type="")
+    PricePolicies::TimeBasedPriceCalculator.new(self).calculate_overage_penalty_and_end_early_discount(reserve_start, reserve_end, start_at, end_at, type)
+  end
+
+  def calculate_for_overage_penalty(reserve_start, reserve_end, start_at, end_at, type="")
+    PricePolicies::TimeBasedPriceCalculator.new(self).calculate_overage_penalty(reserve_start, reserve_end, start_at, end_at, type)
+  end
+
 
 end

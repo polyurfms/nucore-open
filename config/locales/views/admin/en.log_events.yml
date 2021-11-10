@@ -18,6 +18,8 @@ en:
         account_user:
           create: Payment Source User added
           delete: Payment Source User removed
+        funding_request:
+          create: Funding request created
         journal:
           create: Journal created
         statement:
@@ -33,6 +35,9 @@ en:
         product_user:
           create: User added to access list
           delete: User removed from access list
+        product_admin:
+          create: Product Administrator added
+          delete: Product Administrator removed
         price_group_member:
           create: "%{member_type} added to price group"
           delete: "%{member_type} removed from price group"

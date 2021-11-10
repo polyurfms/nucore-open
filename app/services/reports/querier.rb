@@ -30,7 +30,7 @@ module Reports
 
       OrderDetail.where(order_status_id: order_status_id)
                  .for_facility(current_facility)
-                 .action_in_date_range(date_range_field, date_range_start, date_range_end)
+                 .action_in_date_range(date_range_field, date_range_start, date_range_end, nil)
                  .joins(:order, :account)
                  .includes(*includes)
                  .preload(*preloads)

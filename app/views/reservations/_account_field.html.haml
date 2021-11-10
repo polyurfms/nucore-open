@@ -4,6 +4,13 @@
       .span6
         = simple_fields_for @order do |order_fields|
           - accounts = @order.user.accounts_for_product(@instrument)
+          - accounts = accounts.each do |a|
+            - role = a.account_users.find_by(user_id: session[:acting_user_id] || session_user.id)
+            - if role.user_role == "Owner" || session_user.administrator? ||!a.can_allocate?
+              - price= a.free_balance
+            - else
+              - price = (!role.quota_balance.nil? && role.quota_balance >= 0) && a.free_balance >= role.quota_balance ? role.quota_balance : 0
+            - a.account_number = a.account_number + " (" + number_to_currency(price) + ") "
 
           - selected_account_id = @order.account_id || params[:order_account]
           - if selected_account_id.blank? && accounts.count == 1
@@ -20,7 +27,7 @@
 
       - if show_note_input_to_user?(@order_detail)
         .span6
-          = f.input :note, 
+          = f.input :note,
             label: @order_detail.product.user_notes_label.presence,
             required: @order_detail.product.user_notes_field_mode.required?,
             hint: t(".note_hint")

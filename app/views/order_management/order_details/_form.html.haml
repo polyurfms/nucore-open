@@ -12,6 +12,21 @@
       .span5.js--pricingUpdate
         = account_input(f)
 
+        - @additional_price_policy = @order_detail.product.price_policies.get_additional_price_policy_list
+        - @select_additional_price_policy = @order_detail.additional_price_group_id
+
+      - if !@order_detail.policy_charge_for.nil? && @order_detail.reservation.present?
+        .span5
+          = f.input :policy_charge_for, input_html: { value: t("charge_for.#{@order_detail.policy_charge_for}")}, label:"Charge for", as: :readonly
+
+      -# .span5.js--additionTypeUpdate
+      - unless @order_detail.additional_price_group_id.nil?
+        .span5.js--pricingUpdate
+          = f.input :additional_price_group_id, collection: AdditionalPriceGroup.select_additional_price_groups(@order_detail.product_id),
+              input_html: { name: "additional_price_policy" },
+              selected: @select_additional_price_policy
+          - unless @additional_error.nil?
+            %p.additional_error{ :style => "color: red" }= @additional_error
       .span5
         - if @order_statuses
           = f.association :order_status, collection: @order_statuses, label_method: :name_with_level, include_blank: false
@@ -24,7 +39,7 @@
                 data: { min_date: ValidFulfilledAtDate.min.iso8601,
                   max_date: ValidFulfilledAtDate.max.iso8601,
                   complete_target: "#order_detail_order_status_id"}}
-            
+
 
 
         - else
@@ -44,6 +59,11 @@
               = t("facility_order_details.edit.label.with_cancel_fee")
 
     = render_view_hook "after_order_status", f: f, order_detail: @order_detail
+
+    - if @order_detail.time_data.present? && @order_detail.product.has_relay?
+      .row
+        .span5
+          = f.input :sign_in_out_time, label: "Sign In/Out Time", as: :readonly
 
     .row
       - if @order_detail.time_data.present?
@@ -87,7 +107,7 @@
     .hidden.updating-message= t("facility_order_details.edit.label.updating")
     = f.submit "Save", class: ["btn", "btn-primary"]
     = modal_cancel_button
-    
+
 :javascript
   $(".datepicker").datepicker({ dateFormat: 'd M yy' });
 
@@ -102,3 +122,7 @@
     var reserve_start_date_str = new Date($("#order_detail_reservation_reserve_start_date").val());
     $("#order_detail_reservation_reserve_start_date").val(reserve_start_date_str.getDate() + " " + Date.shortMonths[reserve_start_date_str.getMonth()] + " " + reserve_start_date_str.getFullYear())
   }
+
+  $("#order_detail_additional_price_group_id").change(function() {
+    $(".additional_error").text("");
+  });

@@ -53,6 +53,7 @@ en:
         reservations: "Reservations"
         accounts: "Payment Sources"
         access_list: "Access List"
+        product_admin_list: "Product Admin List"
       tabnav_payment_method:
         details: Details
         # members: Members
@@ -61,6 +62,14 @@ en:
         orders: Orders
         statements: Statements
         funding_requests: Funding Requests
+  search_field:
+    payment_source: Payment Source
+    order_status: Order Status
+    product: Product
+    product_group: Product Group
+    owner: Owner
+    faclicy: facilities
+    order_for: Ordered For
 
   pages:
     home: Home
@@ -85,15 +94,17 @@ en:
     logout: Logout
     manage: Manage %{model}
     my_tab: My %{model}
-    transactions: My Transactions
+    transactions: My Transaction
     payment_source_requests: Request Payment Source
-    transactions_in_review: My Transactions In Review (%{count})
+    transactions_in_review: My Transaction In Review (%{count})
     user_delegations: My Assistant
+    request_endorsements: Request Endorsement
     user_profile: My Profile
-    my_items: My Items
+    my_items: My Item
     notices: Notices
     support: Support
-    my_payment_sources : My Payment Sources
+    my_payment_sources : My Payment Source
+    my_reservation : My Reservation
 
   affiliates:
     add: Add Affiliate
@@ -155,13 +166,13 @@ en:
     sidenav_admin:
       overview: "Overview"
     tabnav_account:
-      details: "Payment Source Details"
-      transact: "Transactions"
-      statement: "Statements"
-      members: "Payment Source Users"
+      details: "Payment Source Detail"
+      transact: "Transaction"
+      statement: "Statement"
+      members: "Payment Source User"
       # members: "Members"
-      funding_requests: "Funding Requests"
-      allocations: "Allocations"
+      funding_requests: "Funding Request"
+      allocations: "Allocation"
     tabnav_price_group:
       accounts: "Payment Sources"
       users: "Users"
@@ -203,6 +214,7 @@ en:
         affiliate_display_name: "Affiliate/Category"
         affiliate: "Name" # used for labeling affiliate_other field in forms
         remit: "Bill To"
+        attn: "Attention"
         all_instruct: "Enter a text description to help you and the user identify this payment source."
     account_table:
       notice: "No payment sources found."
@@ -245,6 +257,9 @@ en:
         expense_amt: Expense
         quota_balance: Quota balance
       save: Save
+      title: Bulk import
+      submit: Import
+      download_link: Right-click and choose 'save target' to download import template
     allocation:
       save: Save
       committed_amt: "Committed Amount: %{committed_amt}"
@@ -262,6 +277,7 @@ en:
         # amount: Amount
         amount: Amount (HKD)
         remark : Remark
+        note: Note
       total_locked_amount: Total committed amount
       new_request : "New Request"
   facility_accounts_reconciliation:
@@ -406,6 +422,7 @@ en:
     order_for_journal:
       head:
         h2: "Order for journal"
+      no_transactions: "There are no transactions"
 
 
 
@@ -475,6 +492,8 @@ en:
       admin_reservation: Administrative Hold
       offline_reservation: Instrument Offline
       expiration: Expires %{time} prior
+    search_schedule:
+      reservations_calendar: Reservations Calendar
 
   global_user_roles:
     destroy:
@@ -619,11 +638,19 @@ en:
         remove_from_journal: "Remove From Journal"
         fo_status: "Status"
         fo_journal_id: "FO Journal ID"
+      reservation:
+        th:
+          card_time: "Tap on & Tap off: "
+          card_duration: "Duration: "
   product_access_groups:
     index:
       add_button: Add %{group}
 
   reservations:
+    additional_price_policy_field:
+      label: "Addition Item"
+    additional_price_policy_field2:
+      label: "Additional Item"
     logout:
       body: "You will be logged out automatically in 60 seconds. Would you like to remain logged in?"
       cancel: "Stay logged in"
@@ -631,6 +658,7 @@ en:
       label: "Payment source"
       crumb: "Create Reservation"
       notify: Send Notification
+      staff_assistance: "Require Staff Assistance?"
     list:
       status:
         pending: Pending
@@ -645,6 +673,7 @@ en:
     edit:
       link: Edit
       submenu: "Ref. No.%{order_number}"
+      staff_assistance: "Require Staff Assistance?"
     delete:
       confirm: Are you sure you wish to cancel this reservation?
       confirm_with_fee: "Canceling this reservation will incur a %{fee} fee.  Are you sure you wish to cancel this reservation?"
@@ -711,14 +740,14 @@ en:
         type : "Top Up / Release"
         status : "Status"
         # Amount : "Amount"
-        Amount : "Amount (HKD)"
+        amount : "Amount (HKD)"
         remark : Remark
       message:
         in_progress : "You cannot make new requests when the funding request is in progress."
     index:
       head: "Lock funds"
       submenu: "%{account_number}"
-      funding_requests_head: "Funding Requests"
+      funding_requests_head: "Funding Request"
       committed_amt: "Committed Amount: %{committed_amt}"
       total_expense: "Total Expense Amount: %{total_expense}"
       free_balance: "Free Balance: %{free_balance}"
@@ -745,7 +774,7 @@ en:
         type : "Top Up / Release"
         status : "Status"
         # Amount : "Amount"
-        Amount : "Amount (HKD)"
+        amount : "Amount (HKD)"
         remark : Remark
       message:
         # in_progress : "Cannot submit new request until existing request executed."
@@ -927,6 +956,15 @@ en:
     new:
       label:
         search_term: "Search by name, NetID, or username"
+    table:
+      date_added: Date Added
+
+  product_admins:
+    new:
+      label:
+        search_term: "Search by name, NetID, or username"
+    table:
+      date_added: Date Added
 
   user_price_group_members:
     new:
@@ -935,6 +973,13 @@ en:
         search_term: "Search by name, NetID, or username"
 
   search:
+    supervisor_user_search_results:
+      no_user: "No existing users found."
+      request_btn: "Requset"
+      name: "Full Name"
+      username: "NetID"
+      email: "Email"
+      dept_abbrev: "Department"
     results_table:
       order_for: Order For
       name: Name
@@ -969,7 +1014,7 @@ en:
 
   account_users:
     index:
-      head: "Payment Source Users"
+      head: "Payment Source User"
       submenu: "%{account_number}"
     new:
       head: "Add Payment Source Member"
@@ -990,7 +1035,7 @@ en:
       main_html: "You may add a new external user by clicking <a href=\"%{link}\">Add a new external user</a>."
       netid_not_found: "The user could not be located in the university database.  Please make sure you typed the NetID correctly."
       email_not_found: "No user information was found in the university databases."
-      found: "The following user was found.  Click \"Add User\" to allow this user access to system."
+      found: "The following user was found.  Click \"Add User\" to add this user as member."
       user_already_exists: "The user %{username} already exists in system"
 
     create_user:
@@ -1156,6 +1201,7 @@ en:
       instrument_reports:
         between: Fulfilled between
       billing_status: Billing Status
+      payment_type: Payment Source Type
       date_start: Start Date
       date_end: End Date
       auto_cancel_name: 'Auto Cancel'
@@ -1188,7 +1234,11 @@ en:
       training_requested: Training Requested
       update_approvals:
         submit: "Update Access List"
-
+      date_added: "Date Added"
+      remark: "Remark"
+    product_admin_list:
+      update_product_admin_list:
+        submit: Update
     new_external:
       head: "Add External User"
       main: "You may use this to grant !app_name! access to external users. The email address and username must match."
@@ -1255,6 +1305,14 @@ en:
     new:
       no_transactions: There are no transactions requiring statements matching the search parameters.
 
+  request_endorsements:
+    index:
+      head:
+        h2: "Search Supervisor"
+      label:
+        search_term: "Supervior's First name, Last name, NetID, or username:"
+        search_dept: "Dept:"
+
 
   instruments:
     manage:
@@ -1271,6 +1329,7 @@ en:
         Contact the !facility_downcase! for more information.
         You may place reservations, but if the instrument is still down at your
         scheduled time they will be canceled at no charge.
+
 
     public_schedule:
       title: Schedule
@@ -1292,6 +1351,8 @@ en:
 
     instrument_fields:
       show_details: "Show reservation details (name, email, etc) on schedule"
+      show_details_with_access: "Show reservation details when access right granted"
+      allows_staff_assistance: "Allow reservation request staff assistance"
       relay:
         control_mechanisms:
           manual: Reservation only
@@ -1311,6 +1372,7 @@ en:
           reserve_interval: "The minutes of an hour on which a reservation is allowed to begin (e.g. if 5 reservations can be scheduled every 5 minutes)"
           min_reserve: "Minimum amount of time for a reservation (optional; must be a multiple of the reservation interval)"
           max_reserve: "Maximum amount of time for a reservation (optional)"
+          session_reserve: "Session duration for a reservation (optional; must be a mulitple of the reservation interval)"
           cancel_hours: "Minimum length of time before a reservation begins that a user may cancel a reservation without invoking the reservation cost"
           auto_cancel: |
             The number of minutes the system will wait before automatically
@@ -1324,6 +1386,7 @@ en:
           reserve_interval: "Interval (minutes)"
           min_reserve: "Minimum (minutes)"
           max_reserve: "Maximum (minutes)"
+          session_reserve: "Session duration (minutes)"
           cancel_hours: "Cancelation Minimum (hours)"
           auto_cancel: "Automatic Cancelation (minutes)"
           lock_window: "Reservation Lock Window (hours)"
@@ -1405,12 +1468,15 @@ en:
       head: Payment Source Details
       save: Save
     show:
-      head: Payment Source Details
+      head: Payment Source Detail
       submenu: "%{account_number}"
       save: Save
     member_table:
       add_access: Add Access
       remove_access: Remove Access
+      title: Bulk import (Assign new members)
+      submit: Import
+      download_link: Right-click and choose 'save target' to download import template
       th:
         # name: Name (username)
         name: Name (Net ID)
@@ -1438,12 +1504,12 @@ en:
 
   account_allocations:
     new:
-      head: "Allocations"
+      head: "Allocation"
       submenu: "%{account_number}"
       committed_amt: "Committed Amount (HKD)"
       total_expense: "Total Expense Amount (HKD)"
       free_balance: "Free Balance (HKD)"
-      allows_allocation: "Allows Allocation"
+      allows_allocation: "Enable quota allocation for members"
       alert_threshold: "Alert Threshold"
       alert_threshold_input: "Alert Threshold (input 0 for no alert)"
       is_auto_top_up: "Auto Top up"
@@ -1458,3 +1524,6 @@ en:
         expense_amt: Expense
         quota_balance: Quota balance
       save: Save
+      title: Bulk import (Create/Update records)
+      submit: Import
+      download_link: Right-click and choose 'save target' to download import template

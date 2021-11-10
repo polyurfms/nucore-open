@@ -15,6 +15,7 @@ class OrderDetails::ParamUpdater
         :editing_time_data,
         :reconciled_note,
         :reference_id,
+        :actual_adjustment,
         reservation: [
           :reserve_start_date,
           :reserve_start_hour,
@@ -41,6 +42,7 @@ class OrderDetails::ParamUpdater
     params.delete(:quantity) unless params[:quantity].to_s =~ /\A\d+\z/
 
     assign_self_and_reservation_attributes(permitted_params(params))
+
     # As of Rails 5.2.4, if nothing changes on the association (e.g. submitting the
     # form with no changes on a reservation/occupancy missing end_at), the validations
     # no longer run on the associations.
@@ -102,14 +104,14 @@ class OrderDetails::ParamUpdater
   def assign_price_changed_by_user
     if @order_detail.actual_costs_match_calculated?
       @order_detail.price_changed_by_user = nil
-    elsif %w[actual_cost actual_subsidy price_change_reason].any? { |a| @order_detail.changed.include?(a) }
+    elsif %w[actual_cost actual_subsidy actual_adjustment price_change_reason].any? { |a| @order_detail.changed.include?(a) }
       @order_detail.price_changed_by_user = @editing_user
       LogEvent.log(@order_detail, :price_change, @editing_user)
     end
   end
 
   def cost_params(params)
-    params.slice(:actual_cost, :actual_subsidy).permit!
+    params.slice(:actual_cost, :actual_subsidy, :actual_adjustment).permit!
   end
 
   def permitted_params(params)

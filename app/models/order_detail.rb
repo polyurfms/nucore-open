@@ -7,6 +7,7 @@ class OrderDetail < ApplicationRecord
   include NotificationSubject
   include OrderDetail::Accessorized
   include Nucore::Database::WhereIdsIn
+  include DateHelper
 
   has_paper_trail
 
@@ -59,6 +60,9 @@ class OrderDetail < ApplicationRecord
   belongs_to :bundle, foreign_key: "bundle_product_id"
   belongs_to :canceled_by_user, foreign_key: :canceled_by, class_name: "User"
   belongs_to :problem_resolved_by, class_name: "User"
+
+  belongs_to :additional_price_group
+
   has_one    :reservation, inverse_of: :order_detail
   # for some reason, dependent: :delete on reservation isn't working with paranoia, hitting foreign key constraints
   before_destroy { reservation.try(:really_destroy!) }
@@ -162,6 +166,8 @@ class OrderDetail < ApplicationRecord
 
   scope :purchased_active_reservations, -> { new_or_inprocess.joins(:reservation).merge(Reservation.not_canceled) }
 
+  scope :purchased_reservations, -> { joins(:reservation).merge(Reservation.not_canceled) }
+
   scope :with_price_policy, -> { where.not(price_policy_id: nil) }
 
   scope :not_disputed, lambda {
@@ -230,6 +236,10 @@ class OrderDetail < ApplicationRecord
 
   def self.unreconciled
     where.not(state: "reconciled")
+  end
+
+  def self.reconciled
+    where(state: "reconciled")
   end
 
   def self.with_actual_costs
@@ -332,10 +342,10 @@ class OrderDetail < ApplicationRecord
     action_in_date_range :fulfilled_at, start_date, end_date
   }
 
-  scope :action_in_date_range, lambda { |action, start_date, end_date|
+  scope :action_in_date_range, lambda { |action, start_date, end_date, type|
     valid = TransactionSearch::DateRangeSearcher::FIELDS.map(&:to_sym) + [:journal_date]
     raise ArgumentError.new("Invalid action: #{action}. Must be one of: #{valid}") unless valid.include? action.to_sym
-    logger.debug("searching #{action} between #{start_date} and #{end_date}")
+    logger.debug("searching #{action} and account type #{type} between #{start_date} and #{end_date}")
     search = all
 
     return journaled_or_statemented_in_date_range(start_date, end_date) if action.to_sym == :journal_or_statement_date
@@ -346,6 +356,9 @@ class OrderDetail < ApplicationRecord
 
     search = search.where("#{action} >= ?", start_date.beginning_of_day) if start_date
     search = search.where("#{action} <= ?", end_date.end_of_day) if end_date
+    search = search.joins(:account).where("accounts.type = ?", "NufsAccount") if type.eql?("charge")
+    search = search.joins(:account).where("accounts.type = ?", "ChequeOrOtherAccount") if type.eql?("cheque")
+
     search
   }
 
@@ -461,6 +474,20 @@ class OrderDetail < ApplicationRecord
     change_status!(OrderStatus.complete)
   end
 
+  def complete_skip_problem!
+
+    @t = Time.current
+
+    @new_t = round_up_15min(@t)
+
+    @end_diff = TimeRange.new(reservation.reserve_end_at, @new_t).duration_mins
+
+    if reservation.card_end_at.nil?
+      reservation.update!(card_end_at: @new_t)
+    end
+    change_status!(OrderStatus.complete)
+  end
+
   def backdate_to_complete!(event_time = Time.zone.now)
     # if we're setting it to compete, automatically set the actuals for a reservation
     if reservation
@@ -518,7 +545,7 @@ class OrderDetail < ApplicationRecord
   end
 
   def actual_total
-    actual_cost - actual_subsidy if actual_cost && actual_subsidy
+    actual_cost - actual_subsidy + actual_adjustment if actual_cost && actual_subsidy && actual_adjustment
   end
 
   def estimated_total
@@ -684,7 +711,6 @@ class OrderDetail < ApplicationRecord
 
     # is account valid for facility
     return if account && !product.facility.can_pay_with_account?(account)
-
     @estimated_price_policy = product.cheapest_price_policy(self, date)
     assign_estimated_price_from_policy @estimated_price_policy
   end
@@ -696,7 +722,6 @@ class OrderDetail < ApplicationRecord
 
   def assign_estimated_price_from_policy(price_policy)
     return unless price_policy
-
     costs = price_policy.estimate_cost_and_subsidy_from_order_detail(self)
     return unless costs
 
@@ -717,8 +742,19 @@ class OrderDetail < ApplicationRecord
     return unless pp
     costs = pp.calculate_cost_and_subsidy_from_order_detail(self)
     return unless costs
+
     self.price_policy_id = pp.id
     self.actual_cost     = costs[:cost]
+
+    unless costs[:penalty].nil?
+      self.penalty = costs[:penalty]
+    end
+    unless costs[:early_end_discount].nil?
+      self.early_end_discount = costs[:early_end_discount]
+    end
+
+    #self.actual_adjustment = costs[:adjust]
+    #self.actual_adjustment = 0
     self.actual_subsidy  = costs[:subsidy]
     pp
   end
@@ -815,7 +851,7 @@ class OrderDetail < ApplicationRecord
   end
 
   def ready_for_statement?
-    reviewed? && statement_id.blank? && Account.config.using_statements?(account.type)
+    reviewed? && statement_id.blank? && Account.config.using_statements?(account.type) && !reconciled?
   end
 
   def ready_for_journal?
@@ -978,6 +1014,34 @@ class OrderDetail < ApplicationRecord
     ActiveModel::Type::Boolean.new.cast(resolve_dispute)
   end
 
+  def sign_in_out_time
+    card_start = reservation.card_start_at.nil? ? "---" : human_date(reservation.card_start_at) + " " + human_time(reservation.card_start_at)
+    card_end = reservation.card_end_at.nil? ? "---" : human_date(reservation.card_end_at) + " " + human_time(reservation.card_end_at)
+    "From #{card_start} to #{card_end} (#{reservation.card_duration_mins})"
+  end
+
+  def policy_charge_for
+    unless price_policy.nil?
+      price_policy.charge_for
+    end
+  end
+
+  def charge_for_penalty?
+    unless price_policy.nil?
+      price_policy.charge_for == InstrumentPricePolicy::CHARGE_FOR.fetch(:overage_penalty) || price_policy.charge_for == InstrumentPricePolicy::CHARGE_FOR.fetch(:overage_penalty_and_end_early_discount)
+    else
+      false
+    end
+  end
+
+  def charge_for_early_end_discount?
+    unless price_policy.nil?
+      price_policy.charge_for == InstrumentPricePolicy::CHARGE_FOR.fetch(:overage_penalty_and_end_early_discount)
+    else
+      false
+    end
+  end
+
   private
 
   # Is there enough information to move an associated order to complete/problem?
@@ -1008,12 +1072,12 @@ class OrderDetail < ApplicationRecord
     assign_price_policy unless price_policy
 
     calculator = CancellationFeeCalculator.new(self)
-
     change_status!(calculator.total_cost > 0 ? OrderStatus.complete : order_status)
 
     if calculator.costs.present?
       assign_attributes(
         actual_cost: calculator.costs[:cost],
+        actual_adjustment: calculator.costs[:adjust],
         actual_subsidy: calculator.costs[:subsidy],
       )
     end
@@ -1035,6 +1099,7 @@ class OrderDetail < ApplicationRecord
 
   def clear_costs
     self.actual_cost     = nil
+    #self.actual_adjustment     = nil
     self.actual_subsidy  = nil
     self.price_policy_id = nil
   end
@@ -1070,10 +1135,13 @@ class OrderDetail < ApplicationRecord
     return false unless @manually_priced && SettingsHelper.feature_on?(:price_change_reason_required)
     return false if cost_estimated? || canceled_at?
 
+    return ( actual_adjustment == 0.0 || actual_adjustment == 0 ) ? false : true
+
     !actual_costs_match_calculated?
   end
 
   def update_billable_minutes_on_reservation
     reservation.update_billable_minutes
   end
+
 end

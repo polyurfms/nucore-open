@@ -91,7 +91,8 @@ class AccountUsersController < ApplicationController
   def create
     ## TODO add security
     @user = User.find(params[:user_id])
-    @account_user = AccountUser.grant(@user, create_params[:user_role], @account, by: session_user)
+    # @account_user = AccountUser.grant(@user, create_params[:user_role], @account, by: session_user)
+    @account_user = AccountUser.create_member(@user, create_params[:user_role], @account, by: session_user)
 
     if @account_user.persisted?
       LogEvent.log(@account_user, :create, current_user)
@@ -117,6 +118,16 @@ class AccountUsersController < ApplicationController
     redirect_to account_account_users_path(@account)
   end
 
+  def import_user
+    begin
+      process_payment_source_user_import!
+    rescue => e
+      import_exception_alert(e)
+    end
+    
+    redirect_to account_account_users_path
+  end
+
   protected
 
   def create_params
@@ -126,12 +137,37 @@ class AccountUsersController < ApplicationController
   def init_account
     # @account = session_user.accounts.find(params[:account_id])
     @account = @acting_user.accounts.find(params[:account_id])
+    @account_user_import = AccountUser.new
   end
 
   private
 
   def ability_resource
     @account
+  end
+
+  def import_payment_source_uer!
+    @account = Account.find(params[:account_id])
+    unless @account.nil? 
+      @csv = Reports::PaymentSourceUserImport.new(params[:account_user][:file], @account, session_user)
+      @csv.import("Insert")
+      flash.now[:notice] = "Save success" 
+    end
+    
+  end
+  
+  def process_payment_source_user_import!
+    raise "Please upload a valid import file" unless params[:account_user].present?
+    import_payment_source_uer!
+  end
+
+  def import_exception_alert(exception)
+    Rails.logger.error "#{exception.message}\n#{exception.backtrace.join("\n")}"
+    flash[:error] = import_exception_message(exception)
+  end
+  
+  def import_exception_message(exception)
+    I18n.t("controllers.order_imports.create.error", error: exception.message)
   end
 
 end

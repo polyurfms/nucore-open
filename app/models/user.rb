@@ -16,6 +16,7 @@ class User < ApplicationRecord
   has_many :price_group_members, class_name: "UserPriceGroupMember", dependent: :destroy
   has_many :price_groups, -> { SettingsHelper.feature_on?(:user_based_price_groups) ? distinct : none }, through: :price_group_members
   has_many :product_users
+  has_many :product_admins
   has_many :products, through: :product_users
   has_many :notifications
   has_many :assigned_order_details, class_name: "OrderDetail", foreign_key: "assigned_user_id"
@@ -149,6 +150,19 @@ class User < ApplicationRecord
     acts
   end
 
+  # Returns a hash of product_id => approved_at date when this user was granted
+  # access to the product
+  def approval_dates_by_product
+    product_users.pluck(:product_id, :approved_at).to_h
+  end
+
+  def approval_remark_by_product
+    product_users.pluck(:product_id, :remark).to_h
+  end
+
+  def product_admin_by_user
+    product_admins.pluck(:product_id, :user_id).to_h
+  end
 
   def administered_order_details(curr_user = self)
     OrderDetail.where(account_id: Account.administered_by(curr_user))
@@ -235,16 +249,32 @@ class User < ApplicationRecord
   end
 
   def create_default_supervisor!
-    creator = SupervisorCreator.create(self, last_name, first_name, email)
+    creator = SupervisorCreator.create(self, last_name, first_name, email, username, dept_abbrev, true)
     creator.save()
   end
 
   def update_supervisor(params, created_by)
-    SupervisorCreator.update(self, params[:supervisor_last_name], params[:supervisor_first_name], params[:supervisor_email], created_by)
+    SupervisorCreator.update(self, params[:supervisor_last_name], params[:supervisor_first_name], params[:supervisor_email], params[:supervisor_is_acad_staff], created_by)
   end
 
   def has_supervisor?
     supervisor.present?
+  end
+
+  def supervisor_is_acad_staff?
+    if supervisor.present?
+      supervisor.is_academic?
+    else
+      false
+    end
+  end
+
+  def supervisor_is_acad_staff
+    if supervisor.present? && supervisor.is_academic?
+      "Yes"
+    else
+      "No"
+    end
   end
 
   def supervisor_first_name

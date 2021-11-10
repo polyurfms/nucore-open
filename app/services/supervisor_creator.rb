@@ -2,17 +2,18 @@ class SupervisorCreator
 
   attr_reader :params, :error
 
-  def self.update(user, last_name, first_name, email, updated_by)
+  def self.update(user, last_name, first_name, email, is_academic, updated_by)
     @user = user
     @supervisor = @user.supervisor
     if @user.supervisor.present?
-      @supervisor.assign_attributes(last_name: last_name, first_name: first_name, email: email, updated_by: updated_by)
+      @supervisor.assign_attributes(last_name: last_name, first_name: first_name, email: email, is_academic: is_academic, updated_by: updated_by)
     else
       @supervisor = Supervisor.new(
           user_id: @user.id,
           last_name: last_name,
           first_name: first_name,
           email: email,
+          is_academic: is_academic,
           created_by: updated_by,
           updated_by: updated_by
       )
@@ -21,11 +22,14 @@ class SupervisorCreator
 
   end
 
-  def self.create(user, last_name, first_name, email)
+  def self.create(user, last_name, first_name, email, net_id, dept_abbrev, is_academic)
     @user = user
-    @last_name = last_name
-    @first_name = first_name
+    @last_name = last_name || ""
+    @first_name = first_name || ""
     @email = email
+    @net_id = net_id
+    @dept_abbrev = dept_abbrev || ""
+    @is_academic = is_academic
 
     @supervisor = Supervisor.new(
         user_id: @user.id,
@@ -33,7 +37,10 @@ class SupervisorCreator
         first_name: @first_name,
         email: @email,
         created_by: @user.id,
-        updated_by: @user.id
+        updated_by: @user.id,
+        net_id: @net_id,
+        dept_abbrev: @dept_abbrev,
+        is_academic: @is_academic
     )
   end
 
@@ -53,7 +60,7 @@ class SupervisorCreator
   end
 
   def supervisor_params
-      @params.require(:supervisor).permit(:user_id, :last_name, :first_name, :email)
+      @params.require(:supervisor).permit(:user_id, :last_name, :first_name, :email, :net_id, :dept_abbrev)
   end
 
 

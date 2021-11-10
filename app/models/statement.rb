@@ -65,6 +65,10 @@ class Statement < ApplicationRecord
     order_details.unreconciled.empty?
   end
 
+  def no_reconciled?
+    order_details.reconciled.empty?
+  end
+
   def paid_in_full?
     payments.sum(:amount) >= total_cost
   end

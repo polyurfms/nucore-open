@@ -2,10 +2,10 @@ class FundingRequestCreator
 
   attr_reader :account, :params, :error, :funding_request
 
-  def initialize(account, user_id, params)
+  def initialize(account, user, params)
     @account = account
     @params = params
-    @user_id = user_id
+    @user = user
   end
 
   def save
@@ -13,16 +13,16 @@ class FundingRequestCreator
     if @account.type == "ChequeOrOtherAccount"
       @funding_request = FundingRequest.new(
               funding_request_params.merge(
-                created_by: @user_id,
-                updated_by: @user_id,
+                created_by: @user.id,
+                updated_by: @user.id,
                 status: "SUCCESS"
               ),
             )
     else
       @funding_request = FundingRequest.new(
               funding_request_params.merge(
-                created_by: @user_id,
-                updated_by: @user_id,
+                created_by: @user.id,
+                updated_by: @user.id,
                 status: "PENDING_CHECK_FUND"
               ),
             )
@@ -51,6 +51,7 @@ class FundingRequestCreator
         end
 
         @success = :default
+        LogEvent.log(@funding_request, :create, @user, metadata: {ref_no: @funding_request.id, type: @funding_request.request_type, amount: @funding_request.request_amount})
 
       else
         #@input_amt = amt
@@ -61,7 +62,7 @@ class FundingRequestCreator
   end
 
   def funding_request_params
-      @params.require(:funding_request).permit(:request_type, :credit_amt, :debit_amt, :account_id, :request_amount)
+      @params.require(:funding_request).permit(:request_type, :credit_amt, :debit_amt, :account_id, :request_amount, :note)
   end
 
 

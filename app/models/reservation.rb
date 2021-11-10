@@ -38,6 +38,8 @@ class Reservation < ApplicationRecord
   
   attr_accessor :currDatetime
 
+  attr_accessor :select_additional_price_policy
+
   # Delegations
   #####
   delegate :note, :note=, :ordered_on_behalf_of?, :complete?, :account, :order,
@@ -102,6 +104,16 @@ class Reservation < ApplicationRecord
       .where(orders: { state: [nil, :purchased] })
   }
 
+  scope :current_and_upcoming_today, lambda {
+    not_canceled
+      .joins_order
+      .ends_in_the_future
+      .not_ended
+      .where("reserve_start_at <= ?", Time.new.end_of_day)
+      .where(orders: { state: [nil, :purchased]})
+      .order(reserve_start_at: :asc)
+  }
+
   def self.today
     for_date(Time.current)
   end
@@ -127,6 +139,10 @@ class Reservation < ApplicationRecord
       .delete_if { |reservation| reservation.reserve_end_at < t }
   end
 
+  def select_additional_price_policy?
+    @select_additional_price_policy
+  end
+
   def self.overlapping(start_at, end_at)
     # remove millisecond precision from time
     tstart_at = Time.zone.parse(start_at.to_s)
@@ -142,6 +158,10 @@ class Reservation < ApplicationRecord
 
   def self.relay_in_progress
     where("actual_start_at IS NOT NULL AND actual_end_at IS NULL")
+  end
+
+  def self.within_reserved_time
+    where("reserve_start_at <= :now and reserve_end_at > :now", now: Time.current)
   end
 
   def self.upcoming_offline(start_at_limit)
@@ -188,14 +208,52 @@ class Reservation < ApplicationRecord
       # If we're in the grace period for this reservation, but the other reservation
       # has not finished its reserved time, this will fail and this reservation will
       # not start.
-      MoveToProblemQueue.move!(reservation.order_detail, user: reservation.user, cause: :reservation_started)
+
+      #instead of sending to problem queue, end the unfinished reservation
+      MoveToProblemQueue.move_skip_problem!(reservation.order_detail, user: reservation.user, cause: :reservation_started)
+
+      #reservation.end_reservation
+      #MoveToProblemQueue.move!(reservation.order_detail, user: reservation.user, cause: :reservation_started)
+
+    end
+    @t = Time.current
+    # check if pervious affect existing booking start
+    at = ReservationTimeFinder.new(self).actual_start_at
+    update!(card_start_at: @t ,actual_start_at: at)
+  end
+
+=begin
+  def round_to_15_minutes(t)
+    @date = @t.to_date
+    @hour = @t.hour
+    @minutes = @t.sec > 0 ? @t.min + 1 : @t.min
+
+    @new_minutes = ((@minutes/15.to_f).ceil) *15
+    if @new_minutes == 60
+      @new_hour = @hour + 1
+      @new_minutes = 0
+    else
+      @new_hour = @hour
     end
     update!(actual_start_at: currDatetime?)
     # update!(actual_start_at: Time.current)
   end
+=end
 
   def end_reservation!
-    update!(actual_end_at: Time.current)
+
+    @t = Time.current
+
+    @new_t = round_up_15min(@t)
+
+    @end_diff = TimeRange.new(reserve_end_at, @new_t).duration_mins
+
+    if reserve_end_at.to_datetime < @t && @end_diff < 15
+      update!(card_end_at: @t ,actual_end_at: reserve_end_at)
+    else
+      update!(card_end_at: @t ,actual_end_at: @new_t)
+    end
+
     order_detail.complete!
   end
 
@@ -390,12 +448,19 @@ class Reservation < ApplicationRecord
   # FIXME: Temporary override to include reconciled orders, so we can backfill them
   def calculated_billable_minutes
     if (order_detail&.complete? || order_detail&.reconciled?) && order_detail&.canceled_at.blank? && price_policy.present?
+
       case price_policy.charge_for
       when InstrumentPricePolicy::CHARGE_FOR.fetch(:reservation)
         TimeRange.new(reserve_start_at, reserve_end_at).duration_mins
       when InstrumentPricePolicy::CHARGE_FOR.fetch(:usage)
         TimeRange.new(actual_start_at, actual_end_at).duration_mins
       when InstrumentPricePolicy::CHARGE_FOR.fetch(:overage)
+        end_time = [reserve_end_at, actual_end_at].max
+        TimeRange.new(reserve_start_at, end_time).duration_mins
+      when InstrumentPricePolicy::CHARGE_FOR.fetch(:overage_penalty_and_end_early_discount)
+        end_time = [reserve_end_at, actual_end_at].max
+        TimeRange.new(reserve_start_at, end_time).duration_mins
+      when InstrumentPricePolicy::CHARGE_FOR.fetch(:overage_penalty)
         end_time = [reserve_end_at, actual_end_at].max
         TimeRange.new(reserve_start_at, end_time).duration_mins
       end

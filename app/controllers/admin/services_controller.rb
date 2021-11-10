@@ -20,7 +20,7 @@ module Admin
     end
 
     def self.five_minute_tasks
-      @five_minute_tasks ||= [AutoExpireReservation, EndReservationOnly, AutoLogout]
+      @five_minute_tasks ||= [AutoExpireReservation, EndReservationOnly, AutoLogout, EndNoShowReservation]
     end
 
   end

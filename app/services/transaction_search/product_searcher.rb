@@ -21,6 +21,10 @@ module TransactionSearch
         product_type: product.type.downcase,
       }
     end
+    
+    def label_name
+      I18n.t("search_field.product")
+    end
 
   end
 

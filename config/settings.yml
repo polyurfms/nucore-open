@@ -107,7 +107,7 @@ feature:
   expense_accounts: true
   edit_accounts: true
   suspend_accounts: true
-  product_specific_contacts: true
+  product_specific_contacts: false
   training_requests: true
   daily_view: true
   split_accounts: true
@@ -130,7 +130,7 @@ feature:
   use_manage: false
   facility_banner_notice: true
   charge_full_price_on_cancellation: true
-  price_policy_requires_note: true
+  price_policy_requires_note: false
   multi_facility_accounts: true
   facility_directors_can_manage_price_groups: true
   account_reference_field: false
@@ -181,5 +181,11 @@ fip_url: http://www.google.com
 
 research_project_affiliate_id: 3
 
+allow_affiliate: Dept
+
 uat:
   email: ~
+
+aes:
+  key: ~
+  iv: ~

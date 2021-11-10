@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_30_061137) do
+ActiveRecord::Schema.define(version: 2021_10_25_090012) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 2021_04_30_061137) do
     t.integer "created_by", null: false
     t.datetime "deleted_at"
     t.integer "deleted_by"
-    t.decimal "allocation_amt", precision: 10, scale: 2
+    t.decimal "allocation_amt", precision: 10, scale: 2, default: "0.0"
     t.index ["account_id"], name: "fk_accounts"
     t.index ["user_id"], name: "index_account_users_on_user_id"
   end
@@ -58,7 +58,27 @@ ActiveRecord::Schema.define(version: 2021_04_30_061137) do
     t.string "project_title", limit: 1000
     t.decimal "alert_threshold", precision: 10, scale: 2, default: "0.0"
     t.boolean "is_auto_top_up", default: false, null: false
+    t.string "attention", limit: 50
     t.index ["affiliate_id"], name: "index_accounts_on_affiliate_id"
+  end
+
+  create_table "additional_price_groups", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "product_id"
+    t.string "name", limit: 50, null: false
+    t.datetime "deleted_at"
+    t.integer "deleted_by"
+  end
+
+  create_table "additional_price_policies", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.decimal "cost", precision: 13, scale: 2, null: false
+    t.integer "price_policy_id", null: false
+    t.integer "created_by", null: false
+    t.datetime "deleted_at"
+    t.integer "deleted_by"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer "additional_price_group_id"
+    t.index ["price_policy_id"], name: "fk_price_policy_id"
   end
 
   create_table "affiliates", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -243,6 +263,7 @@ ActiveRecord::Schema.define(version: 2021_04_30_061137) do
     t.datetime "updated_at"
     t.string "remarks", limit: 100
     t.integer "fo_journal_id"
+    t.string "note", limit: 200
   end
 
   create_table "instrument_alerts", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -388,6 +409,11 @@ ActiveRecord::Schema.define(version: 2021_04_30_061137) do
     t.integer "problem_resolved_by_id"
     t.string "reference_id"
     t.integer "fo_journal_id"
+    t.decimal "actual_adjustment", precision: 10, scale: 2, default: "0.0"
+    t.integer "additional_price_group_id"
+    t.decimal "penalty", precision: 13, scale: 2, default: "0.0", null: false
+    t.decimal "early_end_discount", precision: 13, scale: 2, default: "0.0", null: false
+    t.boolean "staff_assistance", default: false
     t.index ["account_id"], name: "fk_od_accounts"
     t.index ["assigned_user_id"], name: "index_order_details_on_assigned_user_id"
     t.index ["bundle_product_id"], name: "fk_bundle_prod_id"
@@ -563,6 +589,15 @@ ActiveRecord::Schema.define(version: 2021_04_30_061137) do
     t.index ["product_id"], name: "index_product_accessories_on_product_id"
   end
 
+  create_table "product_admins", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "product_id"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_product_admins_on_product_id"
+    t.index ["user_id"], name: "index_product_admins_on_user_id"
+  end
+
   create_table "product_display_group_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "product_display_group_id", null: false
     t.integer "product_id", null: false
@@ -593,6 +628,7 @@ ActiveRecord::Schema.define(version: 2021_04_30_061137) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "deleted_at"
+    t.string "remark", limit: 200
     t.index ["product_access_group_id"], name: "index_product_users_on_product_access_group_id"
     t.index ["product_id"], name: "fk_products"
     t.index ["user_id"], name: "index_product_users_on_user_id"
@@ -633,6 +669,9 @@ ActiveRecord::Schema.define(version: 2021_04_30_061137) do
     t.boolean "email_purchasers_on_order_status_changes", default: false, null: false
     t.boolean "problems_resolvable_by_user", default: false, null: false
     t.string "room_no"
+    t.integer "session_mins", default: 0
+    t.boolean "show_details_with_access", default: false, null: false
+    t.boolean "allows_staff_assistance"
     t.index ["dashboard_token"], name: "index_products_on_dashboard_token"
     t.index ["facility_account_id"], name: "fk_facility_accounts"
     t.index ["facility_id"], name: "fk_rails_0c9fa1afbe"
@@ -669,6 +708,25 @@ ActiveRecord::Schema.define(version: 2021_04_30_061137) do
     t.index ["instrument_id"], name: "index_relays_on_instrument_id"
   end
 
+  create_table "request_endorsements", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "supervisor", limit: 50, null: false
+    t.string "token", null: false
+    t.boolean "is_accepted"
+    t.datetime "deleted_at"
+    t.integer "deleted_by"
+    t.integer "created_by", null: false
+    t.integer "updated_by", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "first_name", limit: 200
+    t.string "last_name", limit: 200
+    t.string "email", limit: 200
+    t.string "dept_abbrev", limit: 10
+    t.boolean "is_academic"
+    t.index ["user_id"], name: "fk_user_id"
+  end
+
   create_table "research_project_members", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "research_project_id", null: false
     t.string "username", null: false
@@ -701,6 +759,8 @@ ActiveRecord::Schema.define(version: 2021_04_30_061137) do
     t.string "group_id"
     t.string "user_note"
     t.integer "billable_minutes"
+    t.datetime "card_start_at"
+    t.datetime "card_end_at"
     t.index ["created_by_id"], name: "index_reservations_on_created_by_id"
     t.index ["deleted_at"], name: "index_reservations_on_deleted_at"
     t.index ["group_id"], name: "index_reservations_on_group_id"
@@ -889,6 +949,9 @@ ActiveRecord::Schema.define(version: 2021_04_30_061137) do
     t.datetime "updated_at", null: false
     t.integer "created_by"
     t.integer "updated_by"
+    t.string "net_id", limit: 200
+    t.string "dept_abbrev", limit: 10
+    t.boolean "is_academic"
   end
 
   create_table "training_requests", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -1022,6 +1085,7 @@ ActiveRecord::Schema.define(version: 2021_04_30_061137) do
   add_foreign_key "account_facility_joins", "facilities"
   add_foreign_key "account_users", "accounts", name: "fk_accounts"
   add_foreign_key "account_users", "users"
+  add_foreign_key "additional_price_policies", "price_policies", name: "fk_price_policy_id"
   add_foreign_key "agreement_templates", "facilities", name: "fk_agreement_templates_facilities"
   add_foreign_key "bulk_email_jobs", "facilities"
   add_foreign_key "bulk_email_jobs", "users"
@@ -1069,6 +1133,8 @@ ActiveRecord::Schema.define(version: 2021_04_30_061137) do
   add_foreign_key "price_groups", "facilities"
   add_foreign_key "price_policies", "price_groups"
   add_foreign_key "price_policies", "users", column: "created_by_id"
+  add_foreign_key "product_admins", "products"
+  add_foreign_key "product_admins", "users"
   add_foreign_key "product_display_group_products", "product_display_groups"
   add_foreign_key "product_display_group_products", "products"
   add_foreign_key "product_display_groups", "facilities"
@@ -1078,6 +1144,7 @@ ActiveRecord::Schema.define(version: 2021_04_30_061137) do
   add_foreign_key "products", "facility_accounts", name: "fk_facility_accounts"
   add_foreign_key "products", "schedules", name: "fk_instruments_schedule"
   add_foreign_key "projects", "facilities"
+  add_foreign_key "request_endorsements", "users", name: "fk_user_id"
   add_foreign_key "research_project_members", "research_projects"
   add_foreign_key "reservations", "order_details"
   add_foreign_key "reservations", "products", name: "reservations_instrument_id_fk"
@@ -1111,9 +1178,9 @@ ActiveRecord::Schema.define(version: 2021_04_30_061137) do
   add_foreign_key "user_roles", "users"
 
   create_view "account_free_balances", sql_definition: <<-SQL
-      select `a`.`id` AS `account_id`,`a`.`committed_amt` AS `committed_amt`,coalesce(sum((case when isnull(`od`.`actual_cost`) then `od`.`estimated_cost` else `od`.`actual_cost` end)),0) AS `total_expense` from ((`accounts` `a` join `order_details` `od` on(((`od`.`account_id` = `a`.`id`) and (`od`.`state` <> 'validated') and isnull(`od`.`canceled_at`)))) join `orders` `o` on(((`o`.`id` = `od`.`order_id`) and (`o`.`state` <> 'validated')))) group by `a`.`id`,`a`.`committed_amt`
+      select `a`.`id` AS `account_id`,`a`.`committed_amt` AS `committed_amt`,coalesce(sum((case when isnull(`od`.`actual_cost`) then ((`od`.`estimated_cost` - `od`.`estimated_subsidy`) + `od`.`actual_adjustment`) else ((`od`.`actual_cost` - `od`.`actual_subsidy`) + `od`.`actual_adjustment`) end)),0) AS `total_expense` from ((`accounts` `a` join `order_details` `od` on(((`od`.`account_id` = `a`.`id`) and (`od`.`state` <> 'validated') and (`od`.`state` <> 'canceled')))) join `orders` `o` on(((`o`.`id` = `od`.`order_id`) and (`o`.`state` <> 'validated')))) group by `a`.`id`,`a`.`committed_amt`
   SQL
   create_view "account_user_expenses", sql_definition: <<-SQL
-      select `au`.`id` AS `account_user_id`,`od`.`account_id` AS `account_id`,`o`.`user_id` AS `user_id`,sum((case when isnull(`od`.`actual_cost`) then `od`.`estimated_cost` else `od`.`actual_cost` end)) AS `expense_amt` from ((`order_details` `od` join `orders` `o` on(((`o`.`id` = `od`.`order_id`) and (`o`.`state` <> 'validated')))) join `account_users` `au` on(((`au`.`account_id` = `od`.`account_id`) and (`au`.`user_id` = `o`.`user_id`)))) where isnull(`od`.`canceled_at`) group by `au`.`id`,`od`.`account_id`,`o`.`user_id`
+      select `au`.`id` AS `account_user_id`,`od`.`account_id` AS `account_id`,`o`.`user_id` AS `user_id`,sum((case when isnull(`od`.`actual_cost`) then `od`.`estimated_cost` else `od`.`actual_cost` end)) AS `expense_amt` from ((`order_details` `od` join `orders` `o` on(((`o`.`id` = `od`.`order_id`) and (`o`.`state` <> 'validated')))) join `account_users` `au` on(((`au`.`account_id` = `od`.`account_id`) and (`au`.`user_id` = `o`.`user_id`)))) where (`od`.`state` <> 'canceled') group by `au`.`id`,`od`.`account_id`,`o`.`user_id`
   SQL
 end

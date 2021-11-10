@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+ # frozen_string_literal: true
 
 class FacilityAccountsController < ApplicationController
 
@@ -37,6 +37,7 @@ class FacilityAccountsController < ApplicationController
 
   def allocation
     @account_users = @account.account_users
+    @account_user_import = AccountUser.new
   end
 
   def funding_requests
@@ -53,7 +54,7 @@ class FacilityAccountsController < ApplicationController
     fr_param = params[:funding_request]
 
     if is_allow_request
-      creator = FundingRequestCreator.new(@account, session_user.id, params)
+      creator = FundingRequestCreator.new(@account, session_user, params)
       if creator.save()
         redirect_to facility_account_funding_requests_path(current_facility, @account)
       else
@@ -212,6 +213,52 @@ class FacilityAccountsController < ApplicationController
     end
   end
 
+
+  def export_user
+    @account = Account.find(params[:account_id])
+    unless @account.nil?
+      @csv = Reports::PaymentSourceUserImport.new(nil, @account, session_user)
+      respond_to do |format|
+        format.html
+        format.csv { send_data @csv.export!, filename: "payment_source_user_import_template_#{Date.today}.csv" }
+        # format.html
+      end
+    end
+  end
+
+  def import_user
+
+    begin
+      raise "Please upload a valid import file" unless params[:account_user].present?
+
+      # @account = session_user.accounts.find(params[:account_id])
+      @account = Account.find(params[:account_id])
+
+      if (!@account.allows_allocation.nil? && @account.allows_allocation == true)
+
+        unless @account.nil?
+          @csv = Reports::PaymentSourceUserImport.new(params[:account_user][:file], @account, session_user)
+          @csv.import("Update")
+          flash.now[:notice] = "Save success"
+        end
+      end
+    rescue => e
+      import_exception_alert(e)
+    end
+
+    redirect_to facility_account_allocation_path(current_facility, @account)
+  end
+
+  def import_exception_alert(exception)
+    Rails.logger.error "#{exception.message}\n#{exception.backtrace.join("\n")}"
+    flash[:error] = import_exception_message(exception)
+  end
+
+  def import_exception_message(exception)
+    I18n.t("controllers.order_imports.create.error", error: exception.message)
+  end
+
+
   private
 
   def available_account_types
@@ -261,14 +308,14 @@ class FacilityAccountsController < ApplicationController
       end
       @account.alert_threshold = params[:nufs_account][:alert_threshold].to_f
       free_balance = @account.free_balance
-      
+
       if(params[:action].eql?('update'))
         # if(@account.alert_threshold > free_balance)
         #   flash[:error] = "Free balance must be equal to or larger than alert threshold"
         #   render_page = true
         # end
       end
-      
+
     end
 
     if(render_page == true)
@@ -277,7 +324,7 @@ class FacilityAccountsController < ApplicationController
       else
         render action: "new"
       end
-       
+
     end
   end
 

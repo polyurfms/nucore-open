@@ -21,6 +21,9 @@ module TransactionSearch
       end
     end
 
+    def label_name
+      I18n.t("search_field.order_status")
+    end
   end
 
 end

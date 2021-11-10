@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "ldap_authentication/user_lookup"
+require "ldap_authentication/supervisor_lookup"
 
 module LdapAuthentication
 

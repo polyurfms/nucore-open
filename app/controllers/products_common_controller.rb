@@ -9,6 +9,7 @@ class ProductsCommonController < ApplicationController
   before_action :init_current_facility
   before_action :init_product, except: [:index, :new, :create]
   before_action :store_fullpath_in_session
+  before_action :check_supervisor, only: [:show]
 
   include TranslationHelper
 
@@ -39,12 +40,12 @@ class ProductsCommonController < ApplicationController
   def show
     @active_tab = "home"
     product_for_cart = ProductForCart.new(@product)
-    # @add_to_cart = product_for_cart.purchasable_by?(acting_user, session_user) 
+    # @add_to_cart = product_for_cart.purchasable_by?(acting_user, session_user)
 
     @add_to_cart = false
-    if(has_delegated && session[:is_selected_user] == true) 
+    if(has_delegated && session[:is_selected_user] == true)
       @add_to_cart = true
-    else 
+    else
       @add_to_cart = product_for_cart.purchasable_by?(acting_user, session_user)
     end
 
@@ -99,7 +100,7 @@ class ProductsCommonController < ApplicationController
     else
       flash[:error] = "There was a problem deleting the #{@product.class.name.to_lower}"
     end
-    redirect_to [current_facility, plural_object_name]
+    redirect_to [current_facility, plural_object_name.to_sym]
   end
 
   def manage
@@ -113,11 +114,14 @@ class ProductsCommonController < ApplicationController
     params.require(:"#{singular_object_name}").permit(:name, :url_name, :contact_email, :description,
                                                       :facility_account_id, :account, :initial_order_status_id,
                                                       :requires_approval, :allows_training_requests, :is_archived, :is_hidden, :email_purchasers_on_order_status_changes,
-                                                      :user_notes_field_mode, :user_notes_label, :show_details,
+                                                      :user_notes_field_mode, :user_notes_label, :show_details, :show_details_with_access,
                                                       :schedule_id, :control_mechanism, :reserve_interval,
                                                       :min_reserve_mins, :max_reserve_mins, :min_cancel_hours,
+                                                      :session_mins,
                                                       :auto_cancel_mins, :lock_window, :cutoff_hours,
-                                                      :problems_resolvable_by_user, :room_no,
+                                                      :problems_resolvable_by_user,
+                                                      :allows_staff_assistance,
+                                                      :room_no,
                                                       relay_attributes: [:ip, :ip_port, :outlet, :username, :password, :type,
                                                                          :auto_logout, :auto_logout_minutes, :id])
   end
@@ -147,4 +151,9 @@ class ProductsCommonController < ApplicationController
   end
   helper_method :singular_object_name
 
+  def check_supervisor
+    if session[:had_supervisor] == 0
+      return redirect_to '/no_supervisor'
+    end
+  end
 end

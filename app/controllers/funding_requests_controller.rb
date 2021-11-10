@@ -87,7 +87,7 @@ class FundingRequestsController < ApplicationController
 
     if is_allow_request
 
-      creator = FundingRequestCreator.new(@account, session_user.id, params)
+      creator = FundingRequestCreator.new(@account, session_user, params)
       if creator.save()
         flash.now[:notice] = "Funding request submitted." #text("update.success")
         render :show

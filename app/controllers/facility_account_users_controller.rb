@@ -34,7 +34,8 @@ class FacilityAccountUsersController < ApplicationController
   # POST /facilities/:facility_id/accounts/:account_id/account_users
   def create
     @user = User.find(params[:user_id])
-    @account_user = AccountUser.grant(@user, create_params[:user_role], @account, by: session_user)
+    # @account_user = AccountUser.grant(@user, create_params[:user_role], @account, by: session_user)
+    @account_user = AccountUser.create_member(@user, create_params[:user_role], @account, by: session_user)
 
     if @account_user.persisted?
       flash[:notice] = text("create.success", user: @user.full_name, account_type: @account.type_string)
@@ -63,6 +64,16 @@ class FacilityAccountUsersController < ApplicationController
     redirect_to facility_account_members_path(current_facility, @account)
   end
 
+  def import_user
+    begin
+      process_payment_source_user_import!
+    rescue => e
+      import_exception_alert(e)
+    end
+    
+    redirect_to facility_account_members_path(current_facility, @account)
+  end
+
   private
 
   def init_account
@@ -76,5 +87,30 @@ class FacilityAccountUsersController < ApplicationController
   def current_owner?
     @account.owner_user == @user
   end
+
+  def import_payment_source_uer!
+    @account = Account.find(params[:account_id])
+    unless @account.nil? 
+      @csv = Reports::PaymentSourceUserImport.new(params[:account_user][:file], @account, session_user)
+      @csv.import("Insert")
+      flash.now[:notice] = "Save success" 
+    end
+    
+  end
+  
+  def process_payment_source_user_import!
+    raise "Please upload a valid import file" unless params[:account_user].present?
+    import_payment_source_uer!
+  end
+
+  def import_exception_alert(exception)
+    Rails.logger.error "#{exception.message}\n#{exception.backtrace.join("\n")}"
+    flash[:error] = import_exception_message(exception)
+  end
+  
+  def import_exception_message(exception)
+    I18n.t("controllers.order_imports.create.error", error: exception.message)
+  end
+
 
 end

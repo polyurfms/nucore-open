@@ -6,6 +6,11 @@
   label: false,
   inline_label: text("instruments.instrument_fields.show_details")
 
+= f.input :show_details_with_access,
+  as: :boolean,
+  label: false,
+  inline_label: text("instruments.instrument_fields.show_details_with_access")
+
 - if f.object.new_record?
   = f.association :schedule,
     collection: current_facility.schedules.active.order(:name),
@@ -13,7 +18,9 @@
 - else
   = f.input :schedule, as: :readonly, value_method: :display_name, hint: false
 
-= f.input :problems_resolvable_by_user, as: :boolean, label: false, inline_label: true
+-#= f.input :problems_resolvable_by_user, as: :boolean, label: false, inline_label: true
+
+= f.input :allows_staff_assistance, as: :boolean, label: false, inline_label: text("instruments.instrument_fields.allows_staff_assistance")
 
 = f.input :control_mechanism,
   collection: options_for_control_mechanism,
@@ -59,6 +66,10 @@
   = f.input :max_reserve_mins,
     label: text("instruments.instrument_fields.reservation.label.max_reserve"),
     hint: text("instruments.instrument_fields.reservation.instruct.max_reserve")
+
+  = f.input :session_mins,
+    label: text("instruments.instrument_fields.reservation.label.session_reserve"),
+    hint: text("instruments.instrument_fields.reservation.instruct.session_reserve")
 
   = f.input :min_cancel_hours,
     label: text("instruments.instrument_fields.reservation.label.cancel_hours"),

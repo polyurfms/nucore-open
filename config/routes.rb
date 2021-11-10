@@ -13,7 +13,7 @@ Rails.application.routes.draw do
     match "/users/password/reset", to: "user_password#reset", as: "reset_password", via: [:get, :post]
   end
 
- 
+
   if SettingsHelper.feature_on?(:profile_update)
     match "/users/profile", to: "user_profile#edit_current", as: "edit_current_profile", via: [:get, :post]
     match "/users/profile/update_mobile", to: "user_profile#update_mobile", as: "update_mobile", via: [:post]
@@ -21,12 +21,17 @@ Rails.application.routes.draw do
   # root route
   root to: "public#index"
 
-  
+
   get "/no_supervisor", to: "no_supervisors#index"
 
   post "agree_terms" , to: "user_agreements#agree"
   post "get_is_agree_terms" , to: "user_agreements#get_is_agree_terms"
   post "agree_facility_terms" , to: "agreement#agree"
+
+  # API
+  get "api/supervisor_endorsement?token=:token", to: "api#supervisor_endorsement", as: "supervisor_endorsement"
+  get "api/supervisor_endorsement", to: "api#supervisor_endorsement"
+  post "api/supervisor_endorsement_submit", to: "api#supervisor_endorsement_submit" , as: "supervisor_endorsement_submit"
 
   resources :agreement, controller: "agreement", only: [:index, :update, :show] do
   end
@@ -37,10 +42,10 @@ Rails.application.routes.draw do
 
   # shared searches
   get "/user_search_results", to: "search#user_search_results"
+  get "/supervisor_user_search_results", to: "search#supervisor_user_search_results"
   get "/#{I18n.t('facilities_downcase')}/:facility_id/price_group/:price_group_id/account_price_group_members/search_results", to: "account_price_group_members#search_results"
 
   post "global_search" => "global_search#index", as: "global_search"
-
   resources :users, only: [] do
     resources :user_preferences, only: [:index, :edit, :update], shallow: true
   end
@@ -71,6 +76,8 @@ Rails.application.routes.draw do
     resources :account_allocations, only: [:index, :create, :new, :edit, :show, :update] do
       collection do
         post "update_allocation"
+        post "import_user"
+        get "export_user"
       end
     end
 
@@ -81,6 +88,7 @@ Rails.application.routes.draw do
         get "new_external"
         post "add_user"
         post "insert_user"
+        post "import_user"
       end
     end
 
@@ -140,6 +148,13 @@ Rails.application.routes.draw do
       resources :schedule_rules, except: [:show]
       resources :product_access_groups
       resources :price_policies, controller: "instrument_price_policies", except: [:show]
+      resources :additional_price_policies, except: [:show, :new, :edit, :update, :destroy] do
+        get "add", to:"additional_price_policies#add"
+        post "update", to: "additional_price_policies#update"
+        get "/edit/:id", to: "additional_price_policies#edit", as: :additional_price_policies
+        get "/delete/:id", to: "additional_price_policies#delete", as: :additional_price_policies_delete
+      end
+
       resources :reservations, only: [:new, :create, :destroy], controller: "facility_reservations" do
         get "edit_admin", to: "facility_reservations#edit_admin"
         patch "update_admin", to: "facility_reservations#update_admin"
@@ -147,6 +162,8 @@ Rails.application.routes.draw do
 
       resources :reservations, only: [:index]
       put "update_restrictions", to: "product_users#update_restrictions"
+
+      resource :product_admin, controller: "product_admins", only: [:new, :create, :destroy]
 
       resource :alert, controller: "instrument_alerts", only: [:new, :create, :destroy]
     end
@@ -165,6 +182,7 @@ Rails.application.routes.draw do
 
     resources :items do
       facility_product_routing_concern
+      resource :product_admin, controller: "product_admins", only: [:new, :create, :destroy]
       resources :price_policies, controller: "item_price_policies", except: [:show]
     end
 
@@ -211,6 +229,9 @@ Rails.application.routes.draw do
       end
       get "access_list",  to: "users#access_list"
       post "access_list/approvals", to: "users#access_list_approvals"
+
+      get "product_admin_list",  to: "users#product_admin_list"
+      post "product_admin_list/update", to: "users#product_admin_list_update"
 
       resource :accounts, controller: "user_accounts", only: [:show, :edit, :update]
       resources :clone_account_memberships, only: %i[index new create] do
@@ -263,6 +284,7 @@ Rails.application.routes.draw do
         get "show_problems"
         get "timeline"
         get "tab_counts"
+        get "search_schedule"
       end
     end
 
@@ -277,6 +299,7 @@ Rails.application.routes.draw do
         resources :account_users, controller: "facility_account_users", only: [:new, :destroy, :create, :update] do
           collection do
             get "user_search"
+            post "import_user"
           end
         end
 
@@ -299,6 +322,7 @@ Rails.application.routes.draw do
       post "/allocation_update", to: "facility_accounts#allocation_update", as: "allocation_update"
       post "/create_funding_request", to: "facility_accounts#create_funding_request", as: "create_funding_request"
 
+      post "import_user"
 
       if Account.config.statements_enabled?
         get "/statements", to: "facility_accounts#statements", as: :statements
@@ -346,7 +370,9 @@ Rails.application.routes.draw do
     post "movable_transactions/confirm", to: "facilities#confirm_transactions"
     post "movable_transactions/move", to: "facilities#move_transactions"
 
-    resources :statements, controller: "facility_statements", only: [:index, :new, :show, :create]
+    resources :statements, controller: "facility_statements", only: [:index, :new, :show, :create] do
+      get "/rollback", to: "facility_statements#rollback_statement", as: "rollback"
+    end
 
     get "general_reports/raw", to: "reports/export_raw_reports#export_all", as: "export_raw_reports"
     get "general_reports/:report_by", to: "reports/general_reports#index", as: "general_reports"
@@ -453,8 +479,11 @@ Rails.application.routes.draw do
   post "api/place_smart_card", to: "api#place_smart_card", as: "place_smart_card"
   post "api/get_next_reservation", to: "api#get_next_reservation", as: "get_next_reservation"
 
-  
-  # file upload routes
+  resources :request_endorsements, except: [:update, :new, :create, :edit, :show], controller: "request_endorsements" do
+    post "make_request", to: "request_endorsements#make_request"
+  end
+
+# file upload routes
   post  "/#{I18n.t('facilities_downcase')}/:facility_id/:product/:product_id/sample_results", to: "file_uploads#upload_sample_results", as: "add_uploader_file"
   get   "/#{I18n.t('facilities_downcase')}/:facility_id/:product/:product_id/files/product_survey", to: "file_uploads#product_survey", as: "product_survey"
   post  "/#{I18n.t('facilities_downcase')}/:facility_id/:product/:product_id/files/create_product_survey", to: "file_uploads#create_product_survey", as: "create_product_survey"

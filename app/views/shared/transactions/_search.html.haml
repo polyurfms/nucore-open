@@ -2,13 +2,16 @@
   .row
     %fieldset.span6#search
       - @search.options.reject(&:multipart?).each do |searcher|
-        = f.input searcher.key, as: :transaction_chosen, collection: searcher.options, label: searcher.label, label_method: searcher.label_method, data_attrs: searcher.method(:data_attrs), input_html: { id: searcher.key }
+        -# = f.input searcher.key, as: :transaction_chosen, collection: searcher.options, label: searcher.label, label_method: searcher.label_method, data_attrs: searcher.method(:data_attrs), input_html: { id: searcher.key }
+        = f.input searcher.key, as: :transaction_chosen, collection: searcher.options, label: searcher.label_name, label_method: searcher.label_method, data_attrs: searcher.method(:data_attrs), input_html: { id: searcher.key }
 
     %fieldset.span2#calendar_filter
       - if @search.options.map(&:key).include?("date_ranges")
         = f.input :date_range_field, collection: TransactionSearch::DateRangeSearcher.options(only: @search_form.allowed_date_fields), label: t("reports.fields.billing_status"), include_blank: false
         = f.input :date_range_start, input_html: {class: ["datepicker", "in_past"] }, label: t("reports.fields.date_start")
         = f.input :date_range_end, input_html: { class: ["datepicker", "in_past"] }, label: t("reports.fields.date_end")
+        - if @payment_type_filter || false 
+          = f.input :payment_type_field, collection: TransactionSearch::DateRangeSearcher.payment_type_options(only: @search_form.payment_type_fields), label: t("reports.fields.payment_type"), include_blank: false
 
     .submit_button.span12
       = hidden_field_tag :email, current_user.email, disabled: true

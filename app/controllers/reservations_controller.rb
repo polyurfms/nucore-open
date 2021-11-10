@@ -29,7 +29,6 @@ class ReservationsController < ApplicationController
 
   # GET /facilities/1/instruments/1/reservations.js?_=1279579838269&start=1279429200&end=1280034000
   def index
-
     @facility = Facility.find_by!(url_name: params[:facility_id])
     @instrument = @facility.instruments.find_by!(url_name: params[:instrument_id])
 
@@ -235,6 +234,7 @@ class ReservationsController < ApplicationController
     end
 
     @reservation.assign_times_from_params(reservation_params)
+
     with_dropped_params do
       reservation_update_attributes = params.require(:reservation).permit(:note)
       @reservation.assign_attributes(reservation_update_attributes)
@@ -250,6 +250,32 @@ class ReservationsController < ApplicationController
           raise ActiveRecord::Rollback
         end
 
+        #@order_detail.additional_price_policy_name = params[:additional_price_policy] unless params[:additional_price_policy].nil?
+
+        # Check additional price policy exist in current period    
+        unless params[:additional_price_policy].blank?
+          if @reservation.reserve_start_at < Time.zone.now && params[:additional_price_policy] != @order_detail.additional_price_group_id
+            flash.now[:error] = "The reservation started. You can not change addition item"
+            raise ActiveRecord::Rollback
+          end
+
+          addition_price_policy_list = AdditionalPricePolicy.joins("INNER JOIN additional_price_groups ON additional_price_policies.additional_price_group_id = additional_price_groups.id")
+          .where("additional_price_groups.id = :id", id: params[:additional_price_policy])
+          .joins(:price_policy).where("start_date <= :now AND expire_date > :now", now: @reservation.reserve_start_at).uniq
+
+          is_exist_addition_item = addition_price_policy_list.count > 0 ? true : false
+          
+          unless is_exist_addition_item
+            price_policy_id = AdditionalPricePolicy.joins("INNER JOIN additional_price_groups ON additional_price_policies.additional_price_group_id = additional_price_groups.id")
+            .where("additional_price_groups.id = :id", id: params[:additional_price_policy]).joins(:price_policy).uniq.pluck :price_policy_id
+            start_date = PricePolicy.where("id IN (?)", price_policy_id).where("price_policies.start_date > :now", now: @reservation.reserve_start_at).order("price_policies.start_date ASC").uniq.pluck :start_date 
+            addition_item = AdditionalPriceGroup.find(params[:additional_price_policy])
+            flash.now[:error] = "#{addition_item.name} start on #{format_usa_date(start_date.first)}"
+            raise ActiveRecord::Rollback
+          end
+        end
+
+        @order_detail.additional_price_group_id = params[:additional_price_policy] unless params[:additional_price_policy].nil?
         @old_order_detail_estimated_cost = @order_detail.estimated_cost
 
         # @account_user = AccountUser.find_by(account_id: @order_detail.account_id, deleted_at: nil, user_id: session_user.id)
@@ -451,6 +477,11 @@ class ReservationsController < ApplicationController
   end
 
   def set_windows
+
+    #@select_additional_price_policy = @order_detail.additional_price_policy_name
+    @additional_price_group_id = @order_detail.additional_price_group_id
+    @additional_price_policy = @order_detail.product.price_policies.get_additional_price_policy_list
+    @select_additional_price_policy = params[:additional_price_policy] unless params[:additional_price_policy].nil?
     @reservation_window = ReservationWindow.new(@reservation, current_user)
   end
 

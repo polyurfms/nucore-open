@@ -27,6 +27,8 @@
     = f.input :supervisor_first_name
     = f.input :supervisor_last_name
     = f.input :supervisor_email
+    - if current_user.administrator? && SettingsHelper.feature_on?(:user_based_price_groups)
+      = f.input :supervisor_is_acad_staff?, label: text(".supervisor_is_academic"), as: :select, default: false
 
     = f.button :submit, text("shared.update"), class: ["btn", "btn-primary"]
     &nbsp;

@@ -1,0 +1,73 @@
+= content_for :h1 do
+  = current_facility
+= content_for :sidebar do
+  = render "admin/shared/sidenav_product", sidenav_tab: @product.class.name.pluralize.underscore
+= content_for :tabnav do
+  = render "admin/shared/tabnav_product", secondary_tab: "addition_pricing_rules"
+
+%h2= @product
+%p= text("description")
+-# - if can?(:create, PricePolicy)
+-#   %ul.inline
+-#     %li= link_to text("add"), [:new, current_facility, @product, :price_policy], class: "btn-add"
+
+- if @current_price_policies.empty?
+  %p.notice= text("none")
+
+- else
+  %h3= text("current")
+  - policy = @current_price_policies.first
+  %h4= text("dates", start: human_date(@current_start_date), expires: human_date(policy.expire_date))
+  - if policy.charge_for.present?
+    %p
+      %em= text("charges_for", charge_for: policy.charge_for)
+  %p
+    %em= text("note", note: policy.note)
+    - if can?(:create, PricePolicy)
+      %ul.inline
+        %li= link_to text("add"), facility_instrument_additional_price_policy_add_path(current_facility, @product, @current_start_date.strftime("%Y-%m-%d")), class: "btn-add"
+  
+  = render "table",
+    price_policies: @current_price_policies,
+    addition_price_policies: @current_additional_price_policies,
+    url_date: @current_start_date.strftime("%Y-%m-%d"),
+    product: @product
+
+  = price_policy_errors(@product)
+
+- if @next_price_policies_by_date.present?
+  %h3= text("upcoming")
+  - @next_price_policies_by_date.each do |date, rules|
+    - policy = rules.first
+    - result = AdditionalPricePolicy.get_additional_price_policy_list_for_show(rules)
+    -# - if result.count > 0
+    %h4= text("dates", start: human_date(date), expires: human_date(policy.expire_date))
+    - if policy.charge_for.present?
+      %p.charge-for= text("charges_for", charge_for: policy.charge_for)
+    - if rules.select(&:can_purchase?) 
+      %ul.inline
+        %li= link_to text("add"), facility_instrument_additional_price_policy_add_path(current_facility, @product, date.strftime("%Y-%m-%d")), class: "btn-add"
+    
+      = render "table",
+        price_policies: rules,
+        addition_price_policies: result,
+        url_date: date.strftime("%Y-%m-%d"),
+        product: @product
+
+
+- if @past_price_policies_by_date.present?
+  %h3
+    = link_to '#past', data: { toggle: "collapse" } do
+      %i.fa.fa-folder-open
+      = text("past")
+  #past.collapse
+    - @past_price_policies_by_date.each do |date, rules|
+      - policy = rules.first      
+      - result = AdditionalPricePolicy.get_additional_price_policy_list_for_show(rules)
+      - if result.count > 0
+        %h4= text("dates", start: human_date(date), expires: human_date(policy.expire_date))
+        = render "table",
+          price_policies: rules,
+          addition_price_policies: result,
+          url_date: date.strftime("%Y-%m-%d"),
+          product: @product

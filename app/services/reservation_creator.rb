@@ -2,6 +2,8 @@
 
 class ReservationCreator
 
+  include DateHelper
+
   attr_reader :order, :order_detail, :params, :error
 
   delegate :merged_order?, :instrument_only_order?, to: :status_q
@@ -18,23 +20,48 @@ class ReservationCreator
       return false
     end
 
-    
+    reservation_param = params[:reservation]
+
+    if reservation_param[:reserve_end_min].blank? || reservation_param[:reserve_start_min].blank?
+      @error = I18n.t("controllers.reservations.create.invalid_start_end_time")
+      return false
+    end
+
+    # Check additional price policy exist in current period
+    unless params[:additional_price_policy].blank?
+      is_exist_addition_item = getAdditionalPricePolicy(params[:additional_price_policy], reservation_param[:reserve_start_date])
+      unless is_exist_addition_item
+        price_policy_id = AdditionalPricePolicy.joins("INNER JOIN additional_price_groups ON additional_price_policies.additional_price_group_id = additional_price_groups.id").where("additional_price_groups.id = :id", id: params[:additional_price_policy]).joins(:price_policy).uniq.pluck :price_policy_id
+        start_date = PricePolicy.where("id IN (?)", price_policy_id).where("price_policies.start_date > :now", now: format_usa_date(reservation_param[:reserve_start_date])).order("price_policies.start_date ASC").uniq.pluck :start_date
+        addition_item = AdditionalPriceGroup.find(params[:additional_price_policy])
+        @error = "#{addition_item.name} start on #{format_usa_date(start_date.first)}"
+        return false
+      end
+    end
 
     Reservation.transaction do
       begin
         update_order_account
-        
         @order.dept_abbrev = session_user.dept_abbrev
-        
+
+        #@order_detail.additional_price_policy_name = params[:additional_price_policy] unless params[:additional_price_policy].blank?
+
+        unless params[:additional_price_policy].blank?
+          @order_detail.additional_price_group_id = params[:additional_price_policy]
+        end
+
+        unless params[:staff_assistance].blank?
+          @order_detail.staff_assistance = params[:staff_assistance]
+        end
+
         # merge state can change after call to #save! due to OrderDetailObserver#before_save
         to_be_merged = @order_detail.order.to_be_merged?
-
         raise ActiveRecord::RecordInvalid, @order_detail unless reservation_and_order_valid?(session_user)
-
         validator = OrderPurchaseValidator.new(@order_detail)
         raise ActiveRecord::RecordInvalid, @order_detail if validator.invalid?
 
         save_reservation_and_order_detail(session_user)
+
 
         # When allows_allocation is true, free_balance must more than that stimated_cost
         not_enough = ""
@@ -82,7 +109,7 @@ class ReservationCreator
       end
     end
 
-    
+
   end
 
   def reservation
@@ -90,6 +117,7 @@ class ReservationCreator
     @reservation = @order_detail.build_reservation
     @reservation.assign_attributes(reservation_create_params)
     @reservation.assign_times_from_params(reservation_create_params)
+    @reservation.select_additional_price_policy = params[:additional_price_policy] unless params[:additional_price_policy].blank?
     @reservation
   end
 
@@ -127,12 +155,20 @@ class ReservationCreator
 
   def save_reservation_and_order_detail(session_user)
     reservation.save_as_user!(session_user)
+    order_detail.actual_adjustment = 0
     order_detail.assign_estimated_price(reservation.reserve_end_at)
     order_detail.save_as_user!(session_user)
   end
 
   def status_q
     ActiveSupport::StringInquirer.new(@success.to_s)
+  end
+
+  def getAdditionalPricePolicy(additional_price_policy_id, start_datetime)
+    addition_price_policy_list = AdditionalPricePolicy.joins("INNER JOIN additional_price_groups ON additional_price_policies.additional_price_group_id = additional_price_groups.id").where("additional_price_groups.id = :id", id: additional_price_policy_id)
+    .joins(:price_policy).where("start_date <= :now AND expire_date > :now", now: parse_usa_date(start_datetime)).uniq.count
+    result = addition_price_policy_list > 0 ? true : false
+    result
   end
 
 end

@@ -100,6 +100,18 @@ class UsersController < ApplicationController
     @facility = current_facility
     @products_by_type = Product.for_facility(@facility).requiring_approval_by_type
     @training_requested_product_ids = @user.training_requests.pluck(:product_id)
+    @user_approved_at_for_product_id = @user.approval_dates_by_product
+    @user_approval_remark_by_product = @user.approval_remark_by_product
+  end
+
+  # GET /facilities/:facility_id/users/:user_id/admin_list
+  def product_admin_list
+    # Unsupported in cross-facility mode
+    raise ActiveRecord::RecordNotFound if current_facility.cross_facility?
+    @facility = current_facility
+    @facility_products = Product.for_facility(@facility)
+    @product_admin_by_user = @user.product_admin_by_user
+
   end
 
   # POST /facilities/:facility_id/users/:user_id/access_list/approvals
@@ -110,6 +122,15 @@ class UsersController < ApplicationController
     update_access_list_approvals
     redirect_to facility_user_access_list_path(current_facility, @user)
   end
+
+  # POST /facilities/:facility_id/users/:user_id/product_admin_list/update
+  def product_admin_list_update
+    # Unsupported in cross-facility mode
+    raise ActiveRecord::RecordNotFound if current_facility.cross_facility?
+    assign_product_to_admin_user
+    redirect_to facility_user_product_admin_list_path(current_facility, @user)
+  end
+
 
   # GET /facilities/:facility_id/users/:id/edit
   def edit
@@ -154,7 +175,7 @@ class UsersController < ApplicationController
   end
 
   def edit_supervisor_params
-    params.require(:user).permit(:supervisor_last_name, :supervisor_first_name, :supervisor_email)
+    params.require(:user).permit(:supervisor_last_name, :supervisor_first_name, :supervisor_email, :supervisor_is_acad_staff)
   end
 
   def price_group_params
@@ -206,11 +227,43 @@ class UsersController < ApplicationController
       update_approvals.revoked_product_users.each do |product_user|
         LogEvent.log(product_user, :delete, current_user)
       end
+    else
+      flash[:notice] = I18n.t "controllers.users.access_list.remark_update.notice"
     end
     if update_approvals.access_groups_changed?
       add_flash(:notice,
                 I18n.t("controllers.users.access_list.scheduling_group_update.notice",
                        update_count: update_approvals.access_groups_changed))
+    end
+
+    update_remark(approved_products_from_params)
+  end
+
+  def assign_product_to_admin_user
+
+    if update_admin_assignemnts.grants_changed?
+      flash[:notice] = I18n.t "controllers.users.product_admin_list.assingment_update.notice",
+                              granted: update_admin_assignemnts.granted, revoked: update_admin_assignemnts.revoked
+      update_admin_assignemnts.granted_product_admins.each do |product_admin|
+        LogEvent.log(product_admin, :create, current_user)
+      end
+      update_admin_assignemnts.revoked_product_admins.each do |product_admin|
+        LogEvent.log(product_admin, :delete, current_user, metadata: { user: product_admin.user, facility: product_admin.facility })
+      end
+    end
+  end
+
+  def update_remark(approved_products_from_params)
+    if params[:approved_products].present?
+      approved_products_from_params = params[:approved_products]
+      approved_products_from_params.each do |id|
+        product = Product.find(id)
+        product_user = product.find_product_user(@user) || return
+        return if id.blank?
+        remark = params["remark_#{id}"]
+        product_user.remark = remark
+        product_user.save
+      end
     end
   end
 
@@ -220,6 +273,10 @@ class UsersController < ApplicationController
       @user,
       session_user,
     ).update_approvals(approved_products_from_params, params[:product_access_group])
+  end
+
+  def update_admin_assignemnts
+    @update_product_assignment ||= ProductAdminAssigner.new().update_assignments( @user,  Product.for_facility(current_facility), approved_products_from_params)
   end
 
   def approved_products_from_params

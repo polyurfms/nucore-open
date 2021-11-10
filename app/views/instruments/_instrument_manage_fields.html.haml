@@ -3,12 +3,14 @@
 = f.input :schedule, input_html: { value: @product.schedule.display_name }, hint: false
 
 = f.input :problems_resolvable_by_user, as: :boolean, hint: false
+= f.input :allows_staff_assistance, as: :boolean, hint: false
 
 = render "relay_manage", f: f
 
 = f.input :reserve_interval, value_method: :to_i, label: "Reservation Interval"
 = f.input :min_reserve_mins, value_method: :to_i
 = f.input :max_reserve_mins, default_value: "None"
+= f.input :session_mins, default_value: "None"
 = f.input :min_cancel_hours, value_method: :to_i
 = f.input :auto_cancel_mins, value_method: :to_i
 = f.input :lock_window, value_method: :to_i, default_value: 0

@@ -69,6 +69,25 @@ module Reservations::DateSupport
     end
   end
 
+  def card_tap_datetime
+    if card_start_at
+      format_usa_datetime(reservation.card_start_at) + " - " + format_usa_datetime(reservation.card_end_at)  
+    else
+      ""
+    end
+  end
+
+  def card_duration_mins
+    if card_end_at && card_start_at
+      total_minute = TimeRange.new(card_start_at, card_end_at).duration_mins
+      hours = total_minute / 60
+      minutes = (total_minute) % 60
+      "#{ hours }:#{ minutes < 10 ? "0" + minutes.to_s : minutes }"
+    else
+      "0:00"
+    end
+  end
+
   # If the reservation is ongoing, we sometimes want to know how long a currently
   # running reservation has been running for (e.g. accessories).
   def actual_or_current_duration_mins
