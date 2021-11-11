@@ -7,13 +7,13 @@ class ApiController < ApplicationController
     ip = request.ip
     if ip.eql?(Settings.basic_authenticate.room_access.ip) 
       result = Array.new
-      # reservations = Reservation.where("reserve_end_at <= :now", now: Time.current.end_of_day)
-      reservations = Reservation.where("reserve_start_at >= :start AND reserve_end_at <= :end", start: Time.current.beginning_of_day, end: Time.current.end_of_day)
+      # reservations = Reservation.where("reserve_end_at <= :now ", now: Time.current.end_of_day)
+      reservations = Reservation.where("reserve_start_at >= :start AND reserve_end_at <= :end AND order_detail_id IS NOT NULL", start: Time.current.beginning_of_day, end: Time.current.end_of_day)
       if reservations.count > 0
         reservations.each do |r|
           start_datetime ||= r.reserve_start_at
           end_datetime ||= r.reserve_end_at
-          uid ||= "123" 
+          uid ||= r.order_detail.order.user.card_number
           room_no ||= r.product.room_no
           unless start_datetime.nil? && start_datetime.blank? && end_datetime.nil? && end_datetime.blank? && uid.nil? && uid.blank? && room_no.nil? && room_no.blank?
             result << {start_datetime: start_datetime, end_datetime: end_datetime, uid: uid, room_no: room_no}
