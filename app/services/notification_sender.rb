@@ -31,7 +31,7 @@ def account_ids_to_notify
 
     OrderDetail.transaction do
       account_ids_to_notify # needs to be memoized before order_details get reviewed
-      
+
       mark_order_details_as_reviewed
       if @account_ids_to_notify.present?
         @is_delay == false ? notify_accounts : delay_email_job
@@ -42,14 +42,14 @@ def account_ids_to_notify
   end
 
   def delay_email_job
-    now = Time.zone.now 
+    now = Time.zone.now
     ActiveRecord::Base.transaction do
       begin
-    
+
         order_details.each do |od|
           delay_job = DelayedEmailJob.new
-          delay_job.refer_id = od.id
-          delay_job.refer_name = od.class.name
+          delay_job.ref_id = od.id
+          delay_job.ref_table = od.class.name
           delay_job.created_at = now
           delay_job.updated_at = now
 
@@ -76,19 +76,19 @@ def account_ids_to_notify
   end
 
   def order_details
-    unless @start_delay_job 
+    unless @start_delay_job
       @order_details ||= OrderDetail.for_facility(current_facility)
-        .need_notification 
+        .need_notification
         .where_ids_in(@order_detail_ids)
         .includes(:product, :order, :price_policy, :reservation)
-      return @order_details 
+      return @order_details
     else
       @order_details ||= OrderDetail.for_facility(current_facility)
-        .need_notification_without_reviewed_at 
+        .need_notification_without_reviewed_at
         .where_ids_in(@order_detail_ids)
         .includes(:product, :order, :price_policy, :reservation)
-      return @order_details 
-    end    
+      return @order_details
+    end
   end
 
   private
