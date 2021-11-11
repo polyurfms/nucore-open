@@ -32,6 +32,7 @@ Rails.application.routes.draw do
   get "api/supervisor_endorsement?token=:token", to: "api#supervisor_endorsement", as: "supervisor_endorsement"
   get "api/supervisor_endorsement", to: "api#supervisor_endorsement"
   post "api/supervisor_endorsement_submit", to: "api#supervisor_endorsement_submit" , as: "supervisor_endorsement_submit"
+  get "api/room_access", to: "api#room_access"
 
   resources :agreement, controller: "agreement", only: [:index, :update, :show] do
   end

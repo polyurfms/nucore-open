@@ -193,3 +193,6 @@ aes:
 basic_authenticate:
   username: ~
   password: ~
+  room_access:
+    ip: ~
+
