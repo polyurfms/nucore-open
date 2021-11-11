@@ -22,7 +22,7 @@ Rails.application.routes.draw do
   root to: "public#index"
 
 
-  get "/no_supervisor", to: "no_supervisors#index"
+  get "/no_supervisor_or_phone", to: "no_supervisors#index"
 
   post "agree_terms" , to: "user_agreements#agree"
   post "get_is_agree_terms" , to: "user_agreements#get_is_agree_terms"
@@ -477,11 +477,14 @@ Rails.application.routes.draw do
     get "switch_to",    to: "user_delegations#switch_to"
   end
 
+  post "api/place_smart_card", to: "api#place_smart_card", as: "place_smart_card"
+  post "api/get_next_reservation", to: "api#get_next_reservation", as: "get_next_reservation"
+
   resources :request_endorsements, except: [:update, :new, :create, :edit, :show], controller: "request_endorsements" do
     post "make_request", to: "request_endorsements#make_request"
   end
 
-  # file upload routes
+# file upload routes
   post  "/#{I18n.t('facilities_downcase')}/:facility_id/:product/:product_id/sample_results", to: "file_uploads#upload_sample_results", as: "add_uploader_file"
   get   "/#{I18n.t('facilities_downcase')}/:facility_id/:product/:product_id/files/product_survey", to: "file_uploads#product_survey", as: "product_survey"
   post  "/#{I18n.t('facilities_downcase')}/:facility_id/:product/:product_id/files/create_product_survey", to: "file_uploads#create_product_survey", as: "create_product_survey"
@@ -495,6 +498,7 @@ Rails.application.routes.draw do
     namespace :services do
       post "process_one_minute_tasks"
       post "process_five_minute_tasks"
+      post "process_daily_delay_email_tasks"
     end
   end
 

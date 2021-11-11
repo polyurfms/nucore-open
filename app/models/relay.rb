@@ -11,6 +11,8 @@ class Relay < ApplicationRecord
 
   alias_attribute :host, :ip
 
+  attr_reader :user_info
+
   CONTROL_MECHANISMS = {
     manual: nil,
     timer: "timer",
@@ -35,6 +37,13 @@ class Relay < ApplicationRecord
 
   def networked_relay?
     control_mechanism == CONTROL_MECHANISMS[:relay]
+  end
+
+  def call_relay_user_info(netId = "", startDatetime = "", endDatetime = "")
+    @user_info = {}
+    @user_info[:netId] = netId
+    @user_info[:startDatetime] = startDatetime
+    @user_info[:endDatetime] = endDatetime
   end
 
   private

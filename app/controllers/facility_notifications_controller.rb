@@ -33,9 +33,11 @@ class FacilityNotificationsController < ApplicationController
     @search = TransactionSearch::Searcher.billing_search(order_details, @search_form, include_facilities: current_facility.cross_facility?)
     @date_range_field = @search_form.date_params[:field]
     if params[:sort].nil?
-      @order_details = @search.order_details
+      # @order_details = @search.order_details
+      @order_details = @search.order_details.paginate(page: params[:page], per_page: 200)
     else
-      @order_details = @search.order_details.reorder(sort_clause)
+      # @order_details = @search.order_details.reorder(sort_clause)
+      @order_details = @search.order_details.reorder(sort_clause).paginate(page: params[:page], per_page: 200)
     end
 
 
@@ -50,7 +52,7 @@ class FacilityNotificationsController < ApplicationController
       return
     end
 
-    sender = NotificationSender.new(current_facility, params)
+    sender = NotificationSender.new(current_facility, params, true)
 
     if sender.perform
       flash[:notice] = send_notification_success_message(sender)

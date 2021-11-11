@@ -35,6 +35,8 @@ class Reservation < ApplicationRecord
   # Used when we want to force the order to complete even if it doesn't meet the
   # requirements of order_completeable?, e.g. the reservation time isn't over yet.
   attr_accessor :force_completion
+  
+  attr_accessor :currDatetime
 
   attr_accessor :select_additional_price_policy
 
@@ -233,12 +235,8 @@ class Reservation < ApplicationRecord
     else
       @new_hour = @hour
     end
-    #@new_hour = @new_minutes == 60 ?  @hour + 1 : @hour
-    @add_one_date = @new_hour > 23 ? @date + 1.days : @date
-
-    @new_date = @add_one_date == @date ? @date.to_s + " " + @new_hour.to_s + ":" + @new_minutes.to_s + ":00" : @add_one_date.to_date.to_s  + " 00:00:00"
-
-    return @new_date
+    update!(actual_start_at: currDatetime?)
+    # update!(actual_start_at: Time.current)
   end
 =end
 
@@ -440,6 +438,11 @@ class Reservation < ApplicationRecord
 
   def set_billable_minutes
     self.billable_minutes = calculated_billable_minutes
+  end
+
+  def currDatetime?
+    @currDatetime = Time.current if @currDatetime.nil?
+    @currDatetime
   end
 
   # FIXME: Temporary override to include reconciled orders, so we can backfill them

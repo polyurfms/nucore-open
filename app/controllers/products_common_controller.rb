@@ -153,7 +153,7 @@ class ProductsCommonController < ApplicationController
 
   def check_supervisor
     if session[:had_supervisor] == 0
-      return redirect_to '/no_supervisor'
+      return redirect_to '/no_supervisor_or_phone'
     end
   end
 end
