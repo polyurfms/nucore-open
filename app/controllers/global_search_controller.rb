@@ -10,8 +10,6 @@ class GlobalSearchController < ApplicationController
         GlobalSearch::OrderSearcher,
         GlobalSearch::StatementSearcher,
         GlobalSearch::ProductSearcher,
-        GlobalSearch::ProductGroupSearcher,
-        GlobalSearch::AllProductSearcher,
       ]
   end
 
