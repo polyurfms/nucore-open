@@ -11,10 +11,26 @@ module SamlAuthentication
     end
 
     def call(user, saml_response, _auth_value)
-      attributes = SamlAttributes.new(saml_response).except(*@skip_attributes).merge(
+#      attributes = SamlAttributes.new(saml_response).except(*@skip_attributes).merge(
+#        encrypted_password: nil,
+#        password_salt: nil,
+#      )
+      #skip attribute at the end, before update
+      attributes = SamlAttributes.new(saml_response).except([]).merge(
         encrypted_password: nil,
         password_salt: nil,
       )
+
+      unless attributes["aff_no"].nil?
+        attributes["card_number"] = attributes["aff_no"]
+      end
+      if user.card_number.present?
+        attributes["card_number"] = user.card_number
+      else
+        if attributes["card_number"].nil?
+          attributes["card_number"] = attributes["username"]
+        end
+      end
 
       @member_of = saml_response.raw_response.attributes.to_h.fetch('memberof')
 
@@ -45,6 +61,8 @@ module SamlAuthentication
       if attributes["first_name"].nil?
         attributes["first_name"] = " "
       end
+
+      attributes = attributes.except(*@skip_attributes)
 
       user.update!(attributes)
 

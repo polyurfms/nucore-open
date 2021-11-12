@@ -1,5 +1,5 @@
 - price_policy = price_policies.first
-- price_policies_to_show = price_policies.select(&:can_purchase?) 
+- price_policies_to_show = price_policies.select(&:can_purchase?)
 
 - select_id = Array.new
 
@@ -10,7 +10,7 @@
    %th= "#{PriceGroup.model_name.human} (#{price_policy.class.human_attribute_name(:type)})"
    - price_policies_to_show.each do |price_policy|
     - if select_id.exclude?(price_policy.id)
-     - select_id << price_policy.id 
+     - select_id << price_policy.id
      %td= "#{price_policy.price_group.name} (#{price_policy.price_group.type_string})"
 
  %tbody
@@ -27,7 +27,7 @@
 
     %td=c.name
    - if current_id == c.additional_price_group_id && select_id.include?(c.price_policy_id) && c.deleted_at.nil?
-    %td=c.cost
+    %td="$#{c.cost}"
 
 :javascript
   $(".currency").attr('style', 'text-align: left');

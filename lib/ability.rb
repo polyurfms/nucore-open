@@ -198,7 +198,7 @@ class Ability
 
     if resource.is_a?(Facility) && user.facility_billing_administrator_of?(resource)
       can [:list, :dashboard, :show], Facility
-      can [:index, :show, :timeline], Reservation
+      can [:index, :show, :timeline, :search_schedule], Reservation
       can [:administer, :index, :view_details, :schedule, :show], Product
       can [:show, :index], PriceGroup
       can [:show, :index], [PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ServicePricePolicy]

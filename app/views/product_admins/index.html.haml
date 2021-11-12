@@ -18,7 +18,7 @@
     %thead
       %tr
         %th.approval-column= Product.human_attribute_name(:can_manage?)
-        %th.product-column= Product.model_name.human
+        %th.product-column= "Facility Staff"
     %tbody
       - @facility_staffs.each do |user|
         - selected_item = @product_admin_by_user[user.id]

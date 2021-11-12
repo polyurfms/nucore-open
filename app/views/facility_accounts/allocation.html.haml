@@ -30,7 +30,7 @@
 
     if (confirmBox == true) {
       let data0 = {is_show: b};
-      let path = "/facilities/#{@facility.url_name}/accounts/#{@account.id}/allocation";
+      let path = "/facilities/#{@current_facility.url_name}/accounts/#{@account.id}/allocation";
       let ajx_path = "/accounts/"+ #{@account.id} + "/is_allocation";
 
       $.ajax({
