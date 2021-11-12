@@ -1050,6 +1050,10 @@ class OrderDetail < ApplicationRecord
     end
   end
 
+  def require_staff_assistance?
+    staff_assistance
+  end
+
   private
 
   # Is there enough information to move an associated order to complete/problem?

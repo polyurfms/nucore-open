@@ -7,7 +7,7 @@
 = content_for :head_content do
   = javascript_include_tag "accounts.js"
 
-%h2= text("admin.shared.edit", model: FacilityAccount.model_name.human)
+%h2= text("header")
 %p= text(".main")
 = simple_form_for @facility_account, url: facility_facility_account_path(current_facility, @facility_account) do |f|
   = f.error_messages

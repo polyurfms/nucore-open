@@ -154,6 +154,7 @@ en:
 
     order_id: "Ref. No."
     order_detail_id: "Detail ID"
+    payment_source_owner: "Payment Source Owner"
 
     problem_order_details:
       assign_price_policies: Assign Price Policies
@@ -165,6 +166,7 @@ en:
     purchase: Purchase
     sidenav_admin:
       overview: "Overview"
+      facility_account: "Facility Income Accounts"
     tabnav_account:
       details: "Payment Source Detail"
       transact: "Transaction"
@@ -199,6 +201,7 @@ en:
       clear_search: Clear Search
       head: "Recent Payment Sources"
       add_account: "Add Payment Source"
+      add_facility_account: "Add Facility Income Account"
       label:
         search_term: "Search by payment source number or payment source owner's name, NetID, or username"
       search: Search
@@ -308,11 +311,11 @@ en:
 
   facility_account_users:
     user_search:
-      head: "Add Payment Source User"
+      head: "Add team member to this payment source"
       label:
         search_term: "Search by name, NetID, or username"
     new:
-      head: "Add Payment Source User"
+      head: "Add team member to this payment source"
       messages:
         current_user: "This user is the owner of the account. To change this user's role, you must replace the account owner first."
       label:

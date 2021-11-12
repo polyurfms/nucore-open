@@ -4,13 +4,13 @@
 = content_for :sidebar do
   = render "admin/shared/sidenav_admin", sidenav_tab: "recharge_accounts"
 
-%h2= FacilityAccount.model_name.human(count: 2)
+%h2= text("header")
 
 %p= text("main")
 
 %ul.inline
   %li
-    = link_to text("admin.shared.add", model: FacilityAccount.model_name.human),
+    = link_to text("add_facility_income_account"),
       new_facility_facility_account_path, class: "btn-add"
 
 - if @accounts.empty?
@@ -20,7 +20,7 @@
   %table.table.table-striped.table-hover
     %thead
       %tr
-        %th= FacilityAccount.human_attribute_name(:account_number)
+        %th= text("charge_account")
     %tbody
       - @accounts.each do |account|
         %tr
