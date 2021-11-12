@@ -21,7 +21,7 @@ module Admin
     end
 
     def process_daily_delay_email_tasks
-      DelayedEmailJobCreator.new.run!
+      ReviewEmailSender.new.run!
       head :ok
     end
 
