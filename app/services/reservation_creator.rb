@@ -72,14 +72,14 @@ class ReservationCreator
             @account_user = AccountUser.find_by(account_id: @order_detail.account_id, deleted_at: nil, user_id: delegatee_id == 0 ? session_user .id : delegatee_id)
 
             if(@account_user.user_role != "Owner")
-              if(@account_user.quota_balance < 0)
+              if(@account_user.quota_balance <= 0)
                 not_enough = "Payment source insufficient fund"
                 raise ActiveRecord::Rollback
               end
             end
           end
 
-          if(@account.free_balance < 0)
+          if(@account.free_balance <= 0)
             not_enough = "Payment source insufficient fund"
             raise ActiveRecord::Rollback
           end
