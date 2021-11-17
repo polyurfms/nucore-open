@@ -7,7 +7,7 @@ en:
       status: "Status"
       supervisor: "Supervisor"
       message: "confirm to remove?"
-      table_name: "Request Endorsements List"
+      table_name: "Supervisor Approval History"
       user_table_header: "Select an Existing User"
       request_button: "Request Endorsement"
       no_user: "There are no active users "
