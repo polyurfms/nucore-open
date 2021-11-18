@@ -316,6 +316,7 @@ class Ability
       :show,
       :tab_counts,
       :timeline,
+      :search_schedule,
       :update,
       :update_admin,
     ], Reservation
