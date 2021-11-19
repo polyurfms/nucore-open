@@ -53,9 +53,9 @@ class RequestEndorsementsController < ApplicationController
 
         if @request_endorsement.save
             RequsetEndorsementMailer.notify(email, requester, @request_endorsement, first_name, last_name).deliver_later
-            flash[:notice] = "Success"
+            flash[:notice] = "Success, supervisor endorsement request sent."
         else
-            flash[:error] = "Fail to make request"
+            flash[:error] = "Error, failed to send supervisor endorsement."
         end
     end
 
