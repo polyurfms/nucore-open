@@ -61,7 +61,8 @@ module ScRelayConnect
           resp = do_http_request(path)
         end
       rescue => e
-        raise ScRelayConnect::Error.new("Error connecting to relay: #{e.message}")
+        # raise ScRelayConnect::Error.new("Error connecting to relay: #{e.message}")
+        raise ScRelayConnect::Error.new("Error connecting to relay")
       end
       resp
     end
@@ -71,7 +72,8 @@ module ScRelayConnect
 
       aes = ScRelayConnect::AES.new()
       req_body = path.include?("on") || path.include?("off") ? aes.aes_encrypt(@info.to_json) : ""
-      Net::HTTP.start(@host, @options[:port]) do |http|
+
+      Net::HTTP.start(@host, @options[:port], use_ssl: true, verify_mode:OpenSSL::SSL::VERIFY_NONE) do |http|
         req = Net::HTTP::Post.new(path, {'Content-Type' => 'application/json'})
         req.basic_auth @options[:username], @options[:password] if @options[:username] && @options[:password]
         req.body = {data: req_body.to_s}.to_json
