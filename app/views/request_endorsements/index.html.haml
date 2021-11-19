@@ -45,6 +45,7 @@
 %table.table.table-striped.table-hover
   %thead
     %tr
+      %th= t("views.request_endorsements.ref_no")
       %th= t("views.request_endorsements.supervisor")
       %th= t("views.request_endorsements.date")
       %th= t("views.request_endorsements.status")
@@ -52,6 +53,7 @@
   %tbody
     - @request_endorsement.each do |request|
       %tr
+        %td= request.id
         %td= request.supervisor
         %td= request.created_at.strftime("%d %b %Y %-l:%M %p")
         - unless request.deleted_at.nil?
