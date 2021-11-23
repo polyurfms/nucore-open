@@ -4,11 +4,11 @@ class ApiController < ApplicationController
   http_basic_authenticate_with :name => Settings.basic_authenticate.username, :password => Settings.basic_authenticate.password , only: [:room_access]
 
   before_action :authenticate, :only => [:place_smart_card, :get_next_reservation]
-  skip_before_action  :verify_authenticity_token 
+  skip_before_action  :verify_authenticity_token
 
   def room_access
     ip = request.ip
-    if ip.eql?(Settings.basic_authenticate.room_access.ip) 
+    if ip.eql?(Settings.basic_authenticate.room_access.ip)
       result = Array.new
       # reservations = Reservation.where("reserve_end_at <= :now ", now: Time.current.end_of_day)
       reservations = Reservation.where("reserve_start_at >= :start AND reserve_end_at <= :end AND order_detail_id IS NOT NULL", start: Time.current.beginning_of_day, end: Time.current.end_of_day)
@@ -22,7 +22,7 @@ class ApiController < ApplicationController
             result << {start_datetime: start_datetime, end_datetime: end_datetime, uid: uid, room_no: room_no}
           end
         end
-    
+
         unless result.empty?
           @csv = Reports::DoorAccessExport.new(result)
           send_data(@csv.export!, filename: "booking_#{Time.current.strftime("%Y-%m-%d %H:%M:%S")}.txt")
@@ -42,10 +42,10 @@ class ApiController < ApplicationController
     end
   end
 
-  def get_next_reservation 
+  def get_next_reservation
     relayIp = params[:relayIp] || ""
     # @product = Product.joins("INNER JOIN relays on relays.instrument_id  = products.id  WHERE relays.ip = '#{relayIp}'")
-          
+
     # @orderDetail = OrderDetail.next_reservation(@product[0].id)
   end
 
@@ -56,60 +56,82 @@ class ApiController < ApplicationController
 
       unless cardno.blank? && relayIp.blank? && !relayIp.eql?(request.ip)
         begin
-          
+
           @product = Product.joins("INNER JOIN relays on relays.instrument_id  = products.id  WHERE relays.ip = '#{relayIp}'")
           @relay = Relay.find_by(ip: relayIp)
           @user = User.find_by(card_number: cardno)
 
           # Avoid another user end reservation
-          unless @product.nil? && @user.nil? 
+          unless @product.nil? && @user.nil?
               @facility = Facility.find_by(id: @product[0].facility_id)
               relation = @user.order_details
-              
-              in_progress = relation.with_in_progress_reservation
-              @order_details = in_progress + relation.with_upcoming_reservation_by_product(@product[0].id)
+
+              ready_to_start_reservation = relation.ready_to_start_reservation
+
+              if ready_to_start_reservation.empty?
+                in_progress = relation.with_in_progress_reservation
+                @order_details = in_progress + relation.with_upcoming_reservation_by_product(@product[0].id)
+              else
+                @order_details = ready_to_start_reservation
+              end
 
               begin_reservation_list = []
               end_reservation_list = []
-              
+
               @order_details.collect do |od|
-                            
+
                 status = notice_for_reservation od.reservation
                 if status.eql?("start")
                   begin_reservation_list << od.reservation
-                # elsif status.eql?("end")  
+                # elsif status.eql?("end")
                 else
                   end_reservation_list << od.reservation
                 end
               end
 
-              
+              # if begin list is not empty, begin reservation
+              if begin_reservation_list.length > 0
+                begin_reservation_list.collect do |res|
+                  begin_reservation(res)
+                end
+              else
+                if end_reservation_list.length > 0
+                  end_reservation_list.collect do |res|
+                    end_reservation(res)
+                  end
+                end
+
+              end
+
+
+=begin
               is_on = check_current_relay_status(@facility)
-                            
+
               unless is_on
                 if begin_reservation_list.length > 0
-                  # Relay status is turn on 
+                  # Relay status is turn on
                   begin_reservation_list.collect do |res|
                     begin_reservation(res)
                   end
                 end
               else
-                # Relay status is turn off                 
+                # Relay status is turn off
                 if end_reservation_list.length > 0
-                  # Relay status is turn on 
+                  # Relay status is turn on
                   end_reservation_list.collect do |res|
                     end_reservation(res)
                   end
                 end
               end
+=end
           end
           render json: {"status": "success", "message": nil}
         rescue => e
           render json: {"status": "failed", "message": "Cannot find reservation"}
         end
-          
+
       else
-        render json: {"status": "failed", "message": "Some parameter is nil"} 
+        render json: {"status": "failed", "message": "Some parameter is nil"}
       end
   end
 
@@ -131,13 +153,13 @@ class ApiController < ApplicationController
     ReservationInstrumentSwitcher.new(reservation).switch_on!
   end
 
-  def end_reservation(reservation)    
+  def end_reservation(reservation)
     unless reservation.other_reservation_using_relay?
       ReservationInstrumentSwitcher.new(reservation).switch_off!
     end
   end
 
-  
+
 
   def supervisor_endorsement_validation(token)
     @request_endorsement = RequestEndorsement.where(token: token).where("deleted_at IS NULL and is_accepted IS NULL")
