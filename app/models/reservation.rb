@@ -35,7 +35,7 @@ class Reservation < ApplicationRecord
   # Used when we want to force the order to complete even if it doesn't meet the
   # requirements of order_completeable?, e.g. the reservation time isn't over yet.
   attr_accessor :force_completion
-  
+
   attr_accessor :currDatetime
 
   attr_accessor :select_additional_price_policy
@@ -158,6 +158,10 @@ class Reservation < ApplicationRecord
 
   def self.relay_in_progress
     where("actual_start_at IS NOT NULL AND actual_end_at IS NULL")
+  end
+
+  def self.ready_to_start
+    where("actual_start_at is null and reserve_end_at >= ? and reserve_start_at <= ?", Time.current, Time.current)
   end
 
   def self.within_reserved_time
