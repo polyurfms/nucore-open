@@ -314,8 +314,6 @@ class OrderDetail < ApplicationRecord
   }
   scope :with_in_progress_reservation, -> { new_or_inprocess.with_reservation.merge(Reservation.relay_in_progress) }
 
-  scope :ready_to_start_reservation, -> { new_or_inprocess.with_reservation.merge(Reservation.ready_to_start) }
-
   scope :for_accounts, ->(accounts) { where("order_details.account_id in (?)", accounts) unless accounts.nil? || accounts.empty? }
   scope :for_facilities, ->(facilities) { joins(:order).where("orders.facility_id in (?)", facilities) unless facilities.nil? || facilities.empty? }
   scope :for_products, ->(products) { where("order_details.product_id in (?)", products) unless products.blank? }
