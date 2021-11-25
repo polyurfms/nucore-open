@@ -36,6 +36,7 @@ class Product < ApplicationRecord
   validate_url_name :url_name, :facility_id
   validates :user_notes_field_mode, presence: true, inclusion: Products::UserNoteMode.all
   validates :user_notes_label, length: { maximum: 255 }
+  validates :description, length: { maximum: 60000, too_long: 'is too long'}
 
 #  validates :order_notification_recipient,
 #            email_format: true,
@@ -221,7 +222,7 @@ class Product < ApplicationRecord
     false
   end
 
-  def get_all_product?(order_details) 
+  def get_all_product?(order_details)
     ids = Facility.find_by_sql(order_details.joins(order: :facility)
     .select("distinct(facilities.id), facilities.name, facilities.abbreviation")
     .reorder("facilities.name").to_sql)
