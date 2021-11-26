@@ -33,3 +33,8 @@
             %td= od.quota_balance
             = p.hidden_field :id ,  value: AccountUserPresenter.new(od).id.to_s
   = f.button :submit, t(".save"), class: "btn btn-primary"
+
+%p
+  %i * User: Eligible user to use this payment source
+%p
+  %i &nbsp;&nbsp;Payment Source Admin: Eligible user to use and admin this payment source
