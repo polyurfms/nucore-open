@@ -120,13 +120,17 @@ class InstrumentsController < ProductsCommonController
   private
   def check_supervisor
     if session[:had_supervisor] == 0
-      return redirect_to '/no_supervisor_or_phone'
+      if session_user.is_normal_user?
+        return redirect_to '/no_supervisor_or_phone'
+      end
     end
   end
 
   def check_phone
-    if !session_user.nil? && session_user.phone.nil? 
-      return redirect_to '/no_supervisor_or_phone'
+    if !session_user.nil? && session_user.phone.nil?
+      if session_user.is_normal_user?
+        return redirect_to '/no_supervisor_or_phone'
+      end
     end
   end
 end
