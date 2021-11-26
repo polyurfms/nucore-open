@@ -2,14 +2,15 @@
 
 - if can_edit_accounts
   %p
-    = link_to t(".add_access"),
+    = link_to "Add User",
       current_facility ? user_search_facility_account_account_users_path(current_facility, @account) : user_search_account_path(@account),
       class: "btn-add"
+    = tooltip_icon "fa fa-question-circle-o icon-large", "Add user to use this payment source"
 
   - if !@account.affiliate.nil? && @account.affiliate.name.include?(Settings.allow_affiliate) && @account.type == "NufsAccount"
     -# = simple_form_for :account_user, url: { action: :import_user}, html: { multipart: true } do |f|
     = simple_form_for :account_user, url: current_facility ? import_user_facility_account_account_users_path() : import_user_account_account_users_path(), html: { multipart: true } do |f|
-  
+
       .well.well-small#bulk-import-fields
         %h4
           %b= t(".title")
@@ -27,7 +28,7 @@
       %th= t(".th.dept")
       %th= t(".th.user_type")
       %th= t(".th.email")
-      %th= t(".th.role")
+      %th= t(".th.role") + "*"
       = render_view_hook("member_table_headers")
 
   %tbody
@@ -49,9 +50,11 @@
         - role = ""
         - if AccountUserPresenter.new(au).localized_role == "Purchaser"
           %td= "Member"
-        - else 
+        - else
           %td= AccountUserPresenter.new(au).localized_role
-        
+
         = render_view_hook("member_table_columns", account_user: au)
 
-      
+
+%p * User: Eligible user to use this payment source
+%p &nbsp;Payment Source Admin: Eligible user to use and admin this payment source

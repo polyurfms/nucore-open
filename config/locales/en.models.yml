@@ -235,7 +235,7 @@ en:
     # Model Attributes
     attributes:
       account_user:
-        user_role: Role
+        user_role: Role*
       affiliate:
         subaffiliates_enabled: Allows subaffiliates
       schedule_rule:

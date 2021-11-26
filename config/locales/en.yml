@@ -58,10 +58,10 @@ en:
         details: Details
         # members: Members
         members: Payment Source Users
-        allocations : Allocations
+        allocations : Quota Assignment
         orders: Orders
         statements: Statements
-        funding_requests: Funding Requests
+        funding_requests: Fund Top-up / Release
   search_field:
     payment_source: Payment Source
     order_status: Order Status
@@ -173,8 +173,8 @@ en:
       statement: "Statement"
       members: "Payment Source User"
       # members: "Members"
-      funding_requests: "Funding Request"
-      allocations: "Allocation"
+      funding_requests: "Fund Top-up / Release"
+      allocations: "Quota assignment"
     tabnav_price_group:
       accounts: "Payment Sources"
       users: "Users"
@@ -255,7 +255,7 @@ en:
       th:
         # name: Name (username)
         name: Name (Net ID)
-        role: Role
+        role: Role*
         allocation_amt: Quota
         expense_amt: Expense
         quota_balance: Quota balance
@@ -716,7 +716,7 @@ en:
     show:
       head: "Lock funds"
       submenu: "%{account_number}"
-      funding_requests_head: "Funding Requests"
+      funding_requests_head: "Fund Top-up / Release"
       committed_amt: "Committed Amount: %{committed_amt}"
       total_expense: "Total Expense Amount: %{total_expense}"
       free_balance: "Free Balance: %{free_balance}"
@@ -750,7 +750,7 @@ en:
     index:
       head: "Lock funds"
       submenu: "%{account_number}"
-      funding_requests_head: "Funding Request"
+      funding_requests_head: "Fund Top-up / Release"
       committed_amt: "Committed Amount: %{committed_amt}"
       total_expense: "Total Expense Amount: %{total_expense}"
       free_balance: "Free Balance: %{free_balance}"
@@ -1058,7 +1058,7 @@ en:
   accounts:
     role:
         owner: Owner
-        business_administrator: Business Administrator
+        business_administrator: Payment Source Admin
         # purchaser: Member
         purchaser: User
     member_table:
@@ -1068,7 +1068,7 @@ en:
         # name: Name (username)
         name: Name (Net ID)
         email: Email
-        role: Role
+        role: Role*
         dept: Dept. Abbrev.
         user_type: User Type
     member_allocation_table:
@@ -1491,7 +1491,7 @@ en:
       owner: Owner
       # purchaser: Member
       purchaser: User
-      business_administrator: Business Administrator
+      business_administrator: Payment Source Admin
     allocation:
       save: Save
       committed_amt: "Committed amount"
@@ -1507,12 +1507,12 @@ en:
 
   account_allocations:
     new:
-      head: "Allocation"
+      head: "Quota Assignment"
       submenu: "%{account_number}"
       committed_amt: "Committed Amount (HKD)"
       total_expense: "Total Expense Amount (HKD)"
       free_balance: "Free Balance (HKD)"
-      allows_allocation: "Enable quota allocation for members"
+      allows_allocation: "Enable quota assignment for members"
       alert_threshold: "Alert Threshold"
       alert_threshold_input: "Alert Threshold (input 0 for no alert)"
       is_auto_top_up: "Auto Top up"
