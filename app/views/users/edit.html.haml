@@ -20,6 +20,7 @@
     = f.input :email, readonly: !@user_form.admin_editable?
     = f.input :username, readonly: !@user_form.username_editable?
     = f.input :dept_abbrev, readonly: true
+    = f.input :post_title, readonly: true
     - if current_user.administrator? && SettingsHelper.feature_on?(:user_based_price_groups)
       = f.input :internal?, label: text(".internal"), as: :select, default: false
 
