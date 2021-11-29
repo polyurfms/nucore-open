@@ -21,11 +21,11 @@ class ReservationInstrumentSwitcher
         raise e
         raise(ActiveRecord::Rollback)
       end
-    else 
+    else
       @reservation.start_reservation!
     end
-    
-   
+
+
     # raise relay_error_msg unless reservation.can_switch_instrument_on?
     # if switch_relay_on
     #   @reservation.start_reservation!
@@ -51,7 +51,7 @@ class ReservationInstrumentSwitcher
     else
       @reservation.end_reservation!
     end
-    
+
     # raise relay_error_msg unless reservation.can_switch_instrument_off?
 
     # if switch_relay_off == false
