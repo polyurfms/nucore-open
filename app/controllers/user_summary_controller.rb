@@ -8,8 +8,6 @@ class UserSummaryController < ApplicationController
   layout -> { modal? ? false : "application" }
 
   def new
-    puts "===================== user summary"
-    puts "xxxx #{@user}"
     render layout: false
   end
 
