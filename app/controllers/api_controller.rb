@@ -114,6 +114,49 @@ class ApiController < ApplicationController
   end
 
 
+  def supervisor_endorsement
+    @token = params[:token] || ""
+    redirect_to facilities_path if @token.blank?
+    has_error = supervisor_endorsement_validation(@token)
+
+    if has_error
+      redirect_to facilities_path
+    else
+      render :supervisor_endorsement
+    end
+  end
+
+
+  def supervisor_endorsement_submit
+    @token = params[:token] || ""
+    @action = params[:is_approval] || ""
+
+    return redirect_to facilities_path if @token.blank? || @action.blank?
+    has_error = supervisor_endorsement_validation(@token)
+
+
+    if has_error
+      redirect_to facilities_path
+    else
+      @status = @action.eql?("true") ? "Approved" : "Rejected"
+
+      ActiveRecord::Base.transaction do
+        begin
+          @date = Time.zone.now
+          request_endorsement = @request_endorsement[0]
+          update_request_endorsemets(request_endorsement, @date, @action)
+
+          @to = @user.email + ", " + request_endorsement.email
+
+
+          RequsetEndorsementMailer.confirm_notify(@to, request_endorsement, @status).deliver_later
+        rescue ActiveRecord::RecordInvalid => e
+          raise ActiveRecord::Rollback
+        end
+      end
+    render :supervisor_submitted
+    end
+  end
 
   private
   def notice_for_reservation(reservation)
@@ -171,51 +214,6 @@ class ApiController < ApplicationController
     false
   end
 
-  def supervisor_endorsement
-    @token = params[:token] || ""
-    redirect_to facilities_path if @token.blank?
-    has_error = supervisor_endorsement_validation(@token)
-
-    if has_error
-      redirect_to facilities_path
-    else
-      render :supervisor_endorsement
-    end
-  end
-
-
-  def supervisor_endorsement_submit
-    @token = params[:token] || ""
-    @action = params[:is_approval] || ""
-
-    return redirect_to facilities_path if @token.blank? || @action.blank?
-    has_error = supervisor_endorsement_validation(@token)
-
-
-    if has_error
-      redirect_to facilities_path
-    else
-      @status = @action.eql?("true") ? "Approved" : "Rejected"
-
-      ActiveRecord::Base.transaction do
-        begin
-          @date = Time.zone.now
-          request_endorsement = @request_endorsement[0]
-          update_request_endorsemets(request_endorsement, @date, @action)
-
-          @to = @user.email + ", " + request_endorsement.email
-
-
-          RequsetEndorsementMailer.confirm_notify(@to, request_endorsement, @status).deliver_later
-        rescue ActiveRecord::RecordInvalid => e
-          raise ActiveRecord::Rollback
-        end
-      end
-    render :supervisor_submitted
-    end
-  end
-
-  private
   def get_user(netid)
     User.find_by("LOWER(username) = ?", netid.downcase)
   end
