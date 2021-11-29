@@ -24,7 +24,9 @@
             = link_to t("statements.pdf.download"), path
           %td= format_usa_datetime(s.created_at)
           -# %td= s.account.notify_users.map(&:full_name).join(', ')
-          %td= link_to s.account.notify_users.map(&:full_name).join(', '), "", title:  s.account.notify_users.map(&:email).join(', ')
+          %td
+            = s.account.notify_users.map(&:full_name).join(', ')
+            = tooltip_icon "fa fa-info-circle", s.account.notify_users.map(&:email).join(', ')
           - unless @account
             %td= link_to s.account, facility_account_path(current_facility, s.account)
           - if current_facility&.cross_facility?
