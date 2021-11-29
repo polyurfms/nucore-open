@@ -223,6 +223,7 @@ Rails.application.routes.draw do
 
       get "switch_to",    to: "users#switch_to"
       get "orders",       to: "users#orders"
+      resources "user_summary"
       resources :reservations, only: [:index], param: :order_detail_id, controller: "facility_user_reservations" do
         member do
           put "cancel"
