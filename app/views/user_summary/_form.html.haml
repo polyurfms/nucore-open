@@ -1,0 +1,16 @@
+
+
+= readonly_form_for :user, defaults: { hint: false } do |f|
+  = f.input :full_name
+  = f.input :username
+  = f.input :post_title
+  = f.input :dept_abbrev
+  = f.input :email
+  = f.input :phone
+  = f.input :internal?
+  = f.input :supervisor_full_name
+  = f.input :supervisor_is_acad_staff, label: text("views.users.edit.supervisor_is_academic")
+  = f.input :supervisor_email
+
+.modal-footer
+  = modal_cancel_button text: "Close"
