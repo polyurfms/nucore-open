@@ -9,7 +9,7 @@
     - if @count > 0
       = tab "My Assistant", user_delegations_path, (@current_type == "my_delegation")
     - if session_user.is_academic != true
-      = tab "Request Endorsements", request_endorsements_path, (@current_type == "request_endorsements")
+      = tab "My Supervisor", request_endorsements_path, (@current_type == "request_endorsements")
 
 - if @can_request
   <br>
@@ -45,6 +45,7 @@
 %table.table.table-striped.table-hover
   %thead
     %tr
+      %th= t("views.request_endorsements.ref_no")
       %th= t("views.request_endorsements.supervisor")
       %th= t("views.request_endorsements.date")
       %th= t("views.request_endorsements.status")
@@ -52,6 +53,7 @@
   %tbody
     - @request_endorsement.each do |request|
       %tr
+        %td= request.id
         %td= request.supervisor
         %td= request.created_at.strftime("%d %b %Y %-l:%M %p")
         - unless request.deleted_at.nil?
@@ -61,23 +63,23 @@
         - else
           - if request.is_accepted.nil?
             - if request.created_at.to_datetime + 1.days > Time.zone.now.to_datetime
-              %td= "Process"
+              %td= "In Progress"
               %td
-                %p= link_to t("views.request_endorsements.remove"), request_endorsement_path(request), method: :delete, data: { confirm: text("views.request_endorsements.delete_msg") } 
-            - else 
-              %td= "Expired" 
+                %p= link_to t("views.request_endorsements.remove"), request_endorsement_path(request), method: :delete, data: { confirm: text("views.request_endorsements.delete_msg") }
+            - else
+              %td= "Expired"
               %td
                 -# %p= ""
-          - else 
+          - else
             - if request.is_accepted == false
-              %td= "Rejected" 
-              %td 
+              %td= "Rejected"
+              %td
                 %p= ""
-            - else 
+            - else
               %td= "Approved" if request.is_accepted == true
-              %td 
+              %td
                 %p= ""
-            
+
 
 :javascript
   $( "#search_term_label" ).prepend( "<abbr title='required'>*</abbr>" );
@@ -103,10 +105,10 @@
 
   $('form#supervisor_submit_ajax_form').submit(function(e){
     e.preventDefault(); //Prevent the normal submission action
-  
+
     $( "#error_msg" ).empty();
     if (search_term == true && search_dept == true) {
-      
+
       var form = $(this);
       var submit = $("input[type='submit']",form);
       var submit_val = submit.val();
@@ -138,12 +140,12 @@
           msg = msg + "Search dept that are at least 2 characters long. ";
         }
         if (msg.length > 0) {
-          $( "#error_msg" ).append( "<p style='color:red;'> " + msg + "</p>" )          
+          $( "#error_msg" ).append( "<p style='color:red;'> " + msg + "</p>" )
         }
         $('#result').empty();
         $("#search_btn").removeAttr("disabled");
       }, 200);
-      
+
     }
 
   });

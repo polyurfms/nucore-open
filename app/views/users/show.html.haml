@@ -11,8 +11,10 @@
 
 = readonly_form_for :user do |f|
   = f.input :full_name
-  = f.input :username
   = f.input :email
+  = f.input :username
+  = f.input :dept_abbrev
+  = f.input :post_title, default_value: "none"
   = f.input :last_sign_in_at, default_value: "none"
   = f.input :internal?, label: text("views.users.edit.internal") if SettingsHelper.feature_on?(:user_based_price_groups)
   = f.input :suspended_at if f.object.suspended?
@@ -21,6 +23,7 @@
   = f.input :expired_note if f.object.expired? && current_user.administrator?
 
   = f.input :phone
+  = f.input :card_number, default_value: "none"
   = f.input :supervisor_full_name
   = f.input :supervisor_email
   = f.input :supervisor_is_acad_staff?, label: text("views.users.edit.supervisor_is_academic")

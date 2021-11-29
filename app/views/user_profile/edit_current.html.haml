@@ -8,6 +8,6 @@
     - if @count > 0
       = tab "My Assistant", user_delegations_path, (@current_type == "my_delegation")
     - if session_user.is_academic != true
-      = tab "Request Endorsements", request_endorsements_path, (@current_type == "request_endorsements")
+      = tab "My Supervisor", request_endorsements_path, (@current_type == "request_endorsements")
 
 = render "my_profile", users: @user

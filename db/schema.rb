@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_04_090154) do
+ActiveRecord::Schema.define(version: 2021_11_24_031911) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -131,8 +131,9 @@ ActiveRecord::Schema.define(version: 2021_11_04_090154) do
   end
 
   create_table "delayed_email_jobs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "refer_id", null: false
-    t.string "refer_name", limit: 50, null: false
+    t.string "ref_type", limit: 45, null: false
+    t.integer "ref_id", null: false
+    t.string "ref_table", limit: 50, null: false
     t.datetime "sent_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -1048,6 +1049,7 @@ ActiveRecord::Schema.define(version: 2021_11_04_090154) do
     t.string "phone", limit: 20
     t.string "supervisor", limit: 100
     t.boolean "is_academic", default: false
+    t.string "post_title"
     t.index ["card_number"], name: "index_users_on_card_number"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["expired_at"], name: "index_users_on_expired_at"

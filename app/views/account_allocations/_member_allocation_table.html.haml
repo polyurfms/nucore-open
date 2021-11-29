@@ -20,7 +20,7 @@
       %thead
         %tr
           %th= t(".th.name")
-          %th= t(".th.role")
+          %th= t(".th.role") + " * "
           %th= t(".th.allocation_amt") + " (HKD)"
           %th= t(".th.expense_amt") + " (HKD)"
           %th= t(".th.quota_balance") + " (HKD)"
@@ -36,3 +36,8 @@
                 %td= number_to_currency(od.quota_balance.to_s(:delimited))
                 = p.hidden_field :id ,  value: AccountUserPresenter.new(od).id.to_s
     = f.button :submit, t(".save"), class: "btn btn-primary"
+
+%p
+  %i * User: Eligible user to use this payment source
+%p
+  %i &nbsp;&nbsp;Payment Source Admin: Eligible user to use and admin this payment source

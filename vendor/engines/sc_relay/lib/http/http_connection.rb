@@ -36,6 +36,7 @@ module ScRelayConnect
       # current_status = status(outlet)
       # if current_status != status
       #   toggle_relay(outlet, status)
+
       #   new_status = status(outlet)
       #   raise NetBooter::Error.new("Cannot \"Begin Reservation\" when a previously scheduled reservation is ongoing.")  unless new_status != current_status
       # else

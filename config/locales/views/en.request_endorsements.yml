@@ -2,12 +2,13 @@ en:
   views:
     request_endorsements:
       header: "Request Endorsements"
+      ref_no: "Ref. No."
       date: "Request date"
       remove: "Remove"
       status: "Status"
       supervisor: "Supervisor"
       message: "confirm to remove?"
-      table_name: "Request Endorsements List"
+      table_name: "Supervisor Approval History"
       user_table_header: "Select an Existing User"
       request_button: "Request Endorsement"
       no_user: "There are no active users "

@@ -19,11 +19,14 @@
     = f.input :last_name, readonly: !@user_form.admin_editable?
     = f.input :email, readonly: !@user_form.admin_editable?
     = f.input :username, readonly: !@user_form.username_editable?
+    = f.input :dept_abbrev, readonly: true
+    = f.input :post_title, readonly: true
     - if current_user.administrator? && SettingsHelper.feature_on?(:user_based_price_groups)
       = f.input :internal?, label: text(".internal"), as: :select, default: false
 
     = f.label :phone
     = f.number_field  :phone
+    = f.input :card_number
     = f.input :supervisor_first_name
     = f.input :supervisor_last_name
     = f.input :supervisor_email
