@@ -66,7 +66,7 @@ class ReservationInstrumentSwitcher
 
   def switch_relay_off
     # if relays_enabled?
-    relay.call_relay_user_info(@reservation.order_detail.user.username, @reservation.reserve_start_at.strftime('%d %b %Y %-l:%M %p'), @reservation.reserve_end_at.strftime('%d %b %Y %-l:%M %p'))
+    relay.call_relay_user_info(@reservation.order_detail.order_number, @reservation.order_detail.user.full_name, @reservation.order_detail.user.username, @reservation.reserve_start_at.strftime('%d %b %Y %-l:%M %p'), @reservation.reserve_end_at.strftime('%d %b %Y %-l:%M %p'))
     relay.deactivate
     return relay.get_status
     # else
@@ -76,7 +76,7 @@ class ReservationInstrumentSwitcher
 
   def switch_relay_on
     # if relays_enabled?
-    relay.call_relay_user_info(@reservation.order_detail.user.username, @reservation.reserve_start_at.strftime('%d %b %Y %-l:%M %p'), @reservation.reserve_end_at.strftime('%d %b %Y %-l:%M %p'))
+    relay.call_relay_user_info(@reservation.order_detail.order_number, @reservation.order_detail.user.full_name, @reservation.order_detail.user.username, @reservation.reserve_start_at.strftime('%d %b %Y %-l:%M %p'), @reservation.reserve_end_at.strftime('%d %b %Y %-l:%M %p'))
     relay.activate
     return relay.get_status
     # else

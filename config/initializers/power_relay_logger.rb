@@ -7,7 +7,7 @@ class PowerRelayLogger < ActiveSupport::LogSubscriber
   end
 
   def toggle(event)
-    render event, "Toggled status with options #{event.payload[:options]}. Status: #{event.payload[:result]}"
+    render event, "Toggled status with options #{event.payload[:options]}. Status: #{event.payload[:status]}"
   end
 
   private

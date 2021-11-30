@@ -21,9 +21,10 @@ module ProductsHelper
 
   def options_for_relay
     {
-      RelaySynaccessRevA => RelaySynaccessRevA.name,
-      RelaySynaccessRevB => RelaySynaccessRevB.name,
-      RelayDataprobe => RelayDataprobe.name,
+      # RelaySynaccessRevA => RelaySynaccessRevA.name,
+      # RelaySynaccessRevB => RelaySynaccessRevB.name,
+      # RelayDataprobe => RelayDataprobe.name,
+      RelaySC => RelaySC.name,
     }
   end
 

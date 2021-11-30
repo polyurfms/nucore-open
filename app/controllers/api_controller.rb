@@ -136,6 +136,43 @@ class ApiController < ApplicationController
       end
   end
 
+  def checkCurrentReservation
+    netId = params[:netId] || ""
+    relayIp = params[:relayIp] || ""
+    
+    is_on = false
+    unless netId.blank? && relayIp.blank? && !relayIp.eql?(request.ip)
+      begin
+        
+        @product = Product.joins("INNER JOIN relays on relays.instrument_id  = products.id  WHERE relays.ip = '#{relayIp}'")
+        @relay = Relay.find_by(ip: relayIp)
+        @user = User.find_by(username: netId)
+
+        unless @product.nil? && @user.nil? 
+            @facility = Facility.find_by(id: @product[0].facility_id)
+            relation = @user.order_details
+            
+            in_progress = relation.with_in_progress_reservation
+            @order_details = in_progress + relation.with_upcoming_reservation_by_product(@product[0].id)
+
+            @order_details.collect do |od|
+                          
+              status = notice_for_reservation od.reservation
+              unless status.eql?("start")
+                is_on = true
+              end
+            end
+        end
+        render json: {"status": "success", "message": "is_on"} if is_on
+        render json: {"status": "success", "message": "is_off"} unless is_on
+      rescue => e
+        render json: {"status": "failed", "message": "Cannot find reservation"}
+      end
+        
+    else
+      render json: {"status": "failed", "message": "Some parameter is nil"} 
+    end
+  end
 
   def supervisor_endorsement
     @token = params[:token] || ""
