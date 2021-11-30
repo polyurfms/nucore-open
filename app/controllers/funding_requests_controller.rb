@@ -83,7 +83,7 @@ class FundingRequestsController < ApplicationController
     fr_param = params[:funding_request]
     account_id = fr_param[:account_id].to_i
 
-    @account = session_user.accounts.find(account_id)
+    #@account = session_user.accounts.find(account_id)
 
     if is_allow_request
 
