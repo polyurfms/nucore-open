@@ -39,8 +39,10 @@ class Relay < ApplicationRecord
     control_mechanism == CONTROL_MECHANISMS[:relay]
   end
 
-  def call_relay_user_info(netId = "", startDatetime = "", endDatetime = "")
+  def call_relay_user_info(refNo = "", name = "", netId = "", startDatetime = "", endDatetime = "")
     @user_info = {}
+    @user_info[:refNo] = refNo
+    @user_info[:name] = name
     @user_info[:netId] = netId
     @user_info[:startDatetime] = startDatetime
     @user_info[:endDatetime] = endDatetime

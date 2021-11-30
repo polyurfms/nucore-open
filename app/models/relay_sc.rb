@@ -12,6 +12,7 @@ class RelaySC < Relay
 
   def relay_connection    
     @relay_connection ||= ScRelayConnect::Http::Rev.new(host, connection_options)
+    @relay_connection.info(user_info)
     return @relay_connection
   end
 

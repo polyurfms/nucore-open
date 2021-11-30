@@ -480,7 +480,8 @@ Rails.application.routes.draw do
 
   post "api/place_smart_card", to: "api#place_smart_card", as: "place_smart_card"
   post "api/get_next_reservation", to: "api#get_next_reservation", as: "get_next_reservation"
-
+  post "api/checkCurrentReservation", to: "api#checkCurrentReservation", as: "checkCurrentReservation"
+  
   resources :request_endorsements, except: [:update, :new, :create, :edit, :show], controller: "request_endorsements" do
     post "make_request", to: "request_endorsements#make_request"
   end

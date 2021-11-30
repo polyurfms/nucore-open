@@ -44,6 +44,7 @@ module ScRelayConnect
       # end
 
       toggle_relay(outlet, status)
+      status(outlet)
     end
 
     def statuses
