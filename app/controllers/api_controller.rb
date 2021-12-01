@@ -66,11 +66,13 @@ class ApiController < ApplicationController
               @facility = Facility.find_by(id: @product[0].facility_id)
               relation = @user.order_details
 
-              ready_to_start_reservation = relation.with_upcoming_reservation_by_product(@product[0].id)
+              #check if upcoming booking ready to start
+              ready_to_start_reservation = relation.ready_to_start_reservation_by_product(@product[0].id)
 
               if ready_to_start_reservation.empty?
                 in_progress = relation.with_in_progress_reservation
-                @order_details = in_progress
+                @order_details = in_progress + relation.with_upcoming_reservation_by_product(@product[0].id)
+                #@order_details = in_progress
                 #@order_details = in_progress + relation.with_upcoming_reservation_by_product(@product[0].id)
               else
                 @order_details = ready_to_start_reservation

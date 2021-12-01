@@ -35,7 +35,7 @@ class Reservation < ApplicationRecord
   # Used when we want to force the order to complete even if it doesn't meet the
   # requirements of order_completeable?, e.g. the reservation time isn't over yet.
   attr_accessor :force_completion
-  
+
   attr_accessor :currDatetime
 
   attr_accessor :select_additional_price_policy
@@ -74,6 +74,11 @@ class Reservation < ApplicationRecord
 
   scope :ends_in_the_future, lambda {
     where(reserve_end_at: nil).or(where("reserve_end_at > ?", Time.current))
+  }
+
+  scope :ready_to_start, lambda {
+    where("reserve_end_at >= ?", Time.current)
+      .where("reserve_start_at <= ?", Time.current)
   }
 
   def self.joins_order
