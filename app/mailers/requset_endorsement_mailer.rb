@@ -25,6 +25,17 @@ class RequsetEndorsementMailer < ActionMailer::Base
     send_nucore_mail @to, text("views.confirm_request_endorsements.subject", supervisor_fullname: @supervisor_fullname, status: @status)
   end
 
+  def remove_notify(to, requester, request_endorsement, first_name, last_name)
+    @to = to
+    @requester = requester
+    @request_endorsement = request_endorsement 
+    @first_name = first_name || ""
+    @last_name = last_name || ""
+    @to_fullname = @first_name + " " + @last_name
+    @request_fullname = requester.first_name + " " + requester.last_name
+    send_nucore_mail @to, text("views.cancel_request_endorsements.subject", requester_name: @request_fullname)
+  end
+
   def send_nucore_mail(to, subject)
     mail(subject: subject, to: to)
   end
