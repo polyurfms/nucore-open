@@ -105,6 +105,11 @@ class InstrumentsController < ProductsCommonController
 
       if SettingsHelper.relays_enabled_for_admin?
         relay.call_relay_user_info("", "Admin", "", "", "")
+        if (params[:switch] == "off")
+          @product.reservations.current_in_use.each do |res|
+            res.end_reservation!
+          end
+        end
         status = (params[:switch] == "on" ? relay.activate : relay.deactivate)
       end
       @status = @product.instrument_statuses.create!(is_on: status)
@@ -117,6 +122,7 @@ class InstrumentsController < ProductsCommonController
   end
 
   private
+
   def check_supervisor
     if session[:had_supervisor] == 0
       if session_user.is_normal_user?
