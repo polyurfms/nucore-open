@@ -252,7 +252,7 @@ class ReservationsController < ApplicationController
 
         #@order_detail.additional_price_policy_name = params[:additional_price_policy] unless params[:additional_price_policy].nil?
 
-        # Check additional price policy exist in current period    
+        # Check additional price policy exist in current period
         unless params[:additional_price_policy].blank?
           if @reservation.reserve_start_at < Time.zone.now && params[:additional_price_policy] != @order_detail.additional_price_group_id
             flash.now[:error] = "The reservation started. You can not change addition item"
@@ -264,11 +264,11 @@ class ReservationsController < ApplicationController
           .joins(:price_policy).where("start_date <= :now AND expire_date > :now", now: @reservation.reserve_start_at).uniq
 
           is_exist_addition_item = addition_price_policy_list.count > 0 ? true : false
-          
+
           unless is_exist_addition_item
             price_policy_id = AdditionalPricePolicy.joins("INNER JOIN additional_price_groups ON additional_price_policies.additional_price_group_id = additional_price_groups.id")
             .where("additional_price_groups.id = :id", id: params[:additional_price_policy]).joins(:price_policy).uniq.pluck :price_policy_id
-            start_date = PricePolicy.where("id IN (?)", price_policy_id).where("price_policies.start_date > :now", now: @reservation.reserve_start_at).order("price_policies.start_date ASC").uniq.pluck :start_date 
+            start_date = PricePolicy.where("id IN (?)", price_policy_id).where("price_policies.start_date > :now", now: @reservation.reserve_start_at).order("price_policies.start_date ASC").uniq.pluck :start_date
             addition_item = AdditionalPriceGroup.find(params[:additional_price_policy])
             flash.now[:error] = "#{addition_item.name} start on #{format_usa_date(start_date.first)}"
             raise ActiveRecord::Rollback
@@ -502,7 +502,7 @@ class ReservationsController < ApplicationController
 
   def upcoming_today?(reservation)
     now = Time.zone.now
-    (reservation.reserve_start_at.to_date == now.to_date || reservation.reserve_start_at < now) && reservation.reserve_end_at > now
+    (reservation.reserve_start_at.to_date == now.to_date || reservation.reserve_start_at < now) && reservation.reserve_end_at > now && reservation.actual_start_at == nil
   end
 
   # Some browsers are not updating their cached JS and have an out-of-date calendar
