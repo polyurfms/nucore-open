@@ -16,7 +16,7 @@ module Products::SchedulingSupport
     reservations
       .purchased
       .not_canceled
-      .merge(OrderDetail.unreconciled)
+      .merge(OrderDetail.unreconciled_without_problem)
       .merge(Reservation.relay_in_progress)
   end
 

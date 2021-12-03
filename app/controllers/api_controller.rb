@@ -8,7 +8,7 @@ class ApiController < ApplicationController
 
   def room_access
     ip = request.ip
-    if ip.eql?(Settings.basic_authenticate.room_access.ip)
+    if !Settings.basic_authenticate.room_access.ip.present? || ip.eql?(Settings.basic_authenticate.room_access.ip)
       result = Array.new
       # reservations = Reservation.where("reserve_end_at <= :now ", now: Time.current.end_of_day)
       reservations = Reservation.where("reserve_start_at >= :start AND reserve_end_at <= :end AND order_detail_id IS NOT NULL", start: Time.current.beginning_of_day, end: Time.current.end_of_day)
@@ -67,16 +67,16 @@ class ApiController < ApplicationController
               relation = @user.order_details
 
               #check if upcoming booking ready to start
-              ready_to_start_reservation = relation.ready_to_start_reservation_by_product(@product[0].id)
+              #ready_to_start_reservation = relation.ready_to_start_reservation_by_product(@product[0].id)
 
-              if ready_to_start_reservation.empty?
+              #if ready_to_start_reservation.empty?
                 in_progress = relation.with_in_progress_reservation
                 @order_details = in_progress + relation.with_upcoming_reservation_by_product(@product[0].id)
                 #@order_details = in_progress
                 #@order_details = in_progress + relation.with_upcoming_reservation_by_product(@product[0].id)
-              else
-                @order_details = ready_to_start_reservation
-              end
+              #else
+              #   @order_details = ready_to_start_reservation
+              #end
 
               begin_reservation_list = []
               end_reservation_list = []
@@ -129,7 +129,13 @@ class ApiController < ApplicationController
 =end
           end
           render json: {"status": "success", "message": nil}
+        rescue ValidatorError
+          puts "v error"
+          render json: {"status": "failed", "message": "Equipment currently in use"}
         rescue => e
+          puts "e error"
+          logger.error e.message
+          e.backtrace.each { |line| logger.error line }
           render json: {"status": "failed", "message": "Cannot find reservation"}
         end
 
@@ -141,24 +147,24 @@ class ApiController < ApplicationController
   def checkCurrentReservation
     netId = params[:netId] || ""
     relayIp = params[:relayIp] || ""
-    
+
     is_on = false
     unless netId.blank? && relayIp.blank? && !relayIp.eql?(request.ip)
       begin
-        
+
         @product = Product.joins("INNER JOIN relays on relays.instrument_id  = products.id  WHERE relays.ip = '#{relayIp}'")
         @relay = Relay.find_by(ip: relayIp)
         @user = User.find_by(username: netId)
 
-        unless @product.nil? && @user.nil? 
+        unless @product.nil? && @user.nil?
             @facility = Facility.find_by(id: @product[0].facility_id)
             relation = @user.order_details
-            
+
             in_progress = relation.with_in_progress_reservation
             @order_details = in_progress + relation.with_upcoming_reservation_by_product(@product[0].id)
 
             @order_details.collect do |od|
-                          
+
               status = notice_for_reservation od.reservation
               unless status.eql?("start")
                 is_on = true
@@ -170,9 +176,9 @@ class ApiController < ApplicationController
       rescue => e
         render json: {"status": "failed", "message": "Cannot find reservation"}
       end
-        
+
     else
-      render json: {"status": "failed", "message": "Some parameter is nil"} 
+      render json: {"status": "failed", "message": "Some parameter is nil"}
     end
   end
 

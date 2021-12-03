@@ -207,24 +207,37 @@ class Reservation < ApplicationRecord
   end
 
   def start_reservation!
+
+#comment kick out overage user
+=begin
     # If there are any reservations running over their time on the shared schedule,
     # kick them over to the problem queue.
     product.schedule.products.flat_map(&:started_reservations).each do |reservation|
       # If we're in the grace period for this reservation, but the other reservation
       # has not finished its reserved time, this will fail and this reservation will
       # not start.
-
       #instead of sending to problem queue, end the unfinished reservation
       MoveToProblemQueue.move_skip_problem!(reservation.order_detail, user: reservation.user, cause: :reservation_started)
-
-      #reservation.end_reservation
       #MoveToProblemQueue.move!(reservation.order_detail, user: reservation.user, cause: :reservation_started)
 
     end
-    @t = Time.current
-    # check if pervious affect existing booking start
-    at = ReservationTimeFinder.new(self).actual_start_at
-    update!(card_start_at: @t ,actual_start_at: at)
+=end
+
+    unless product.schedule.products.flat_map(&:started_reservations).empty?
+      # If we're in the grace period for this reservation, but the other reservation
+      # has not finished its reserved time, this will fail and this reservation will
+      # not start.
+
+      #instead of sending to problem queue, end the unfinished reservation
+      raise ValidatorError.new "Failed to start reservation. The equipment is currently in use."
+      #reservation.end_reservation
+      #MoveToProblemQueue.move!(reservation.order_detail, user: reservation.user, cause: :reservation_started)
+    else
+      @t = Time.current
+      # check if pervious affect existing booking start
+      at = ReservationTimeFinder.new(self).actual_start_at
+      update!(card_start_at: @t ,actual_start_at: at)
+    end
   end
 
 =begin
@@ -256,7 +269,12 @@ class Reservation < ApplicationRecord
     if reserve_end_at.to_datetime < @t && @end_diff < 15
       update!(card_end_at: @t ,actual_end_at: reserve_end_at)
     else
-      update!(card_end_at: @t ,actual_end_at: @new_t)
+      # if reserve end at grace period
+      if @t <= reserve_start_at
+        update!(card_end_at: @t ,actual_end_at: reserve_start_at + 15.minutes)
+      else
+        update!(card_end_at: @t ,actual_end_at: @new_t)
+      end
     end
 
     order_detail.complete!
