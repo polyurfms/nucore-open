@@ -251,7 +251,11 @@ class Reservation < ApplicationRecord
     if reserve_end_at.to_datetime < @t && @end_diff < 15
       update!(card_end_at: @t ,actual_end_at: reserve_end_at)
     else
-      update!(card_end_at: @t ,actual_end_at: @new_t)
+      if @new_t <= reserve_start_at
+        update!(card_end_at: @t ,actual_end_at: reserve_start_at + 15.minutes)
+      else
+        update!(card_end_at: @t ,actual_end_at: @new_t)
+      end
     end
 
     order_detail.complete!

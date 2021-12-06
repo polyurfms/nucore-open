@@ -268,7 +268,7 @@ en:
       committed_amt: "Committed Amount: %{committed_amt}"
     funding_requests:
       message:
-        in_progress: "Cannot submit new request until existing request executed."
+        in_progress: "You cannot make new requests when the fund locking is in progress."
       save: Save
       committed_amt: "Committed Amount: %{committed_amt}"
       table:

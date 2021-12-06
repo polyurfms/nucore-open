@@ -28,7 +28,7 @@ class EndNoShowReservation
   def end_no_show_reservation(order_detail)
     #MoveToProblemQueue.move!(order_detail, cause: :auto_expire)
     if overlap_with_long_researvation?(order_detail.reservation)
-      MoveToProblemQueue.move!(order_detail, cause: :auto_overlap)
+      order_detail.overlapping_order_backdate_to_complete!
     else
       #complete no show record, charge reserve duration
       order_detail.backdate_to_complete!
@@ -46,7 +46,7 @@ class EndNoShowReservation
                .joins_relay
                .where(product_id: reservation.product_id)
                .where("actual_start_at <= ?", reservation.reserve_start_at)
-               .where("actual_end_at >= ?", reservation.reserve_start_at)
+               .where("actual_end_at >= ? or actual_end_at is null", reservation.reserve_start_at)
                .readonly(true)
      if od.present?
        true
