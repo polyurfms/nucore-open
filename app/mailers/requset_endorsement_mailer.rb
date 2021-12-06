@@ -6,7 +6,6 @@ class RequsetEndorsementMailer < ActionMailer::Base
   default from: Settings.email.from, content_type: "multipart/alternative"
 
   def notify(to, requester, request_endorsement, first_name, last_name, expiry_date)
-    puts "xxxxx #{requester.inspect}"
     @to = to
     @requester = requester
     @request_endorsement = request_endorsement
