@@ -41,7 +41,6 @@
               %td.centered= link_to od.id, manage_order_detail_path(od), class: "manage-order-detail"
               %td
                 = order.user.full_name
-                = tooltip_icon "fa fa-hand-paper-o icon-large", "Staff assistance required"
               %td{colspan: 2}
                 = format_usa_datetime(od.ordered_at)
               %td{colspan: 2}

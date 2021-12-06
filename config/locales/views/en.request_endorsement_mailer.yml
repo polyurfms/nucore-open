@@ -1,12 +1,22 @@
 en:
   views:
     request_endorsements:
-      subject: "%{requester_name} request endorsement"
+      subject: "URFMS Supervisor Endorsement Request (User: %{requester_name})"
       body: |
         Dear %{to_fullname},
 
-        Link: [link](%{link})
-              
+        The following URFMS user has nominated you as his/her supervisor. The request is submitted for your endorsement.
+
+        <b>User Name:</b> %{requester_name}
+
+        <b>NetID:</b> %{requester_netID}
+
+        <b>Post Title:</b> %{requester_post_title}
+
+        Please click [here](%{link}) to view the User Policy and review the application at your earliest convenience.
+
+        The link will exipre on: %{expiry_date}
+
         Thank you,
 
         University Research Facility Management System
@@ -16,7 +26,7 @@ en:
         Dear All,
 
           %{supervisor_fullname} %{status}
-          
+
         Thank you,
 
         University Research Facility Management System

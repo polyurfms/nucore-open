@@ -246,6 +246,10 @@ class OrderDetail < ApplicationRecord
     where.not(state: "reconciled")
   end
 
+  def self.unreconciled_without_problem
+    where.not(state: "reconciled", problem: false)
+  end
+
   def self.reconciled
     where(state: "reconciled")
   end
@@ -515,6 +519,21 @@ class OrderDetail < ApplicationRecord
     change_status!(OrderStatus.complete) do |od|
       od.fulfilled_at = event_time
       od.assign_price_policy
+    end
+  end
+
+  def overlapping_order_backdate_to_complete!(event_time = Time.zone.now)
+    # if we're setting it to compete, automatically set the actuals for a reservation
+    if reservation
+      raise NUCore::PurchaseException.new(t_model_error(Reservation, "cannot_be_completed_in_future")) if reservation.reserve_end_at > event_time
+      reservation.assign_actuals_off_reserve unless reservation.product.reservation_only?
+      reservation.save!
+    end
+    change_status!(OrderStatus.complete) do |od|
+      od.fulfilled_at = event_time
+      od.assign_price_policy
+      od.actual_adjustment = -od.actual_cost
+      od.price_change_reason = "Consumed by overage"
     end
   end
 
@@ -1060,7 +1079,7 @@ class OrderDetail < ApplicationRecord
   end
 
   def require_staff_assistance?
-    staff_assistance
+    return staff_assistance
   end
 
   private
