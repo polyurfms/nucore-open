@@ -66,15 +66,17 @@ class ApiController < ApplicationController
               @facility = Facility.find_by(id: @product[0].facility_id)
               relation = @user.order_details
 
-              ready_to_start_reservation = relation.with_upcoming_reservation_by_product(@product[0].id)
+              #check if upcoming booking ready to start
+              #ready_to_start_reservation = relation.ready_to_start_reservation_by_product(@product[0].id)
 
-              if ready_to_start_reservation.empty?
+              #if ready_to_start_reservation.empty?
                 in_progress = relation.with_in_progress_reservation
-                @order_details = in_progress
+                @order_details = in_progress + relation.with_upcoming_reservation_by_product(@product[0].id)
+                #@order_details = in_progress
                 #@order_details = in_progress + relation.with_upcoming_reservation_by_product(@product[0].id)
-              else
-                @order_details = ready_to_start_reservation
-              end
+              #else
+              #   @order_details = ready_to_start_reservation
+              #end
 
               begin_reservation_list = []
               end_reservation_list = []
@@ -127,7 +129,13 @@ class ApiController < ApplicationController
 =end
           end
           render json: {"status": "success", "message": nil}
+        rescue ValidatorError
+          puts "v error"
+          render json: {"status": "failed", "message": "Equipment currently in use"}
         rescue => e
+          puts "e error"
+          logger.error e.message
+          e.backtrace.each { |line| logger.error line }
           render json: {"status": "failed", "message": "Cannot find reservation"}
         end
 

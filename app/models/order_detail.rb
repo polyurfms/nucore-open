@@ -340,6 +340,15 @@ class OrderDetail < ApplicationRecord
       # .order("reservations.reserve_start_at ASC")
   }
 
+  scope :ready_to_start_reservation_by_product, ->(products) {
+    new_or_inprocess
+      purchased.joins(:reservation)
+      .where(reservations: { actual_start_at: nil })
+      .where("order_details.product_id in (?)", products)
+      .merge(Reservation.ready_to_start)
+      .order(reserve_start_at: :asc)
+  }
+
   scope :next_reservation, ->(products) {
     new_or_inprocess
       .where(reservations: { actual_start_at: nil })
