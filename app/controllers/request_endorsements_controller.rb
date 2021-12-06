@@ -26,7 +26,7 @@ class RequestEndorsementsController < ApplicationController
         @dept_abbrev =  params[:dept_abbrev]
         @supervisor =  params[:username]
         @is_academic = params[:is_academic]
-
+        
         @request_endorsement = RequestEndorsement.where(user_id: @user_id).where("deleted_at IS NOT NULL AND DATE_FORMAT(created_at,'%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(:created_at,'%Y-%m-%d %H:%i:%s')", created_at: (Time.zone.now + 1.days).strftime("%Y-%m-%d %H:%M:%S"))
         return "/" unless session[:acting_user_id] || session_user[:id] == current_user.id  || @request_endorsement.count == 0 || @supervisor.length == 0
         update(@current_user, @supervisor, @email, @first_name, @last_name, @dept_abbrev, @is_academic)
@@ -97,7 +97,9 @@ class RequestEndorsementsController < ApplicationController
                 flash.now[:error] = "An error occurred."
             end
         end
-
+        supervisor = User.find_by(username:  @request_endorsement.email)
+        user = User.find(@request_endorsement.user_id)
+        RequsetEndorsementMailer.remove_notify(@request_endorsement.email, user, @request_endorsement, supervisor.first_name, supervisor.last_name).deliver_later
         redirect_to request_endorsements_path()
     end
 end
