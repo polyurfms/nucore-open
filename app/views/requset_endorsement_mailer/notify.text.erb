@@ -1,1 +1,1 @@
-<%= text("views.request_endorsements.body", to_fullname: @to_fullname, link: supervisor_endorsement_url(@request_endorsement.token))
+<%= text("views.request_endorsements.body", to_fullname: @to_fullname, link: supervisor_endorsement_url(@request_endorsement.token), requester_name: @request_fullname, requester_netID: @requester_netID, requester_post_title: @requester_post_title, expiry_date: @expiry_date)

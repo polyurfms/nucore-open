@@ -36,6 +36,7 @@ class RequestEndorsementsController < ApplicationController
 
     def update(requester, supervisor, email, first_name, last_name, dept_abbrev, is_academic)
         @date = Time.zone.now
+        @expiry_date = @date + 1.days
         @token = generateToken(requester.username, supervisor, @date)
         @request_endorsement = RequestEndorsement.new
         @request_endorsement.user_id = requester.id
@@ -52,7 +53,7 @@ class RequestEndorsementsController < ApplicationController
         @request_endorsement.is_academic = is_academic
 
         if @request_endorsement.save
-            RequsetEndorsementMailer.notify(email, requester, @request_endorsement, first_name, last_name).deliver_later
+            RequsetEndorsementMailer.notify(email, requester, @request_endorsement, first_name, last_name, @expiry_date.strftime("%d %b %Y %I:%M%p")).deliver_later
             flash[:notice] = "Success, supervisor endorsement request sent."
         else
             flash[:error] = "Error, failed to send supervisor endorsement."
