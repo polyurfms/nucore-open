@@ -247,7 +247,7 @@ class OrderDetail < ApplicationRecord
   end
 
   def self.unreconciled_without_problem
-    where.not(state: "reconciled", problem: false)
+    where.not(state: "reconciled",problem: true)
   end
 
   def self.reconciled

@@ -50,113 +50,94 @@ class ApiController < ApplicationController
   end
 
   def place_smart_card
-      cardno = params[:cardno] || ""
-      relayIp = params[:relayIp] || ""
-      cardPresentTime = params[:cardPresentTime] || ""
+    cardno = params[:cardno] || ""
+    relayIp = params[:relayIp] || ""
+    cardPresentTime = params[:cardPresentTime] || ""
 
-      unless cardno.blank? && relayIp.blank? && !relayIp.eql?(request.ip)
-        begin
+    unless cardno.blank? && relayIp.blank? && !relayIp.eql?(request.ip)
+      begin
 
-          @product = Product.joins("INNER JOIN relays on relays.instrument_id  = products.id  WHERE relays.ip = '#{relayIp}'")
-          @relay = Relay.find_by(ip: relayIp)
-          @user = User.find_by(card_number: cardno)
+        @product = Product.joins("INNER JOIN relays on relays.instrument_id  = products.id  WHERE relays.ip = '#{relayIp}'")
+        @relay = Relay.find_by(ip: relayIp)
+        @user = User.find_by(card_number: cardno)
+        
+        unless @user.nil? || @product.nil? 
+          @facility = Facility.find_by(id: @product[0].facility_id)
+          relation = @user.order_details
 
-          # Avoid another user end reservation
-          unless @product.nil? && @user.nil?
-              @facility = Facility.find_by(id: @product[0].facility_id)
-              relation = @user.order_details
+          #check if upcoming booking ready to start
+          #ready_to_start_reservation = relation.ready_to_start_reservation_by_product(@product[0].id)
 
-              #check if upcoming booking ready to start
-              #ready_to_start_reservation = relation.ready_to_start_reservation_by_product(@product[0].id)
+          #if ready_to_start_reservation.empty?
+          in_progress = relation.with_in_progress_reservation
+          @order_details = in_progress + relation.with_upcoming_reservation_by_product(@product[0].id)
+          #@order_details = in_progress
+          #@order_details = in_progress + relation.with_upcoming_reservation_by_product(@product[0].id)
+          #else
+          #   @order_details = ready_to_start_reservation
+          #end
 
-              #if ready_to_start_reservation.empty?
-                in_progress = relation.with_in_progress_reservation
-                @order_details = in_progress + relation.with_upcoming_reservation_by_product(@product[0].id)
-                #@order_details = in_progress
-                #@order_details = in_progress + relation.with_upcoming_reservation_by_product(@product[0].id)
-              #else
-              #   @order_details = ready_to_start_reservation
-              #end
+          begin_reservation_list = []
+          end_reservation_list = []
 
-              begin_reservation_list = []
-              end_reservation_list = []
+          @order_details.collect do |od|
 
-              @order_details.collect do |od|
-
-                status = notice_for_reservation od.reservation
-                if status.eql?("start")
-                  begin_reservation_list << od.reservation
-                # elsif status.eql?("end")
-                else
-                  end_reservation_list << od.reservation
-                end
-              end
-
-              # if begin list is not empty, begin reservation
-              if begin_reservation_list.length > 0
-                begin_reservation_list.collect do |res|
-                  begin_reservation(res)
-                end
-              else
-                if end_reservation_list.length > 0
-                  end_reservation_list.collect do |res|
-                    end_reservation(res)
-                  end
-                end
-
-              end
-
-
-=begin
-              is_on = check_current_relay_status(@facility)
-
-              unless is_on
-                if begin_reservation_list.length > 0
-                  # Relay status is turn on
-                  begin_reservation_list.collect do |res|
-                    begin_reservation(res)
-                  end
-                end
-              else
-                # Relay status is turn off
-                if end_reservation_list.length > 0
-                  # Relay status is turn on
-                  end_reservation_list.collect do |res|
-                    end_reservation(res)
-                  end
-                end
-              end
-=end
+            status = notice_for_reservation od.reservation
+            if status.eql?("start")
+              begin_reservation_list << od.reservation
+            # elsif status.eql?("end")
+            else
+              end_reservation_list << od.reservation
+            end
           end
-          render json: {"status": "success", "message": nil}
-        rescue ValidatorError
-          puts "v error"
-          render json: {"status": "failed", "message": "Equipment currently in use"}
-        rescue => e
-          puts "e error"
-          logger.error e.message
-          e.backtrace.each { |line| logger.error line }
-          render json: {"status": "failed", "message": "Cannot find reservation"}
+
+          # if begin list is not empty, begin reservation
+          if begin_reservation_list.length > 0
+            begin_reservation_list.collect do |res|
+              begin_reservation(res)
+            end
+          else
+            if end_reservation_list.length > 0
+              end_reservation_list.collect do |res|
+                end_reservation(res)
+              end
+            end
+          end
+          render json: {"status": "success", "message":  begin_reservation_list.length > 0 || end_reservation_list.length > 0 ? "Is_success" : nil}
+        else
+          raise "error"
         end
 
-      else
-        render json: {"status": "failed", "message": "Some parameter is nil"}
+        # render json: {"status": "success", "message": nil}
+      rescue => e
+        logger.error "ERROR: #{e.message}"
+        render json: {"status": "failed", "message": "Cannot find reservation"}
       end
+    else
+      render json: {"status": "failed", "message": "Some parameter is nil"}
+    end
   end
+
+
 
   def checkCurrentReservation
     netId = params[:netId] || ""
     relayIp = params[:relayIp] || ""
 
     is_on = false
-    unless netId.blank? && relayIp.blank? && !relayIp.eql?(request.ip)
-      begin
-
-        @product = Product.joins("INNER JOIN relays on relays.instrument_id  = products.id  WHERE relays.ip = '#{relayIp}'")
-        @relay = Relay.find_by(ip: relayIp)
-        @user = User.find_by(username: netId)
-
-        unless @product.nil? && @user.nil?
+    unless relayIp.blank? && !relayIp.eql?(request.ip)
+      @product = Product.joins("INNER JOIN relays on relays.instrument_id  = products.id  WHERE relays.ip = '#{relayIp}'")
+      @relay = Relay.find_by(ip: relayIp)
+      unless @product.nil?  && @relay.nil?
+        result = Hash.new
+        # result["outlet"] = @relay.outlet
+        result["name"] = @product.first.name
+        if netId.blank?
+          result["in_process"] = ""
+          render json: {"status": "success", "message": result}
+        else 
+          @user = User.find_by(username: netId)
+          unless @user.nil?
             @facility = Facility.find_by(id: @product[0].facility_id)
             relation = @user.order_details
 
@@ -170,13 +151,17 @@ class ApiController < ApplicationController
                 is_on = true
               end
             end
-        end
-        render json: {"status": "success", "message": "is_on"} if is_on
-        render json: {"status": "success", "message": "is_off"} unless is_on
-      rescue => e
-        render json: {"status": "failed", "message": "Cannot find reservation"}
-      end
 
+            result["in_process"] = is_on
+            render json: {"status": "success", "message": result}
+          else
+            render json: {"status": "success", "message": "No ressult"}
+          end
+        end
+      else
+        render json: {"status": "failed", "message": "No ressult"}
+      end
+        
     else
       render json: {"status": "failed", "message": "Some parameter is nil"}
     end

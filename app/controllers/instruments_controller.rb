@@ -104,7 +104,7 @@ class InstrumentsController < ProductsCommonController
       status = true
 
       if SettingsHelper.relays_enabled_for_admin?
-        relay.call_relay_user_info("", "Admin", "", "", "")
+        relay.call_relay_user_info("", "Admin", "Admin", "", "")
         status = (params[:switch] == "on" ? relay.activate : relay.deactivate)
       end
       @status = @product.instrument_statuses.create!(is_on: status)
