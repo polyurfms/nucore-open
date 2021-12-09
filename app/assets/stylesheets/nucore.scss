@@ -83,6 +83,13 @@ li.nav-spacer {
   margin-top: 5em;
 }
 
+.footer__link_PICS {
+  font-size: 85%;
+  color: #595959; // maximum lightness for WCAG AAA compliance (accessibility).
+  text-align: left;
+  float: left;
+}
+
 .footer__copyright {
   font-size: 85%;
   color: #595959; // maximum lightness for WCAG AAA compliance (accessibility).

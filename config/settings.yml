@@ -179,6 +179,8 @@ google_analytics_key: ~
 send_payment_source_requests: <%= 12.hours %>
 fip_url: http://www.google.com
 
+link_PICS_url: http://www.google.com
+
 research_project_affiliate_id: 3
 
 allow_affiliate: Dept
