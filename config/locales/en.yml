@@ -148,6 +148,7 @@ en:
       move_up: Move Up
       move_down: Move Down
     footer:
+      link_PICS_html: Please click <a href="%{link}" >here</a> for the Personal Information Collection Statement (PICS) for Staff
       copyright_html: "&copy; Copyright 2020&ndash;%{to_date} The Hong Kong Polytechnic University"
       logo_alt: "PolyU Logo"
       logo_file: "logo-header.png"
