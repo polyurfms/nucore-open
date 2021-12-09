@@ -978,7 +978,7 @@ en:
   search:
     supervisor_user_search_results:
       no_user: "No existing users found."
-      request_btn: "Requset"
+      request_btn: "Request"
       name: "Full Name"
       username: "NetID"
       email: "Email"
