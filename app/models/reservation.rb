@@ -72,6 +72,15 @@ class Reservation < ApplicationRecord
       .joins_order
   end
 
+  def self.room_interface
+    not_canceled
+     .where("reserve_start_at >= :start AND reserve_end_at <= :end AND order_detail_id IS NOT NULL", start: Time.current.beginning_of_day, end: Time.current.end_of_day)
+     .joins_facility
+     .where(facilities: {room_interface_enabled: true})
+     .joins(:product)
+     .where("products.room_no is not null and products.room_no <> ''")
+  end
+
   scope :ends_in_the_future, lambda {
     where(reserve_end_at: nil).or(where("reserve_end_at > ?", Time.current))
   }
@@ -80,6 +89,12 @@ class Reservation < ApplicationRecord
     where("reserve_end_at >= ?", Time.current)
       .where("reserve_start_at <= ?", Time.current)
   }
+
+  def self.joins_facility
+    joins("LEFT JOIN order_details ON order_details.id = reservations.order_detail_id")
+      .joins("LEFT JOIN orders ON orders.id = order_details.order_id")
+        .joins("LEFT JOIN facilities ON facilities.id = orders.facility_id")
+  end
 
   def self.joins_order
     joins("LEFT JOIN order_details ON order_details.id = reservations.order_detail_id")

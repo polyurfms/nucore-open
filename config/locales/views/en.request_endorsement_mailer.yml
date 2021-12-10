@@ -30,3 +30,13 @@ en:
         Thank you,
 
         University Research Facility Management System
+    remove_request_endorsements:
+      subject: "Cancel - URFMS Supervisor Endorsement Request (User: %{requester_name})"
+      body: |
+        Dear %{to_fullname},
+
+          %{requester_name} cancel request endorsement
+          
+        Thank you,
+
+        University Research Facility Management System

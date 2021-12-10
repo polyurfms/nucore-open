@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class RequsetEndorsementMailer < ActionMailer::Base
+class RequestEndorsementMailer < ActionMailer::Base
 
 
   default from: Settings.email.from, content_type: "multipart/alternative"
@@ -16,7 +16,7 @@ class RequsetEndorsementMailer < ActionMailer::Base
     @request_fullname = requester.first_name + " " + requester.last_name + " [" + @dept_abbrev + "]"
 
     @requester_netID = @requester.username
-    @requester_post_title = @requester.post_title.nil? ? " " + @requester.post_title
+    @requester_post_title = @requester.post_title.nil? ? " " : @requester.post_title
     @expiry_date = expiry_date
 
     send_nucore_mail @to, text("views.request_endorsements.subject", requester_name: @request_fullname)
@@ -34,12 +34,12 @@ class RequsetEndorsementMailer < ActionMailer::Base
   def remove_notify(to, requester, request_endorsement, first_name, last_name)
     @to = to
     @requester = requester
-    @request_endorsement = request_endorsement 
+    @request_endorsement = request_endorsement
     @first_name = first_name || ""
     @last_name = last_name || ""
     @to_fullname = @first_name + " " + @last_name
     @request_fullname = requester.first_name + " " + requester.last_name
-    send_nucore_mail @to, text("views.cancel_request_endorsements.subject", requester_name: @request_fullname)
+    send_nucore_mail @to, text("views.remove_request_endorsements.subject", requester_name: @request_fullname)
   end
 
   def send_nucore_mail(to, subject)

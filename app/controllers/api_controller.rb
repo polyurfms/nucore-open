@@ -11,7 +11,8 @@ class ApiController < ApplicationController
     if !Settings.basic_authenticate.room_access.ip.present? || ip.eql?(Settings.basic_authenticate.room_access.ip)
       result = Array.new
       # reservations = Reservation.where("reserve_end_at <= :now ", now: Time.current.end_of_day)
-      reservations = Reservation.where("reserve_start_at >= :start AND reserve_end_at <= :end AND order_detail_id IS NOT NULL", start: Time.current.beginning_of_day, end: Time.current.end_of_day)
+      #reservations = Reservation.where("reserve_start_at >= :start AND reserve_end_at <= :end AND order_detail_id IS NOT NULL", start: Time.current.beginning_of_day, end: Time.current.end_of_day).room_interface_enabled
+      reservations = Reservation.room_interface
       if reservations.count > 0
         reservations.each do |r|
           start_datetime ||= r.reserve_start_at
@@ -203,7 +204,7 @@ class ApiController < ApplicationController
           @to = @user.email + ", " + request_endorsement.email
 
 
-          RequsetEndorsementMailer.confirm_notify(@to, request_endorsement, @status).deliver_later
+          RequestEndorsementMailer.confirm_notify(@to, request_endorsement, @status).deliver_later
         rescue ActiveRecord::RecordInvalid => e
           raise ActiveRecord::Rollback
         end

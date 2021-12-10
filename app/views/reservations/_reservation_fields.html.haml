@@ -20,3 +20,10 @@
 
       .span5
         = f.input :duration_mins, hint: text(".duration_hint"), input_html: { value: f.object.duration_mins || default_duration, class: "timeinput", disabled: end_time_editing_disabled?(f.object) }
+        - if @instrument.allows_staff_assistance
+          .row
+            .span6.staff_assistance
+              = label_tag :require_staff_assistance, class: "checkbox" do
+                = hidden_field_tag :staff_assistance, 0
+                = check_box_tag :staff_assistance, 1, params[:staff_assistance] == "1"
+                = t("reservations.new.staff_assistance")
