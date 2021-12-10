@@ -60,11 +60,12 @@ class ApiController < ApplicationController
 
         @product = Product.joins("INNER JOIN relays on relays.instrument_id  = products.id  WHERE relays.ip = '#{relayIp}'")
         @relay = Relay.find_by(ip: relayIp)
-        @user = User.find_by(card_number: cardno)
+        # @user = User.find_by(card_number: cardno)
+        @user = User.where("concat('60',card_number) like substring(:cardno,1,8) or card_number like substring(:cardno,1,9) or card_number = :cardno",  cardno: cardno)
 
-        unless @user.nil? || @product.nil?
+        unless @user.nil? || @product.nil? 
           @facility = Facility.find_by(id: @product[0].facility_id)
-          relation = @user.order_details
+          relation = @user.first.order_details
 
           #check if upcoming booking ready to start
           #ready_to_start_reservation = relation.ready_to_start_reservation_by_product(@product[0].id)
@@ -136,7 +137,7 @@ class ApiController < ApplicationController
         if netId.blank?
           result["in_process"] = ""
           render json: {"status": "success", "message": result}
-        else
+        else 
           @user = User.find_by(username: netId)
           unless @user.nil?
             @facility = Facility.find_by(id: @product[0].facility_id)
@@ -162,7 +163,7 @@ class ApiController < ApplicationController
       else
         render json: {"status": "failed", "message": "No ressult"}
       end
-
+        
     else
       render json: {"status": "failed", "message": "Some parameter is nil"}
     end
