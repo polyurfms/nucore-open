@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_24_031911) do
+ActiveRecord::Schema.define(version: 2021_12_10_012634) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -90,8 +90,8 @@ ActiveRecord::Schema.define(version: 2021_11_24_031911) do
 
   create_table "agreement_templates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id"
-    t.string "name", limit: 50, null: false
-    t.string "description", limit: 5000, null: false
+    t.string "name", null: false
+    t.text "description", null: false
     t.datetime "deleted_at"
     t.integer "deleted_by"
     t.datetime "created_at", null: false
@@ -217,6 +217,7 @@ ActiveRecord::Schema.define(version: 2021_11_24_031911) do
     t.text "banner_notice"
     t.string "dashboard_token"
     t.string "payment_url"
+    t.boolean "room_interface_enabled", default: false
     t.index ["abbreviation"], name: "index_facilities_on_abbreviation", unique: true
     t.index ["is_active", "name"], name: "index_facilities_on_is_active_and_name"
     t.index ["name"], name: "index_facilities_on_name", unique: true
