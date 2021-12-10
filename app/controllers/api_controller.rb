@@ -60,8 +60,8 @@ class ApiController < ApplicationController
         @product = Product.joins("INNER JOIN relays on relays.instrument_id  = products.id  WHERE relays.ip = '#{relayIp}'")
         @relay = Relay.find_by(ip: relayIp)
         @user = User.find_by(card_number: cardno)
-        
-        unless @user.nil? || @product.nil? 
+
+        unless @user.nil? || @product.nil?
           @facility = Facility.find_by(id: @product[0].facility_id)
           relation = @user.order_details
 
@@ -135,7 +135,7 @@ class ApiController < ApplicationController
         if netId.blank?
           result["in_process"] = ""
           render json: {"status": "success", "message": result}
-        else 
+        else
           @user = User.find_by(username: netId)
           unless @user.nil?
             @facility = Facility.find_by(id: @product[0].facility_id)
@@ -161,7 +161,7 @@ class ApiController < ApplicationController
       else
         render json: {"status": "failed", "message": "No ressult"}
       end
-        
+
     else
       render json: {"status": "failed", "message": "Some parameter is nil"}
     end
@@ -202,7 +202,7 @@ class ApiController < ApplicationController
           @to = @user.email + ", " + request_endorsement.email
 
 
-          RequsetEndorsementMailer.confirm_notify(@to, request_endorsement, @status).deliver_later
+          RequestEndorsementMailer.confirm_notify(@to, request_endorsement, @status).deliver_later
         rescue ActiveRecord::RecordInvalid => e
           raise ActiveRecord::Rollback
         end
