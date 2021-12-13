@@ -193,18 +193,18 @@ class ApiController < ApplicationController
     if has_error
       redirect_to facilities_path
     else
-      @status = @action.eql?("true") ? "Approved" : "Rejected"
+      @status = @action.eql?("true") ? "Approved" : "Declined"
 
       ActiveRecord::Base.transaction do
         begin
           @date = Time.zone.now
-          request_endorsement = @request_endorsement[0]
-          update_request_endorsemets(request_endorsement, @date, @action)
+          supervisor  = @request_endorsement[0]
+          update_request_endorsemets(supervisor, @date, @action)
 
-          @to = @user.email + ", " + request_endorsement.email
+          # @to = @user.email + ", " + request_endorsement.email
+          @to = @user.email 
 
-
-          RequestEndorsementMailer.confirm_notify(@to, request_endorsement, @status).deliver_later
+          RequestEndorsementMailer.confirm_notify(@to, supervisor, @user, @status).deliver_later
         rescue ActiveRecord::RecordInvalid => e
           raise ActiveRecord::Rollback
         end

@@ -21,11 +21,11 @@ en:
 
         University Research Facility Management System
     confirm_request_endorsements:
-      subject: "%{supervisor_fullname} %{status}"
+      subject: "URFMS Supervisor Endorsement Request  %{status}"
       body: |
-        Dear All,
+        Dear %{requester_fullname},
 
-          %{supervisor_fullname} %{status}
+        Your supervisor endorsement request is %{status} by %{supervisor_fullname} .    
 
         Thank you,
 
