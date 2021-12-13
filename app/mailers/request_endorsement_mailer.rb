@@ -32,7 +32,7 @@ class RequestEndorsementMailer < ActionMailer::Base
     @supervisor_fullname = @s_first_name + " " + @s_last_name
     @status = status
     @cc = supervisor.email
-    send_nucore_mail @to, text("views.confirm_request_endorsements.subject", status: @status.downcase!), @cc
+    send_nucore_mail @to, text("views.confirm_request_endorsements.subject", status: @status), @cc
   end
 
   def remove_notify(to, requester, request_endorsement, first_name, last_name)
