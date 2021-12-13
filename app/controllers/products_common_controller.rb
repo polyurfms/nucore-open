@@ -122,6 +122,7 @@ class ProductsCommonController < ApplicationController
                                                       :problems_resolvable_by_user,
                                                       :allows_staff_assistance,
                                                       :room_no,
+                                                      :abbreviation,
                                                       relay_attributes: [:ip, :ip_port, :outlet, :username, :password, :type,
                                                                          :auto_logout, :auto_logout_minutes, :id])
   end
