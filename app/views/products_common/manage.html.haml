@@ -8,6 +8,8 @@
 %h2= @product
 = readonly_form_for @product.class.name.underscore, @product do |f|
   = f.input :url_name, input_html: { value: link_to(polymorphic_url([current_facility, @product]), [current_facility, @product]) }
+  
+  = f.input :abbreviation
 
   - if SettingsHelper::feature_on? :product_specific_contacts
     = f.input :email

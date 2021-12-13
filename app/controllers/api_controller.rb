@@ -133,7 +133,8 @@ class ApiController < ApplicationController
       unless @product.nil?  && @relay.nil?
         result = Hash.new
         # result["outlet"] = @relay.outlet
-        result["name"] = @product.first.name
+        # result["name"] = @product.first.name
+        result["name"] = @product.first.abbreviation
         if netId.blank?
           result["in_process"] = ""
           render json: {"status": "success", "message": result}
