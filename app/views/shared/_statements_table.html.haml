@@ -17,7 +17,7 @@
     %tbody
       - @statements.each do |s|
         %tr
-          %td.centered
+          %td
             = "##{s.invoice_number}"
             %br
             - path = current_facility ? statement_path(s) : account_statement_path(s.account, s, format: :pdf)
@@ -33,9 +33,9 @@
             %td= s.facility.name
           %td.currency= s.order_details.count
           %td.currency= number_to_currency(s.total_cost)
-          %td.centered
+          %td
             = t("statements.reconciled.#{s.reconciled?}")
-            - if s.no_reconciled?
+            - if s.no_reconciled? && !session_user.is_normal_user?
               - rollback_path = statement_rollback_path(s)
               = link_to "rollback", rollback_path, :data => {:confirm => 'Are you sure?'}
   %table{style: "width: 100%"}

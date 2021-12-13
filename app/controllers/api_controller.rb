@@ -63,7 +63,7 @@ class ApiController < ApplicationController
         # @user = User.find_by(card_number: cardno)
         @user = User.where("concat('60',card_number) like substring(:cardno,1,8) or card_number like substring(:cardno,1,9) or card_number = :cardno",  cardno: cardno)
 
-        unless @user.nil? || @product.nil? 
+        unless @user.nil? || @product.nil?
           @facility = Facility.find_by(id: @product[0].facility_id)
           relation = @user.first.order_details
 
@@ -137,7 +137,7 @@ class ApiController < ApplicationController
         if netId.blank?
           result["in_process"] = ""
           render json: {"status": "success", "message": result}
-        else 
+        else
           @user = User.find_by(username: netId)
           unless @user.nil?
             @facility = Facility.find_by(id: @product[0].facility_id)
@@ -163,7 +163,7 @@ class ApiController < ApplicationController
       else
         render json: {"status": "failed", "message": "No ressult"}
       end
-        
+
     else
       render json: {"status": "failed", "message": "Some parameter is nil"}
     end
@@ -245,10 +245,8 @@ class ApiController < ApplicationController
 
     @can_accept = false
     @can_accept = true if @request_endorsement[0].deleted_at.nil? && @request_endorsement[0].created_at.to_datetime + 1.days > Time.zone.now.to_datetime && @request_endorsement[0].is_accepted.nil?
-
     return true unless @can_accept
     # return redirect_to facilities_path unless @can_accept
-
     @aes = AES.new
     @result = @aes.aes_decrypt(token)
     @date = @result.slice(0,12)
@@ -283,7 +281,7 @@ class ApiController < ApplicationController
 
   def update_supervisor_of_requester(user, request_endorsement, date)
 
-    creator = SupervisorCreator.create(user, request_endorsement.last_name, request_endorsement.first_name, request_endorsement.email, request_endorsement.supervisor, request_endorsement.dept_abbrev, request_endorsement.is_academic)
+    creator = SupervisorCreator.update(user, request_endorsement.last_name, request_endorsement.first_name, request_endorsement.email, request_endorsement.supervisor, request_endorsement.dept_abbrev, request_endorsement.is_academic, 1)
     unless creator.save()
       raise(ActiveRecord::Rollback)
     end

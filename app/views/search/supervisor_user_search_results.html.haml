@@ -12,7 +12,7 @@
         %tr
           %td
 
-            %p= link_to t(".request_btn"), request_endorsement_make_request_path(request_endorsement_id: session[:acting_user_id] || session_user[:id], first_name: user.first_name, last_name: user.last_name, email: user.email, dept_abbrev: user.dept_abbrev, username: user.username, is_academic: user.is_academic), method: :post, data: { confirm: "Confirm to make endorsement" } 
+            %p= link_to t(".request_btn"), request_endorsement_make_request_path(request_endorsement_id: session[:acting_user_id] || session_user[:id], first_name: user.first_name, last_name: user.last_name, email: user.email, dept_abbrev: user.dept_abbrev, username: user.username, is_academic: user.is_academic), method: :post, data: { confirm: "Confirm to make endorsement request?" } 
           %td= user.last_name + "." + user.first_name
           %td= user.username
           %td= user.email

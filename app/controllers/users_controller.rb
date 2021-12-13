@@ -175,7 +175,7 @@ class UsersController < ApplicationController
   end
 
   def edit_supervisor_params
-    params.require(:user).permit(:supervisor_last_name, :supervisor_first_name, :supervisor_email, :supervisor_is_acad_staff)
+    params.require(:user).permit(:supervisor_last_name, :supervisor_first_name, :supervisor_email, :supervisor_netid, :supervisor_dept_abbrev, :supervisor_is_acad_staff)
   end
 
   def price_group_params

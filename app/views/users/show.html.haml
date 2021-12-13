@@ -26,6 +26,8 @@
   = f.input :card_number, default_value: "none"
   = f.input :supervisor_full_name
   = f.input :supervisor_email
+  = f.input :supervisor_netid
+  = f.input :supervisor_dept_abbrev
   = f.input :supervisor_is_acad_staff?, label: text("views.users.edit.supervisor_is_academic")
 
   = render_view_hook "additional_user_fields", f: f

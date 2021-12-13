@@ -1,28 +1,32 @@
 %p
-  Approval?
+  %ol
+    %li The supervisor is liable to the cost for equipment/platform usage, overtime usage, no-show penalty, training, consumables, technical support, repairing and/or replacement of damaged equipment resulted from misuse by the users.
+    %li The supervisor is responsible for informing the user of the university and/or departmental safety policies, as well as the potential hazards and safety precautions about each experiment.
+    %li The supervisor should ensure that the user abides by all rules and/or conditions as stipulated in the User Policy of each facility on URFMS.
+    %li The facilities on URFMS reserve the rights to amend their respective Terms & Conditions when deemed necessary.
 
 </br>
 %input{:id => "is_agree", :type => "checkbox", :style => "margin-top: -0.25em;"}
-%span I agree to the terms and conditions
+%span I agree to the above and grant the approval to the user for using URFMS
 </br>
 </br>
 -# %ul.inline
--#   %li= link_to "Approval", supervisor_endorsement_submit_path(token: @token, is_approval: true), :class => ['btn', 'btn-primary', 'pull-left'], method: "POST" 
--#   %li= link_to "Reject", supervisor_endorsement_submit_path(token: @token, is_approval: false), :class => ['btn', 'pull-left'], method: "POST", data: { confirm: "Confirm to reject." } 
+-#   %li= link_to "Approval", supervisor_endorsement_submit_path(token: @token, is_approval: true), :class => ['btn', 'btn-primary', 'pull-left'], method: "POST"
+-#   %li= link_to "Reject", supervisor_endorsement_submit_path(token: @token, is_approval: false), :class => ['btn', 'pull-left'], method: "POST", data: { confirm: "Confirm to reject." }
 
 
 = form_tag( supervisor_endorsement_submit_path(token: @token, is_approval: true), id: "agree_facility_terms", method: :post, enforce_utf8: false) do
   = submit_tag "Agree", class: ["btn", "btn-primary"], id: "from_submit"
-  = link_to "Reject", supervisor_endorsement_submit_path(token: @token, is_approval: false), :class => ['btn'], method: "POST", data: { confirm: "Confirm to reject." } 
+  = link_to "Decline", supervisor_endorsement_submit_path(token: @token, is_approval: false), :class => ['btn'], method: "POST", data: { confirm: "Are you sure to decline the request?”" }
 
 :javascript
   $( "#agree_facility_terms" ).submit(function( event ) {
     var is_agreed = document.getElementById("is_agree");
     if (is_agreed.checked != true)
     {
-      alert("Please indicate that you have read and agree to the Terms and Conditions.");
-      
-      $("#from_submit").prop('disabled',false); 
+      alert("Please indicate that you have read and agree to the Terms and Conditions and grant the approval to the user for using URFMS");
+
+      $("#from_submit").prop('disabled',false);
       return false;
     }
   });
