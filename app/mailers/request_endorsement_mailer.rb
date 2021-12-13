@@ -22,13 +22,17 @@ class RequestEndorsementMailer < ActionMailer::Base
     send_nucore_mail @to, text("views.request_endorsements.subject", requester_name: @request_fullname)
   end
 
-  def confirm_notify(to, request_endorsement, status)
+  def confirm_notify(to, supervisor, requester, status)
     @to = to
-    @first_name = request_endorsement.first_name || ""
-    @last_name = request_endorsement.last_name || ""
-    @supervisor_fullname = @first_name + " " + @last_name
+    @r_first_name = requester.first_name || ""
+    @r_last_name = requester.last_name || ""
+    @requester_fullname = @r_first_name + " " + @r_last_name
+    @s_first_name = supervisor.first_name || ""
+    @s_last_name = supervisor.last_name || ""
+    @supervisor_fullname = @s_first_name + " " + @s_last_name
     @status = status
-    send_nucore_mail @to, text("views.confirm_request_endorsements.subject", supervisor_fullname: @supervisor_fullname, status: @status)
+    @cc = supervisor.email
+    send_nucore_mail @to, text("views.confirm_request_endorsements.subject", status: @status), @cc
   end
 
   def remove_notify(to, requester, request_endorsement, first_name, last_name)
@@ -39,11 +43,12 @@ class RequestEndorsementMailer < ActionMailer::Base
     @last_name = last_name || ""
     @to_fullname = @first_name + " " + @last_name
     @request_fullname = requester.first_name + " " + requester.last_name
-    send_nucore_mail @to, text("views.remove_request_endorsements.subject", requester_name: @request_fullname)
+    send_nucore_mail @to, text("views.cancel_request_endorsements.subject", requester_name: @request_fullname)
   end
 
-  def send_nucore_mail(to, subject)
-    mail(subject: subject, to: to)
+  def send_nucore_mail(to, subject, cc = "")
+    mail(subject: subject, to: to) if cc.blank?
+    mail(subject: subject, to: to, cc: cc) unless cc.blank?
   end
 
 end
