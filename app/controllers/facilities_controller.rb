@@ -251,6 +251,7 @@ class FacilitiesController < ApplicationController
       url_name
       dashboard_enabled
       payment_url
+      room_interface_enabled
     )
   end
 
