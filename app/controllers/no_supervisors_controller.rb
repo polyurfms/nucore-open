@@ -15,16 +15,16 @@ class NoSupervisorsController < ApplicationController
       end
 
       @is_requested = false
-        msg = ""
-        session[:had_supervisor] = session_user.has_supervisor? ? 1 : 0
-        if session[:had_supervisor] == 0
-          @request_endorsement = RequestEndorsement.where(user_id: session[:acting_user_id] || session_user[:id])
-          @request_endorsement.each do |request|
-            @is_requested = true if request.deleted_at.nil? && request.created_at.to_datetime + 1.days > Time.zone.now.to_datetime && (request.is_accepted.nil? || request.is_accepted == true)
-          end
-        else 
-          @is_requested = true
-        end
+      msg = ""
+#      session[:had_supervisor] = session_user.has_supervisor? ? 1 : 0
+#      if session[:had_supervisor] == 0
+#        @request_endorsement = RequestEndorsement.where(user_id: session[:acting_user_id] || session_user[:id])
+#        @request_endorsement.each do |request|
+#          @is_requested = true if request.deleted_at.nil? && request.created_at.to_datetime + 1.days > Time.zone.now.to_datetime && (request.is_accepted.nil? || request.is_accepted == true)
+#        end
+#      else
+#        @is_requested = true
+#      end
 
       msg = "No supervisor info found. Please click #{view_context.link_to("here", request_endorsements_path)} to request supervisor endorsement. " unless @is_requested
 
