@@ -13,7 +13,8 @@ class RequestEndorsementsController < ApplicationController
 
         @result = Array.new
         @request_endorsement.each do |request|
-            @can_request =false if request.deleted_at.nil? && request.created_at.to_datetime + 1.days > Time.zone.now.to_datetime && (request.is_accepted.nil? || request.is_accepted == true)
+            #@can_request =false if request.deleted_at.nil? && request.created_at.to_datetime + 1.days > Time.zone.now.to_datetime && (request.is_accepted.nil? || request.is_accepted == true)
+            @can_request =false if request.deleted_at.nil? && request.created_at.to_datetime + 1.days > Time.zone.now.to_datetime && (request.is_accepted.nil? )
         end
     end
 

@@ -258,6 +258,8 @@ en:
         phone: Telephone Number
         supervisor_full_name: Supervisor
         supervisor_email: Supervisor Email
+        supervisor_netid: Supervisor NetID
+        supervisor_dept_abbrev: Supervisor Dept. Abbrev.
       facility:
         banner_notice: Banner Notice
         fax_number: Fax Number

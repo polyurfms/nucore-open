@@ -2,24 +2,25 @@ class SupervisorCreator
 
   attr_reader :params, :error
 
-  def self.update(user, last_name, first_name, email, is_academic, updated_by)
+  def self.update(user, last_name, first_name, email, net_id, dept_abbrev, is_academic, updated_by)
     @user = user
     @supervisor = @user.supervisor
     if @user.supervisor.present?
-      @supervisor.assign_attributes(last_name: last_name, first_name: first_name, email: email, is_academic: is_academic, updated_by: updated_by)
+      @supervisor.assign_attributes(last_name: last_name, first_name: first_name, email: email, net_id: net_id, dept_abbrev: dept_abbrev, is_academic: is_academic, updated_by: updated_by)
     else
       @supervisor = Supervisor.new(
           user_id: @user.id,
           last_name: last_name,
           first_name: first_name,
           email: email,
+          net_id: net_id,
+          dept_abbrev: dept_abbrev,
           is_academic: is_academic,
           created_by: updated_by,
           updated_by: updated_by
       )
     end
-    @supervisor.save
-
+    @supervisor
   end
 
   def self.create(user, last_name, first_name, email, net_id, dept_abbrev, is_academic)
