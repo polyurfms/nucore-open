@@ -16,7 +16,7 @@
   = f.input :dashboard_enabled, label: text("views.facilities.facility_fields.labels.dashboard_enabled")
   = render_view_hook("before_is_active", f: f)
   = f.input :is_active
-  = f.input :room_interface_enabled
+  = f.input :room_interface_enabled, label: text("views.facilities.facility_fields.labels.room_interface_enabled")
 
   = f.input :address, value_method: proc { |value| value.present? ? simple_format(value) : '<p>None Entered</p>'.html_safe }
   = f.input :phone_number, default_value: "None Entered"
