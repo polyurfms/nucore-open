@@ -15,7 +15,6 @@ en:
           accepts_multi_add: "Show Order Form for !Facility! (allows adding of multiple products simultaneously)"
           show_instrument_availability: Show Instrument Availability Status?
           dashboard_enabled: Enable Instrument Dashboard
-          room_interface_enabled: Enable Room Interface
         inactive: "Uncheck this box to prevent end users from viewing or purchasing from this !facility_downcase!:"
         #contact: "The following contact information will appear on statements and should indicate where payment should be sent"
         contact: "Facility contact information:"
