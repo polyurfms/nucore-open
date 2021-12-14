@@ -238,21 +238,39 @@ class Reservation < ApplicationRecord
     end
 =end
 
-    unless product.schedule.products.flat_map(&:started_reservations).empty?
-      # If we're in the grace period for this reservation, but the other reservation
-      # has not finished its reserved time, this will fail and this reservation will
-      # not start.
+    # unless product.schedule.products.flat_map(&:started_reservations).empty?
+    #   # If we're in the grace period for this reservation, but the other reservation
+    #   # has not finished its reserved time, this will fail and this reservation will
+    #   # not start.
 
-      #instead of sending to problem queue, end the unfinished reservation
-      raise ValidatorError.new "Failed to start reservation. The equipment is currently in use."
-      #reservation.end_reservation
-      #MoveToProblemQueue.move!(reservation.order_detail, user: reservation.user, cause: :reservation_started)
-    else
-      @t = Time.current
-      # check if pervious affect existing booking start
-      at = ReservationTimeFinder.new(self).actual_start_at
-      update!(card_start_at: @t ,actual_start_at: at)
+    #   #instead of sending to problem queue, end the unfinished reservation
+    #   raise ValidatorError.new "Failed to start reservation. The equipment is currently in use."
+    #   #reservation.end_reservation
+    #   #MoveToProblemQueue.move!(reservation.order_detail, user: reservation.user, cause: :reservation_started)
+    # else
+    #   @t = Time.current
+    #   # check if pervious affect existing booking start
+    #   at = ReservationTimeFinder.new(self).actual_start_at
+    #   update!(card_start_at: @t ,actual_start_at: at)
+    # end
+
+    self_reservations = Array.new
+    product.schedule.products.flat_map(&:started_reservations).each do |reservation|
+      if self.user.id == reservation.user.id
+        self_reservations << reservation
+      else 
+        raise ValidatorError.new "Failed to start reservation. The equipment is currently in use."
+      end
     end
+
+    unless self_reservations.empty?
+      self_reservations.each do |sr|
+        MoveToProblemQueue.move!(sr.order_detail, user: sr.user, cause: :reservation_started)
+      end
+    end
+
+    @t = Time.current
+    update!(card_start_at: @t ,actual_start_at: reserve_start_at)
   end
 
 =begin
