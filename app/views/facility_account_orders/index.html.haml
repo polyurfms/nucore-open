@@ -29,9 +29,11 @@
         %tr{class: od.row_class}
           %td
             - if current_ability.can?(:show, order_detail)
-              = link_to od.description, od.show_order_path
+              -# = link_to od.description, od.show_order_path
+              = link_to od.order_number, od.show_order_path
             - else
-              = od.description
+              -# = od.description
+              = od.order_number
 
           %td= od.ordered_at
 
