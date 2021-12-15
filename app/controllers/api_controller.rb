@@ -130,11 +130,11 @@ class ApiController < ApplicationController
     unless relayIp.blank? && !relayIp.eql?(request.ip)
       @product = Product.joins("INNER JOIN relays on relays.instrument_id  = products.id  WHERE relays.ip = '#{relayIp}'")
       @relay = Relay.find_by(ip: relayIp)
-      unless @product.nil?  && @relay.nil?
+      if @product.length > 0  && @relay.length > 0
         result = Hash.new
         # result["outlet"] = @relay.outlet
         # result["name"] = @product.first.name
-        result["name"] = @product.first.abbreviation
+        result["name"] = @product.first.abbreviation || ""
         if netId.blank?
           result["in_process"] = ""
           render json: {"status": "success", "message": result}
