@@ -20,7 +20,7 @@
   %h4= text("dates", start: human_date(@current_start_date), expires: human_date(policy.expire_date))
   - if policy.charge_for.present?
     %p
-      %em= text("charges_for", charge_for: policy.charge_for)
+      %em= text("charges_for", charge_for: policy.charge_for.gsub(/_/,' '))
   %p
     %em= text("note", note: policy.note)
     - if can?(:create, PricePolicy)
@@ -43,7 +43,7 @@
     -# - if result.count > 0
     %h4= text("dates", start: human_date(date), expires: human_date(policy.expire_date))
     - if policy.charge_for.present?
-      %p.charge-for= text("charges_for", charge_for: policy.charge_for)
+      %p.charge-for= text("charges_for", charge_for: policy.charge_for.gsub(/_/,' '))
     - if rules.select(&:can_purchase?) 
       %ul.inline
         %li= link_to text("add"), facility_instrument_additional_price_policy_add_path(current_facility, @product, date.strftime("%Y-%m-%d")), class: "btn-add"
