@@ -43,7 +43,7 @@ class RequestEndorsementMailer < ActionMailer::Base
     @last_name = last_name || ""
     @to_fullname = @first_name + " " + @last_name
     @request_fullname = requester.first_name + " " + requester.last_name
-    send_nucore_mail @to, text("views.cancel_request_endorsements.subject", requester_name: @request_fullname)
+    send_nucore_mail @to, text("views.remove_request_endorsements.subject", requester_name: @request_fullname)
   end
 
   def send_nucore_mail(to, subject, cc = "")
