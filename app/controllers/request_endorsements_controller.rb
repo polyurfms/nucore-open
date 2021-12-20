@@ -99,7 +99,7 @@ class RequestEndorsementsController < ApplicationController
         end
         supervisor = User.find_by(username:  @request_endorsement.email)
         user = User.find(@request_endorsement.user_id)
-        RequestEndorsementMailer.remove_notify(@request_endorsement.email, user, @request_endorsement, supervisor.first_name, supervisor.last_name).deliver_later
+        RequestEndorsementMailer.remove_notify(supervisor.email, user, supervisor).deliver_later
         redirect_to request_endorsements_path()
     end
 end

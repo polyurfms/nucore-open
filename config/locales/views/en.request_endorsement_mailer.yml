@@ -31,11 +31,11 @@ en:
 
         University Research Facility Management System
     remove_request_endorsements:
-      subject: "Cancel - URFMS Supervisor Endorsement Request (User: %{requester_name})"
+      subject: "URFMS Supervisor Endorsement Request Cancelled (User : %{requester_fullname})"
       body: |
-        Dear %{to_fullname},
+        Dear %{supervisor_fullname},
 
-          %{requester_name} cancel request endorsement
+          The supervisor endorsement request is cancelled by %{requester_fullname}
           
         Thank you,
 

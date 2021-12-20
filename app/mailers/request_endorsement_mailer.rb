@@ -35,15 +35,18 @@ class RequestEndorsementMailer < ActionMailer::Base
     send_nucore_mail @to, text("views.confirm_request_endorsements.subject", status: @status), @cc
   end
 
-  def remove_notify(to, requester, request_endorsement, first_name, last_name)
+  def remove_notify(to, requester, supervisor)
     @to = to
-    @requester = requester
-    @request_endorsement = request_endorsement
-    @first_name = first_name || ""
-    @last_name = last_name || ""
-    @to_fullname = @first_name + " " + @last_name
-    @request_fullname = requester.first_name + " " + requester.last_name
-    send_nucore_mail @to, text("views.remove_request_endorsements.subject", requester_name: @request_fullname)
+    @r_first_name = requester.first_name || ""
+    @r_last_name = requester.last_name || ""
+    @requester_fullname = @r_first_name + " " + @r_last_name
+    @s_first_name = supervisor.first_name || ""
+    @s_last_name = supervisor.last_name || ""
+    @supervisor_fullname = @s_first_name + " " + @s_last_name
+    @cc = requester.email
+    @dept_abbrev = requester.dept_abbrev.nil? ? " " : requester.dept_abbrev
+
+    send_nucore_mail @to, text("views.remove_request_endorsements.subject", requester_fullname: @requester_fullname + " [" + @dept_abbrev + "]"), @cc
   end
 
   def send_nucore_mail(to, subject, cc = "")
